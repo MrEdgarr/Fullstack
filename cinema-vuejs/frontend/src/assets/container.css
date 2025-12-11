@@ -1,0 +1,200 @@
+/*
+ * CONTAINER THEME CONFIGURATION
+ * Sử dụng @theme để định nghĩa container system
+ */
+
+@theme {
+    /* ===== BREAKPOINTS ===== */
+    --breakpoint-xs: 375px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1400px;
+    --breakpoint-3xl: 1600px;
+
+    /* ===== CONTAINER MAX WIDTHS ===== */
+    --container-xs: 100%;
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+    --container-2xl: 1400px;
+    --container-3xl: 1600px;
+
+    /* ===== CONTAINER PADDING ===== */
+    --container-padding-mobile: 1rem;
+    --container-padding-tablet: 1.5rem;
+    --container-padding-desktop: 2rem;
+    --container-padding-wide: 2.5rem;
+
+    /* ===== SPACING SCALE ===== */
+    --spacing-container: var(--container-padding-mobile);
+    --spacing-container-sm: var(--container-padding-tablet);
+    --spacing-container-lg: var(--container-padding-desktop);
+    --spacing-container-xl: var(--container-padding-wide);
+}
+
+/*
+ * BASE CONTAINER CLASS
+ * Sử dụng xuyên suốt dự án
+ */
+.container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Mobile First - Full width với padding */
+    max-width: var(--container-xs);
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+
+    /* ===== AUTO ADJUSTING BREAKPOINTS ===== */
+
+    /* Small devices (landscape phones, 640px and up) */
+    @media (min-width: 640px) {
+        max-width: var(--container-sm);
+        padding-left: var(--container-padding-tablet);
+        padding-right: var(--container-padding-tablet);
+    }
+
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 768px) {
+        max-width: var(--container-md);
+    }
+
+    /* Large devices (desktops, 1024px and up) */
+    @media (min-width: 1024px) {
+        max-width: var(--container-lg);
+        padding-left: var(--container-padding-desktop);
+        padding-right: var(--container-padding-desktop);
+    }
+
+    /* Extra large devices (large desktops, 1280px and up) */
+    @media (min-width: 1280px) {
+        max-width: var(--container-xl);
+    }
+
+    /* 2XLarge devices (larger desktops, 1400px and up) */
+    @media (min-width: 1400px) {
+        max-width: var(--container-2xl);
+        padding-left: var(--container-padding-wide);
+        padding-right: var(--container-padding-wide);
+    }
+
+    /* 3XLarge devices (extra large screens, 1600px and up) */
+    @media (min-width: 1600px) {
+        max-width: var(--container-3xl);
+    }
+}
+
+/*
+ * CONTAINER VARIANTS
+ * Các biến thể container cho use case khác nhau
+ */
+
+/* Fluid container - luôn full width với auto padding */
+.container-fluid {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+
+    @media (min-width: 640px) {
+        padding-left: var(--container-padding-tablet);
+        padding-right: var(--container-padding-tablet);
+    }
+
+    @media (min-width: 1024px) {
+        padding-left: var(--container-padding-desktop);
+        padding-right: var(--container-padding-desktop);
+    }
+
+    @media (min-width: 1400px) {
+        padding-left: var(--container-padding-wide);
+        padding-right: var(--container-padding-wide);
+    }
+}
+
+/* Section container với vertical spacing */
+.container-section {
+    @apply container;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    @media (min-width: 768px) {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+}
+
+/* Narrow container cho text content */
+.container-narrow {
+    @apply container;
+    max-width: 800px !important;
+}
+
+/* Form container - hẹp hơn cho forms */
+.container-form {
+    @apply container;
+    max-width: 600px !important;
+}
+
+/* Wide container cho hero sections */
+.container-wide {
+    @apply container;
+    max-width: 1200px !important;
+}
+
+/*
+ * UTILITY CLASSES FOR CONTAINER ELEMENTS
+ * Các lớp tiện ích hỗ trợ
+ */
+
+/* Container padding utilities */
+.p-container {
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+}
+
+.p-container-sm {
+    padding-left: var(--container-padding-tablet);
+    padding-right: var(--container-padding-tablet);
+}
+
+.p-container-lg {
+    padding-left: var(--container-padding-desktop);
+    padding-right: var(--container-padding-desktop);
+}
+
+.p-container-xl {
+    padding-left: var(--container-padding-wide);
+    padding-right: var(--container-padding-wide);
+}
+
+/* Container max-width utilities */
+.max-w-container-sm {
+    max-width: var(--container-sm);
+}
+.max-w-container-md {
+    max-width: var(--container-md);
+}
+.max-w-container-lg {
+    max-width: var(--container-lg);
+}
+.max-w-container-xl {
+    max-width: var(--container-xl);
+}
+.max-w-container-2xl {
+    max-width: var(--container-2xl);
+}
+.max-w-container-3xl {
+    max-width: var(--container-3xl);
+}

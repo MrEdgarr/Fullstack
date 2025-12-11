@@ -1,0 +1,1 @@
+# Component theo tính năng
