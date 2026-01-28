@@ -1,0 +1,113 @@
+:root {
+    /* ===== BREAKPOINTS ===== */
+    /* --breakpoint-xs: 375px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1400px;
+    --breakpoint-3xl: 1600px; */
+
+    /* ===== CONTAINER MAX WIDTHS ===== */
+    --container-xs: 100%;
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+    --container-2xl: 1400px;
+    --container-3xl: 1600px;
+
+    /* ===== CONTAINER PADDING ===== */
+    --container-padding-mobile: 1rem;
+    --container-padding-tablet: 1.5rem;
+    --container-padding-desktop: 2rem;
+    --container-padding-wide: 2.5rem;
+}
+/* 2. Tạo Class Container tùy chỉnh */
+@utility container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Mobile First - Full width với padding */
+    max-width: var(--container-xs);
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+
+    /* ===== AUTO ADJUSTING BREAKPOINTS ===== */
+
+    /* Small devices (landscape phones, 640px and up) */
+    @media (min-width: 640px) {
+        max-width: var(--container-sm);
+        padding-left: var(--container-padding-tablet);
+        padding-right: var(--container-padding-tablet);
+    }
+
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 768px) {
+        max-width: var(--container-md);
+    }
+
+    /* Large devices (desktops, 1024px and up) */
+    @media (min-width: 1024px) {
+        max-width: var(--container-lg);
+        padding-left: var(--container-padding-desktop);
+        padding-right: var(--container-padding-desktop);
+    }
+
+    /* Extra large devices (large desktops, 1280px and up) */
+    @media (min-width: 1280px) {
+        max-width: var(--container-xl);
+    }
+
+    /* 2XLarge devices (larger desktops, 1400px and up) */
+    @media (min-width: 1400px) {
+        max-width: var(--container-2xl);
+        padding-left: var(--container-padding-wide);
+        padding-right: var(--container-padding-wide);
+    }
+
+    /* 3XLarge devices (extra large screens, 1600px and up) */
+    @media (min-width: 1600px) {
+        max-width: var(--container-3xl);
+    }
+}
+@utility container-fluid {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+
+    @media (min-width: 640px) {
+        padding-left: var(--container-padding-tablet);
+        padding-right: var(--container-padding-tablet);
+    }
+
+    @media (min-width: 1024px) {
+        padding-left: var(--container-padding-desktop);
+        padding-right: var(--container-padding-desktop);
+    }
+
+    @media (min-width: 1400px) {
+        padding-left: var(--container-padding-wide);
+        padding-right: var(--container-padding-wide);
+    }
+}
+
+@utility container-section {
+    @apply container;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    @media (min-width: 768px) {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+}
