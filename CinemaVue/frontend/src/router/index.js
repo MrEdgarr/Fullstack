@@ -1,23 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { routes } from '@/router/routes'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: routes,
+    // Scroll behavior
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition
+        } else if (to.hash) {
+            return {
+                el: to.hash,
+                behavior: 'smooth',
+            }
+        } else {
+            return { top: 0 }
+        }
     },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-  ],
+    // Link active class configuration
+    linkActiveClass: 'router-link-active',
+    linkExactActiveClass: 'router-link-exact-active',
+})
+
+// Global navigation guards
+router.beforeEach((to, from, next) => {
+    // Kiểm tra authentication, permissions, etc.
+    console.log(`Navigating from ${from.path} to ${to.path}`)
+    next()
+})
+
+router.afterEach((to, from) => {
+    // Cập nhật title, analytics, etc.
+    document.title = to.meta.title || 'My Vue App'
 })
 
 export default router
