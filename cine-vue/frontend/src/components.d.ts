@@ -16,6 +16,8 @@ declare module 'vue' {
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']
     HomeBanner: typeof import('./components/features/client/home/HomeBanner.vue')['default']
+    HomeBlog: typeof import('./components/features/client/home/HomeBlog.vue')['default']
+    HomeNews: typeof import('./components/features/client/home/HomeNews.vue')['default']
     HomeShowing: typeof import('./components/features/client/home/HomeShowing.vue')['default']
     HomeUpcoming: typeof import('./components/features/client/home/HomeUpcoming.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

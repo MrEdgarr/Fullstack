@@ -10,8 +10,20 @@
         </div>
     </section>
     <section>
+        <div class="bg-base-100 py-10">
+            <div class="container">
+                <HomeUpcoming />
+            </div>
+        </div>
+    </section>
+    <section>
         <div class="container">
-            <HomeUpcoming />
+            <HomeBlog />
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <HomeNews />
         </div>
     </section>
 </template>
