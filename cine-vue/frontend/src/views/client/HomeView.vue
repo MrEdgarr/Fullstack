@@ -1,9 +1,9 @@
 <template>
-    <div>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates deserunt non qui
-        molestias quia cupiditate aut earum est reiciendis cum nisi obcaecati autem necessitatibus
-        maiores impedit, exercitationem nostrum ullam quos?
-    </div>
+    <section>
+        <div class="container">
+            <HomeBanner />
+        </div>
+    </section>
 </template>
 
 <script setup></script>

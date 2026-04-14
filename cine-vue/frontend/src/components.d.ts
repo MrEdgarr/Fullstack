@@ -12,9 +12,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BaseIcon: typeof import('./components/common/BaseIcon.vue')['default']
+    BaseMovieSwiper: typeof import('./components/common/BaseMovieSwiper.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    HomeBanner: typeof import('./components/features/client/home/HomeBanner.vue')['default']
     IconCommunity: typeof import('./components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./components/icons/IconDocumentation.vue')['default']
     IconEcosystem: typeof import('./components/icons/IconEcosystem.vue')['default']
