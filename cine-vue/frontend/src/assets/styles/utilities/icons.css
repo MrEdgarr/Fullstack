@@ -1,0 +1,18 @@
+/* 1. Class gốc */
+@utility icon-base {
+    display: inline-block;
+    flex-shrink: 0;
+    vertical-align: middle; /* Căn giữa dòng với text */
+    fill: currentColor; /* Ăn theo màu chữ (text-color) */
+    stroke: none; /* Mặc định không có viền */
+    transition: all 0.3s ease-in-out;
+    width: 1em;
+    height: 1em;
+}
+
+/* 2. Class cho icon dạng nét mảnh (Outline icons) */
+@utility icon-outline {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5; /* Độ dày nét vẽ */
+}

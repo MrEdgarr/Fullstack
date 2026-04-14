@@ -1,5 +1,6 @@
 <template>
-    <main>
+    <ClientNavbar />
+    <main class="fluid-gap">
         <RouterView />
     </main>
 </template>
