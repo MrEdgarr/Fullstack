@@ -15,16 +15,10 @@ declare module 'vue' {
     BaseMovieSwiper: typeof import('./components/common/BaseMovieSwiper.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     HomeBanner: typeof import('./components/features/client/home/HomeBanner.vue')['default']
-    IconCommunity: typeof import('./components/icons/IconCommunity.vue')['default']
-    IconDocumentation: typeof import('./components/icons/IconDocumentation.vue')['default']
-    IconEcosystem: typeof import('./components/icons/IconEcosystem.vue')['default']
-    IconSupport: typeof import('./components/icons/IconSupport.vue')['default']
-    IconTooling: typeof import('./components/icons/IconTooling.vue')['default']
+    HomeShowing: typeof import('./components/features/client/home/HomeShowing.vue')['default']
+    HomeUpcoming: typeof import('./components/features/client/home/HomeUpcoming.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TheWelcome: typeof import('./components/TheWelcome.vue')['default']
-    WelcomeItem: typeof import('./components/WelcomeItem.vue')['default']
   }
 }
