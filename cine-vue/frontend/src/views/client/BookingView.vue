@@ -30,8 +30,13 @@
                             :auto-restart="false"
                         />
                     </div>
-                    <div class="order-1"></div>
-                    <div class="order-3"></div>
+                    <div class="order-1">
+                        <BookingInfo />
+                    </div>
+
+                    <div class="order-3">
+                        <BookingAction />
+                    </div>
                 </div>
             </div>
         </div>

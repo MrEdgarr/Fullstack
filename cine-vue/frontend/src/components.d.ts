@@ -13,7 +13,9 @@ declare module 'vue' {
   export interface GlobalComponents {
     BaseIcon: typeof import('./components/common/BaseIcon.vue')['default']
     BaseMovieSwiper: typeof import('./components/common/BaseMovieSwiper.vue')['default']
+    BookingAction: typeof import('./components/features/client/booking/BookingAction.vue')['default']
     BookingCountdownTimer: typeof import('./components/features/client/booking/BookingCountdownTimer.vue')['default']
+    BookingInfo: typeof import('./components/features/client/booking/BookingInfo.vue')['default']
     BookingSeat: typeof import('./components/features/client/booking/BookingSeat.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']

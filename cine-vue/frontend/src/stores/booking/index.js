@@ -15,6 +15,7 @@ export const useBookingStore = defineStore("booking", () => {
         if (seatStore.coupleSeatsCount > 0) parts.push(`${seatStore.coupleSeatsCount}x Ghế đôi`);
         return parts.join(" + ") || "Chưa chọn ghế";
     });
+
     // ==================== ACTIONS ====================
     const resetAll = () => {
         seatStore.resetSeats();

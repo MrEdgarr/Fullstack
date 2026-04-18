@@ -9,7 +9,7 @@ export const useSeatStore = defineStore("seat", () => {
     // ==================== GROUPED SEATS ====================
     // Tạo computed để nhóm ghế đã chọn theo loại
     const groupedSelectedSeats = computed(() => {
-        const singles = selectedSeats.value.filter((s) => s.type === "single");
+        const singles = selectedSeats.value.filter((s) => s.type === "single" || s.type === "vip");
         // .sort((a, b) => a.id - b.id)
         const couples = selectedSeats.value.filter((s) => s.type === "couple");
         // .sort((a, b) => a.id - b.id)
