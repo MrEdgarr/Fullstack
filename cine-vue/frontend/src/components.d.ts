@@ -15,6 +15,7 @@ declare module 'vue' {
     BaseMovieSwiper: typeof import('./components/common/BaseMovieSwiper.vue')['default']
     BookingAction: typeof import('./components/features/client/booking/BookingAction.vue')['default']
     BookingCountdownTimer: typeof import('./components/features/client/booking/BookingCountdownTimer.vue')['default']
+    BookingFood: typeof import('./components/features/client/booking/BookingFood.vue')['default']
     BookingInfo: typeof import('./components/features/client/booking/BookingInfo.vue')['default']
     BookingSeat: typeof import('./components/features/client/booking/BookingSeat.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']

@@ -21,6 +21,7 @@
             <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
                 <div class="order-2 lg:order-1 lg:col-span-2">
                     <BookingSeat v-if="stepStore.currentStep == 1" />
+                    <BookingFood v-if="stepStore.currentStep == 2" />
                 </div>
                 <div class="contents lg:order-2 lg:flex lg:flex-col lg:gap-5">
                     <div class="order-1">

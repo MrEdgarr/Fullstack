@@ -47,7 +47,23 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Thông tin combo đồ ăn -->
+            <div
+                v-if="comboStore.singleCombosList.length"
+                class="border-base-content/25 border-b border-dashed pb-2"
+            >
+                <div class="grid grid-cols-1 gap-2">
+                    <template v-for="combo in comboStore.singleCombosList" :key="combo.id">
+                        <div class="flex items-center justify-between font-medium md:text-sm">
+                            <div>
+                                {{ combo.qty }} x
+                                <span class="font-normal">{{ combo.name }}</span>
+                            </div>
+                            <div>{{ formatCurrency(combo.price * combo.qty) }}</div>
+                        </div>
+                    </template>
+                </div>
+            </div>
             <!-- Gía tiền chưa có khuyến mãi -->
             <div>
                 <div
@@ -89,6 +105,7 @@ import { formatCurrency } from "@/utils/helpers/formatCurrency";
 const bookingStore = useBookingStore();
 
 const seatStore = bookingStore.seatStore;
+const comboStore = bookingStore.comboStore;
 const stepStore = bookingStore.stepStore;
 
 const { totalPrice } = storeToRefs(bookingStore);

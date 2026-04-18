@@ -1,13 +1,17 @@
+import { useComboStore } from "./useComboStore";
 import { useSeatStore } from "./useSeatStore";
 import { useStepStore } from "./useStepStore";
 
 export const useBookingStore = defineStore("booking", () => {
     // ==================== STATE ======================
     const seatStore = useSeatStore();
+    const comboStore = useComboStore();
     const stepStore = useStepStore();
     // ==================== GETTERS ====================
     // Tính tổng tiền dựa trên giá ghế và combo đã chọn
-    const totalPrice = computed(() => seatStore.singleTotalPrice + seatStore.coupleTotalPrice);
+    const totalPrice = computed(
+        () => seatStore.singleTotalPrice + seatStore.coupleTotalPrice + comboStore.totalFoodPrice,
+    );
     // Tạo computed để hiển thị thông tin ghế đã chọn
     const selectedSeatsInfo = computed(() => {
         const parts = [];
@@ -19,11 +23,13 @@ export const useBookingStore = defineStore("booking", () => {
     // ==================== ACTIONS ====================
     const resetAll = () => {
         seatStore.resetSeats();
+        comboStore.resetCombos();
         stepStore.setStep(1);
     };
 
     return {
         seatStore,
+        comboStore,
         stepStore,
         totalPrice,
         selectedSeatsInfo,
