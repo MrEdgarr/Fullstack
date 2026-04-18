@@ -65,10 +65,6 @@
             </div>
         </div>
     </section>
-
-    <section>
-        <BookingConfirmModal />
-    </section>
 </template>
 <script setup>
 import { useBookingStore } from "@/stores/booking";

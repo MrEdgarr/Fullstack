@@ -1,8 +1,29 @@
 import { COMBOS_DATA } from "@/utils/constants/combosData";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
 export const useComboStore = defineStore("combo", () => {
+    // ==================== STATE ======================
     const selectedCombos = ref({});
 
+    // ==================== GETTERS ====================
+
+    // Dùng computed để tạo danh sách combo đã chọn với thông tin chi tiết
+    const singleCombosList = computed(() => {
+        return Object.entries(selectedCombos.value)
+            .filter(([_id, qty]) => qty > 0)
+            .map(([id, qty]) => {
+                const comboInfo = COMBOS_DATA.find((c) => c.id === Number(id));
+                return { ...comboInfo, qty };
+            });
+    });
+    // Tính tổng tiền của các combo đã chọn
+    const totalFoodPrice = computed(() => {
+        return Object.entries(selectedCombos.value).reduce((sum, [id, qty]) => {
+            const combo = COMBOS_DATA.find((c) => c.id === Number(id));
+            return sum + (combo ? combo.price * qty : 0);
+        }, 0);
+    });
+
+    // ==================== ACTIONS ====================
     // Tăng giảm số lượng combo
     const increaseCombo = (comboId) => {
         const current = selectedCombos.value[comboId] || 0;
@@ -19,24 +40,6 @@ export const useComboStore = defineStore("combo", () => {
             }
         }
     };
-
-    // Dùng computed để tạo danh sách combo đã chọn với thông tin chi tiết
-    const singleCombosList = computed(() => {
-        return Object.entries(selectedCombos.value)
-            .filter(([id, qty]) => qty > 0)
-            .map(([id, qty]) => {
-                const comboInfo = COMBOS_DATA.find((c) => c.id === Number(id));
-                return { ...comboInfo, qty };
-            });
-    });
-    // Tính tổng tiền của các combo đã chọn
-    const totalFoodPrice = computed(() => {
-        return Object.entries(selectedCombos.value).reduce((sum, [id, qty]) => {
-            const combo = COMBOS_DATA.find((c) => c.id === Number(id));
-            return sum + (combo ? combo.price * qty : 0);
-        }, 0);
-    });
-
     const resetCombos = () => {
         selectedCombos.value = {};
         singleCombosList.value = [];

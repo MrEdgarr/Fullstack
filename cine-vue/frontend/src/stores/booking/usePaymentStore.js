@@ -2,17 +2,18 @@ import { PROMO_CODE_DATA } from "@/utils/constants/promoCodes";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
 import { PAYMENT_DATA } from "@/utils/constants/paymentData";
 export const usePaymentStore = defineStore("payment", () => {
-    // State
+    // ==================== STATE ======================
     const promoCode = ref("");
     const discountPercent = ref(0);
     const selectedMethod = ref(1);
     const promoError = ref("");
 
+    // ==================== GETTERS ====================
     const paymentMethod = computed(() => {
         return PAYMENT_DATA.find((p) => p.id === selectedMethod.value);
     });
 
-    // Actions
+    // ==================== ACTIONS ====================
     const applyPromo = (code) => {
         if (!validatePromoCode(code)) return false;
         const upperCode = code.trim().toUpperCase();

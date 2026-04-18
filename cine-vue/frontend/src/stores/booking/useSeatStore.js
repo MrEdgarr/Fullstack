@@ -4,9 +4,10 @@ import { ref, computed } from "vue";
 import { SEATS_DATA } from "@/utils/constants/seatsData";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
 export const useSeatStore = defineStore("seat", () => {
+    // ==================== STATE ======================
     const selectedSeats = ref([]);
 
-    // ==================== GROUPED SEATS ====================
+    // ==================== GETTERS ====================
     // Tạo computed để nhóm ghế đã chọn theo loại
     const groupedSelectedSeats = computed(() => {
         const singles = selectedSeats.value.filter((s) => s.type === "single" || s.type === "vip");
@@ -48,6 +49,8 @@ export const useSeatStore = defineStore("seat", () => {
     const coupleTotalPrice = computed(() =>
         groupedSelectedSeats.value.couples.reduce((sum, s) => sum + s.price, 0),
     );
+
+    // ==================== ACTIONS ====================
     // Helper tìm ghế đôi
     const getPairSeat = (seat) => {
         if (seat.type !== "couple") return null;
