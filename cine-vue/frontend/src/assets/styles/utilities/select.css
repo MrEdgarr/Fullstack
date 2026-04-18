@@ -1,0 +1,20 @@
+@utility select {
+    @variant focus {
+        outline-style: none;
+    }
+    @variant focus-within {
+        outline-style: none;
+    }
+    @variant invalid {
+        color: color-mix(in oklch, var(--color-base-content) 25%, transparent);
+    }
+    & option {
+        color: var(--color-base-content);
+    }
+}
+
+@utility textarea {
+    @variant focus {
+        outline-style: none;
+    }
+}

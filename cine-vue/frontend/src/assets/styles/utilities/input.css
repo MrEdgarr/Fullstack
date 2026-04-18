@@ -1,0 +1,21 @@
+@utility input {
+    @variant focus {
+        outline-style: none;
+    }
+
+    @variant focus-within {
+        outline-style: none;
+    }
+}
+
+@utility textarea {
+    @variant focus {
+        outline-style: none;
+    }
+}
+
+@utility select {
+    @variant focus {
+        outline-style: none;
+    }
+}
