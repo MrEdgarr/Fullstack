@@ -73,6 +73,26 @@
                     <span>Tổng tiền:</span>
                     <span>{{ formatCurrency(totalPrice) }}</span>
                 </div>
+                <!-- Mã khuến mãi -->
+                <div v-if="paymentStore.discountPercent > 0">
+                    <div class="flex items-center justify-between md:text-sm">
+                        <div>
+                            Voucher
+                            <span class="font-medium">({{ paymentStore.discountPercent }}%)</span>
+                        </div>
+                        <div>- {{ formatCurrency(voucherPrice) }}</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Gía tiền có khuến mãi -->
+            <div
+                v-if="paymentStore.discountPercent > 0"
+                class="border-base-content/25 border-t border-dashed pt-2"
+            >
+                <div class="flex items-center justify-between pb-2 text-xs font-medium md:text-sm">
+                    <span>Thành tiền</span>
+                    <span class="text-base-content">{{ formatCurrency(finalPrice) }}</span>
+                </div>
             </div>
 
             <div class="flex items-center pt-5">
@@ -91,9 +111,7 @@
                 >
                     Tiep tuc
                 </button>
-                <button v-else class="btn btn-primary w-1/2" onclick="QRCODE.showModal()">
-                    Thanh toan
-                </button>
+                <button v-else class="btn btn-primary w-1/2">Thanh toan</button>
             </div>
         </div>
     </div>
@@ -101,13 +119,25 @@
 <script setup>
 import { useBookingStore } from "@/stores/booking";
 import { formatCurrency } from "@/utils/helpers/formatCurrency";
+import { clearStepData } from "@/utils/helpers/storage";
 
 const bookingStore = useBookingStore();
 
 const seatStore = bookingStore.seatStore;
 const comboStore = bookingStore.comboStore;
+const paymentStore = bookingStore.paymentStore;
 const stepStore = bookingStore.stepStore;
 
-const { totalPrice } = storeToRefs(bookingStore);
+const { totalPrice, voucherPrice, finalPrice } = storeToRefs(bookingStore);
+
+const handleBack = () => {
+    if (stepStore.currentStep > 1) {
+        if (stepStore.currentStep === 1) seatStore.resetSeats();
+        if (stepStore.currentStep === 2) comboStore.resetCombos();
+        if (stepStore.currentStep === 3) paymentStore.resetPayment();
+        clearStepData(stepStore.currentStep);
+        stepStore.prevStep();
+    }
+};
 </script>
 <style lang=""></style>

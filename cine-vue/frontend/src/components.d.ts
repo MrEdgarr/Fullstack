@@ -17,6 +17,7 @@ declare module 'vue' {
     BookingCountdownTimer: typeof import('./components/features/client/booking/BookingCountdownTimer.vue')['default']
     BookingFood: typeof import('./components/features/client/booking/BookingFood.vue')['default']
     BookingInfo: typeof import('./components/features/client/booking/BookingInfo.vue')['default']
+    BookingPayment: typeof import('./components/features/client/booking/BookingPayment.vue')['default']
     BookingSeat: typeof import('./components/features/client/booking/BookingSeat.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']
