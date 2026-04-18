@@ -19,9 +19,17 @@
     <section class="pb-10">
         <div class="md:container">
             <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
-                <div class="order-2 lg:order-1 lg:col-span-2"></div>
+                <div class="order-2 lg:order-1 lg:col-span-2">
+                    <BookingSeat v-if="stepStore.currentStep == 1" />
+                </div>
                 <div class="contents lg:order-2 lg:flex lg:flex-col lg:gap-5">
-                    <div class="order-1"></div>
+                    <div class="order-1">
+                        <BookingCountdownTimer
+                            :initial-minutes="1"
+                            @time-up="handleTimeUp"
+                            :auto-restart="false"
+                        />
+                    </div>
                     <div class="order-1"></div>
                     <div class="order-3"></div>
                 </div>
@@ -38,7 +46,11 @@ const stepStore = bookingStore.stepStore;
 const handleBeforeUnload = () => {
     clearBookingData();
 };
-
+const handleTimeUp = () => {
+    alert("Hết thời gian chọn ghế.");
+    clearBookingData();
+    bookingStore.resetAll();
+};
 onUnmounted(() => {
     bookingStore.resetAll();
     window.removeEventListener("beforeunload", handleBeforeUnload);

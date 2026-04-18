@@ -22,6 +22,21 @@ export const loadBookingData = () => {
     return data;
 };
 
+export const clearStepData = (step) => {
+    const data = loadBookingData() || {};
+
+    if (step === 1) data.seats = [];
+    if (step === 2) data.combos = {};
+    if (step === 3)
+        data.payment = {
+            promoCode: "",
+            discountPercent: 0,
+            selectedMethod: 1,
+        };
+
+    saveBookingData(data);
+};
+
 export const clearBookingData = () => {
     localStorage.removeItem(BOOKING_KEY);
 };
