@@ -1,7 +1,7 @@
 <template>
     <BaseMovieSwiper :slides="MOVIES" :titleSlide="`Phim Sắp Chiếu`">
         <template #slide="{ slide }">
-            <RouterLink to="/">
+            <RouterLink :to="`/movie/${toSlug(slide.title)}-i${slide.id}`">
                 <div class="relative overflow-hidden rounded-lg">
                     <img
                         :src="slide.poster"
@@ -17,6 +17,7 @@
     </BaseMovieSwiper>
 </template>
 <script setup>
+import { toSlug } from "@/utils/helpers/formatSlug";
 import { MOVIES } from "@/utils/constants/Movie.js";
 </script>
 <style scoped>

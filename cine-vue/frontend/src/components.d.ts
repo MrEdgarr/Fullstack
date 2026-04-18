@@ -20,6 +20,8 @@ declare module 'vue' {
     HomeNews: typeof import('./components/features/client/home/HomeNews.vue')['default']
     HomeShowing: typeof import('./components/features/client/home/HomeShowing.vue')['default']
     HomeUpcoming: typeof import('./components/features/client/home/HomeUpcoming.vue')['default']
+    MovieDetail: typeof import('./components/features/client/movie/MovieDetail.vue')['default']
+    MovieTicket: typeof import('./components/features/client/movie/MovieTicket.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

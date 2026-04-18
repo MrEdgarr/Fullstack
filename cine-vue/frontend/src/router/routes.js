@@ -15,6 +15,18 @@ export const routes = [
                 alias: ["/home", "/trang-chu"],
             },
             {
+                path: "/movie/:slug",
+                component: () => import("@/views/client/MovieView.vue"),
+                name: "movie",
+                meta: {
+                    title: "Cinemax",
+                    requiresAuth: false,
+                    breadcrumb: "Phim",
+                },
+                // Alias routes
+                alias: ["/movie/:slug", "/phim/:slug"],
+            },
+            {
                 path: "/about",
                 component: () => import("@/views/client/AboutView.vue"),
                 name: "about",
