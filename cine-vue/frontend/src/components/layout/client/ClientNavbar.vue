@@ -31,10 +31,16 @@
                                 <BaseIcon name="search" />
                             </button>
                         </div>
-                        <button class="btn btn-sm btn-ghost hidden lg:flex">
+                        <button
+                            class="btn btn-sm btn-ghost hidden lg:flex"
+                            @click="authStore.openModal('login')"
+                        >
                             <span>Dang nhap</span>
                         </button>
-                        <button class="btn btn-sm btn-primary hidden lg:flex">
+                        <button
+                            class="btn btn-sm btn-primary hidden lg:flex"
+                            @click="authStore.openModal('register')"
+                        >
                             <span>Dang ky</span>
                         </button>
                         <div class="dropdown dropdown-bottom dropdown-end">
@@ -85,6 +91,8 @@
     </header>
 </template>
 <script setup>
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+const authStore = useAuthStore();
 const MAIN_NAVIGATION = ref([
     {
         name: "Trang chủ",

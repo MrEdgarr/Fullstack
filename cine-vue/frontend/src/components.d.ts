@@ -14,6 +14,7 @@ declare module 'vue' {
     BaseIcon: typeof import('./components/common/BaseIcon.vue')['default']
     BaseMovieSwiper: typeof import('./components/common/BaseMovieSwiper.vue')['default']
     BookingAction: typeof import('./components/features/client/booking/BookingAction.vue')['default']
+    BookingConfirmModal: typeof import('./components/features/client/booking/BookingConfirmModal.vue')['default']
     BookingCountdownTimer: typeof import('./components/features/client/booking/BookingCountdownTimer.vue')['default']
     BookingFood: typeof import('./components/features/client/booking/BookingFood.vue')['default']
     BookingInfo: typeof import('./components/features/client/booking/BookingInfo.vue')['default']
@@ -26,8 +27,10 @@ declare module 'vue' {
     HomeNews: typeof import('./components/features/client/home/HomeNews.vue')['default']
     HomeShowing: typeof import('./components/features/client/home/HomeShowing.vue')['default']
     HomeUpcoming: typeof import('./components/features/client/home/HomeUpcoming.vue')['default']
+    LoginModal: typeof import('./components/layout/modal/LoginModal.vue')['default']
     MovieDetail: typeof import('./components/features/client/movie/MovieDetail.vue')['default']
     MovieTicket: typeof import('./components/features/client/movie/MovieTicket.vue')['default']
+    RegisterModal: typeof import('./components/layout/modal/RegisterModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
