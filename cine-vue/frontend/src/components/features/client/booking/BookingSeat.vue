@@ -2,7 +2,7 @@
     <div class="card bg-base-100 border border-base-300 card-sm">
         <div
             ref="viewportRef"
-            class="relative w-full h-[40vh] bg-base-100 overflow-hidden"
+            class="relative w-full h-[50vh] bg-base-100 overflow-hidden"
             :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
             @mousedown="startDrag"
             @mousemove="onDrag"

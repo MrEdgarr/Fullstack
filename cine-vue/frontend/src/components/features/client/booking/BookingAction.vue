@@ -94,8 +94,23 @@
                     <span class="text-base-content">{{ formatCurrency(finalPrice) }}</span>
                 </div>
             </div>
-
-            <div class="flex items-center pt-5">
+            <div v-if="stepStore.isLastStep" class="mt-2">
+                <label class="flex cursor-pointer text-sm">
+                    <input
+                        v-model="isAgreed"
+                        type="checkbox"
+                        checked="checked"
+                        class="checkbox checkbox-sm"
+                    />
+                    <div class="ml-2.5">
+                        <p>
+                            Tôi xác nhận các thông tin đã chính xác và đồng ý với các
+                            <a href="" class="font-semibold underline"> điều khoản & chính sách</a>
+                        </p>
+                    </div>
+                </label>
+            </div>
+            <div class="flex items-center pt-2">
                 <button
                     class="btn btn-ghost w-1/2"
                     :disabled="stepStore.isFirstStep"
@@ -111,7 +126,14 @@
                 >
                     Tiep tuc
                 </button>
-                <button v-else class="btn btn-primary w-1/2">Thanh toan</button>
+                <button
+                    v-else
+                    class="btn btn-primary w-1/2"
+                    :class="{ 'btn-disabled': !isAgreed }"
+                    @click="paymentStore.openTicketModal"
+                >
+                    Thanh toan
+                </button>
             </div>
         </div>
     </div>
@@ -129,6 +151,8 @@ const paymentStore = bookingStore.paymentStore;
 const stepStore = bookingStore.stepStore;
 
 const { totalPrice, voucherPrice, finalPrice } = storeToRefs(bookingStore);
+
+const isAgreed = ref(false);
 
 const handleBack = () => {
     if (stepStore.currentStep > 1) {

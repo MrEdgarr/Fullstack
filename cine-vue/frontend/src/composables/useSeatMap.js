@@ -1,7 +1,7 @@
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 
 export function useSeatMap(viewportRef, contentRef) {
-    const ZOOM_CONFIG = { MIN: 0.75, MAX: 2, STEP: 0.5 };
+    const ZOOM_CONFIG = { MIN: 0.95, MAX: 2, STEP: 0.5 };
     const transform = reactive({ x: 0, y: 0, scale: 1 });
     const isDragging = ref(false);
     const startPos = { x: 0, y: 0 };

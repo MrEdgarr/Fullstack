@@ -7,6 +7,7 @@ export const usePaymentStore = defineStore("payment", () => {
     const discountPercent = ref(0);
     const selectedMethod = ref(1);
     const promoError = ref("");
+    const isTicketInfo = ref(false);
 
     // ==================== GETTERS ====================
     const paymentMethod = computed(() => {
@@ -14,6 +15,14 @@ export const usePaymentStore = defineStore("payment", () => {
     });
 
     // ==================== ACTIONS ====================
+    const openTicketModal = () => {
+        isTicketInfo.value = true;
+        console.log(isTicketInfo.value);
+    };
+    const closeTicketModal = () => {
+        isTicketInfo.value = false;
+    };
+
     const applyPromo = (code) => {
         if (!validatePromoCode(code)) return false;
         const upperCode = code.trim().toUpperCase();
@@ -65,6 +74,7 @@ export const usePaymentStore = defineStore("payment", () => {
         promoCode.value = "";
         discountPercent.value = 0;
         selectedMethod.value = 1;
+        isTicketInfo.value = false;
     };
 
     onMounted(() => {
@@ -92,12 +102,17 @@ export const usePaymentStore = defineStore("payment", () => {
     );
 
     return {
+        // STATE
         promoCode,
         discountPercent,
         selectedMethod,
         promoError,
+        isTicketInfo,
+        //GETTERS
         paymentMethod,
-
+        //Action
+        openTicketModal,
+        closeTicketModal,
         validatePromoCode,
         applyPromo,
         removePromo,

@@ -18,46 +18,82 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-
 const props = defineProps({
     initialMinutes: { type: Number, default: 5 }, // Mặc định là 5 phút
     autoRestart: { type: Boolean, default: true },
+    storageKey: { type: String, default: "countdown_expiry" },
 });
 
 const emit = defineEmits(["time-up"]);
 
-const totalSeconds = ref(props.initialMinutes * 60);
+const timeLeft = ref(0);
 let timer = null;
+let isPaused = ref(false);
 
 const minutes = ref(props.initialMinutes);
 const seconds = ref(0);
 
 const updateDisplay = () => {
-    minutes.value = Math.floor(totalSeconds.value / 60);
-    seconds.value = totalSeconds.value % 60;
+    minutes.value = Math.floor(timeLeft.value / 60);
+    seconds.value = timeLeft.value % 60;
 };
 
 const startTimer = () => {
+    if (isPaused.value) return;
+    if (timer) clearInterval(timer);
     timer = setInterval(() => {
-        if (totalSeconds.value > 0) {
-            totalSeconds.value--;
+        if (timeLeft.value > 0) {
+            timeLeft.value--;
             updateDisplay();
         } else {
-            clearInterval(timer);
-            emit("time-up");
-            if (props.autoRestart) {
-                totalSeconds.value = props.initialMinutes * 60;
-                updateDisplay();
-                startTimer(); // Restart đồng hồ
-            }
+            // Hết giờ → Reset và chạy lại ngay
+            timeLeft.value = props.initialMinutes * 60;
+            updateDisplay();
+            emit("time-up"); // Vẫn thông báo mỗi khi hết 5 phút
         }
     }, 1000);
 };
 
-onMounted(() => {
+// Load thời gian từ localStorage hoặc khởi tạo mới
+const initCountdown = () => {
+    const savedExpiry = localStorage.getItem(props.storageKey);
+
+    if (savedExpiry) {
+        const remaining = Math.floor((parseInt(savedExpiry) - Date.now()) / 1000);
+        if (remaining > 0) {
+            timeLeft.value = remaining;
+        } else {
+            localStorage.removeItem(props.storageKey);
+            timeLeft.value = props.initialMinutes * 60;
+        }
+    } else {
+        // Lần đầu khởi tạo
+        timeLeft.value = props.initialMinutes * 60;
+        const expiryTime = Date.now() + props.initialMinutes * 60 * 1000;
+        localStorage.setItem(props.storageKey, expiryTime.toString());
+    }
+
     updateDisplay();
     startTimer();
+};
+
+// Hàm pause / resume
+const pause = () => {
+    isPaused.value = true;
+};
+const resume = () => {
+    isPaused.value = false;
+};
+const stop = () => {
+    if (timer) clearInterval(timer);
+    timer = null;
+    isPaused.value = true;
+};
+
+defineExpose({ pause, resume, stop });
+
+onMounted(() => {
+    initCountdown();
 });
 
 onUnmounted(() => {

@@ -25,13 +25,15 @@
                     <BookingPayment v-if="stepStore.currentStep == 3" />
                 </div>
                 <div class="contents lg:order-2 lg:flex lg:flex-col lg:gap-5">
-                    <div class="order-1">
+                    <!-- <div class="order-1">
                         <BookingCountdownTimer
-                            initial-minutes="1"
+                            ref="countdownRef"
+                            :initial-minutes="5"
                             @time-up="handleTimeUp"
-                            auto-restart="false"
+                            storage-key="countdown_expiry"
+                            :auto-restart="false"
                         />
-                    </div>
+                    </div> -->
                     <div class="order-1">
                         <BookingInfo />
                     </div>
@@ -43,12 +45,16 @@
             </div>
         </div>
     </section>
+    <BookingTicket v-if="paymentStore.isTicketInfo" />
 </template>
 <script setup>
 import { useBookingStore } from "@/stores/booking";
 import { clearBookingData } from "@/utils/helpers/storage";
 const bookingStore = useBookingStore();
 const stepStore = bookingStore.stepStore;
+const paymentStore = bookingStore.paymentStore;
+
+const countdownRef = ref(null);
 
 const handleBeforeUnload = () => {
     clearBookingData();
