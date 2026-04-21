@@ -25,7 +25,7 @@
                     <BookingPayment v-if="stepStore.currentStep == 3" />
                 </div>
                 <div class="contents lg:order-2 lg:flex lg:flex-col lg:gap-5">
-                    <!-- <div class="order-1">
+                    <div class="order-1">
                         <BookingCountdownTimer
                             ref="countdownRef"
                             :initial-minutes="5"
@@ -33,7 +33,7 @@
                             storage-key="countdown_expiry"
                             :auto-restart="false"
                         />
-                    </div> -->
+                    </div>
                     <div class="order-1">
                         <BookingInfo />
                     </div>

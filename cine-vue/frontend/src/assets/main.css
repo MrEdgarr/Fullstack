@@ -3,5 +3,7 @@
 @import "@/assets/styles/container.css";
 
 /* Utilities */
+@import "@/assets/styles/utilities/input.css";
+@import "@/assets/styles/utilities/select.css";
 @import "@/assets/styles/utilities/icons.css";
 @import "@/assets/styles/utilities/swiper.css";

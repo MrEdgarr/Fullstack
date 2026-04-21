@@ -36,7 +36,31 @@ export const routes = [
                     breadcrumb: "Lịch Chiếu",
                 },
                 // Alias routes
-                alias: ["/showtimes", "/lich-chieu"],
+                alias: ["/booking", "/lich-chieu"],
+            },
+            {
+                path: "/blog",
+                component: () => import("@/views/client/BlogView.vue"),
+                name: "blog",
+                meta: {
+                    title: "Cinemax",
+                    requiresAuth: false,
+                    breadcrumb: "Lịch Chiếu",
+                },
+                // Alias routes
+                alias: ["/blog", "/tin-tuc"],
+            },
+            {
+                path: "/news",
+                component: () => import("@/views/client/NewsView.vue"),
+                name: "new",
+                meta: {
+                    title: "Cinemax",
+                    requiresAuth: false,
+                    breadcrumb: "Lịch Chiếu",
+                },
+                // Alias routes
+                alias: ["/news", "/tin-tuc"],
             },
             {
                 path: "/about",

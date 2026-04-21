@@ -1,14 +1,14 @@
 <template>
     <div class="flex flex-col justify-between gap-5 bg-transparent p-0">
         <div class="flex w-full shrink-0 grow flex-row items-center justify-between gap-5 p-0">
-            <div class="text-sm font-bold md:text-2xl">Blog phim ảnh</div>
+            <div class="text-sm font-bold md:text-2xl">Góc phim ảnh</div>
             <div class="cursor-pointer text-sm">
-                <a
-                    href=""
+                <router-link
+                    to="/blog"
                     class="btn btn-link md:btn-md btn-xs text-base-content flex items-center font-medium"
                 >
                     Xem toàn bộ
-                </a>
+                </router-link>
             </div>
         </div>
         <div>
@@ -252,6 +252,6 @@
     </div>
 </template>
 <script>
-export default {}
+export default {};
 </script>
 <style lang=""></style>
