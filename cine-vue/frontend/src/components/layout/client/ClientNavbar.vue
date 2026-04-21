@@ -104,11 +104,11 @@ const MAIN_NAVIGATION = ref([
     },
     {
         name: "Khuyến mãi",
-        path: "/",
+        path: "/news",
     },
     {
         name: "Tin tức",
-        path: "/",
+        path: "/blog",
     },
 ]);
 </script>

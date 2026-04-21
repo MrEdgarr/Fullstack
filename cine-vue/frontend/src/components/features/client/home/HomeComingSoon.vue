@@ -1,5 +1,9 @@
 <template>
-    <BaseMovieSwiper :slides="MOVIES" :titleSlide="`Phim Sắp Chiếu`">
+    <BaseMovieSwiper
+        :slides="MOVIES"
+        :titleSlide="`Phim Sắp Chiếu`"
+        :toRouter="'/movie/coming-soon'"
+    >
         <template #slide="{ slide }">
             <RouterLink :to="`/movie/${toSlug(slide.title)}-i${slide.id}`">
                 <div class="relative overflow-hidden rounded-lg">

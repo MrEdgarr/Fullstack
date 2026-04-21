@@ -6,13 +6,13 @@
     </section>
     <section>
         <div class="container">
-            <HomeShowing />
+            <HomeNowPlaying />
         </div>
     </section>
     <section>
         <div class="bg-base-100 py-10">
             <div class="container">
-                <HomeUpcoming />
+                <HomeComingSoon />
             </div>
         </div>
     </section>
@@ -22,8 +22,10 @@
         </div>
     </section>
     <section>
-        <div class="container">
-            <HomeNews />
+        <div class="bg-base-100 py-10">
+            <div class="container">
+                <HomeNews />
+            </div>
         </div>
     </section>
 </template>

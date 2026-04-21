@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <div class="hero p-5 mb-5 font-bold text-lg uppercase tracking-widest">Tin Khuyến Mãi</div>
+    <section class="container pb-10">
+        <div class="hero p-5 mb-5 font-bold text-xl uppercase tracking-widest">Tin Khuyến Mãi</div>
         <div
             class="grid grid-cols-2 gap-x-3 gap-y-5 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
         >
@@ -41,32 +41,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
-<script setup>
-import { ref } from "vue";
-
-const activeTab = ref("all");
-
-const promotions = ref([
-    {
-        id: 1,
-        title: "Ưu đãi bỏng ngô tháng 4",
-        description: "Mua 1 bắp lớn tặng 1 nước ngọt size L vào mỗi thứ 2 hàng tuần.",
-        image: "https://picsum.photos/id/431/600/400",
-        tag: "Ẩm thực",
-        expiry: "Còn 5 ngày",
-        type: "food",
-    },
-    {
-        id: 2,
-        title: "Đồng giá vé 45k",
-        description: "Áp dụng cho học sinh, sinh viên khi đặt vé qua ứng dụng vào khung giờ sáng.",
-        image: "https://picsum.photos/id/250/600/400",
-        tag: "Vé phim",
-        expiry: "Hết hạn: 30/04",
-        type: "ticket",
-    },
-    // Thêm các khuyến mãi khác...
-]);
-</script>
+<script setup></script>

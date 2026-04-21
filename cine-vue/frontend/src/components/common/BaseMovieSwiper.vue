@@ -3,12 +3,12 @@
         <div class="flex w-full shrink-0 grow flex-row items-center justify-between gap-5 p-0">
             <div class="text-sm font-bold md:text-2xl">{{ titleSlide }}</div>
             <div class="cursor-pointer text-sm">
-                <a
-                    href=""
+                <router-link
+                    :to="toRouter"
                     class="btn btn-link md:btn-md btn-xs text-base-content flex items-center font-medium"
                 >
                     Xem toàn bộ
-                </a>
+                </router-link>
             </div>
         </div>
         <div class="relative">
@@ -87,6 +87,10 @@ const props = defineProps({
     slideClass: {
         type: String,
         default: "",
+    },
+    toRouter: {
+        type: String,
+        default: "/",
     },
 });
 

@@ -21,7 +21,6 @@
     flex-direction: column;
     /* Ví dụ: gap tối thiểu 20px, tối ưu 5vw, tối đa 50px */
     gap: clamp(1.25rem, 5vw, 3.125rem);
-    /* padding-bottom: clamp(1.25rem, 5vw, 3.125rem); */
 }
 @utility logo {
     clip-path: polygon(

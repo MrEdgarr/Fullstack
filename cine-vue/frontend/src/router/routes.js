@@ -15,16 +15,31 @@ export const routes = [
                 alias: ["/home", "/trang-chu"],
             },
             {
-                path: "/movie/:slug",
-                component: () => import("@/views/client/MovieView.vue"),
-                name: "movie",
-                meta: {
-                    title: "Cinemax",
-                    requiresAuth: false,
-                    breadcrumb: "Phim",
-                },
-                // Alias routes
-                alias: ["/movie/:slug", "/phim/:slug"],
+                path: "/movie",
+                children: [
+                    {
+                        path: ":slug(now-playing|coming-soon)",
+                        component: () => import("@/views/client/MovieStatusView.vue"),
+                        name: "showing",
+                        meta: {
+                            title: "Cinemax",
+                            requiresAuth: false,
+                            breadcrumb: "Phim đang chiếu",
+                        },
+                        // Alias routes
+                        alias: ["dang-chieu"],
+                    },
+                    {
+                        path: ":slug",
+                        component: () => import("@/views/client/MovieView.vue"),
+                        name: "movie",
+                        meta: {
+                            title: "Cinemax",
+                            requiresAuth: false,
+                            breadcrumb: "Chi tiết phim",
+                        },
+                    },
+                ],
             },
             {
                 path: "/booking",
@@ -36,7 +51,7 @@ export const routes = [
                     breadcrumb: "Lịch Chiếu",
                 },
                 // Alias routes
-                alias: ["/booking", "/lich-chieu"],
+                alias: ["/lich-chieu"],
             },
             {
                 path: "/blog",
@@ -48,7 +63,7 @@ export const routes = [
                     breadcrumb: "Lịch Chiếu",
                 },
                 // Alias routes
-                alias: ["/blog", "/tin-tuc"],
+                alias: ["/tin-tuc"],
             },
             {
                 path: "/news",
@@ -60,7 +75,7 @@ export const routes = [
                     breadcrumb: "Lịch Chiếu",
                 },
                 // Alias routes
-                alias: ["/news", "/tin-tuc"],
+                alias: ["/tin-tuc"],
             },
             {
                 path: "/about",
@@ -72,7 +87,7 @@ export const routes = [
                     breadcrumb: "Lịch Chiếu",
                 },
                 // Alias routes
-                alias: ["/about", "/ve-chung-toi"],
+                alias: ["/ve-chung-toi"],
             },
         ],
     },
