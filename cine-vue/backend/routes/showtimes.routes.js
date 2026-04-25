@@ -1,12 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const showtimeController = require("../controllers/showtime.controller");
+const showtimesController = require("../controllers/showtimes.controller");
+const authMiddleware = require("../middleware/auth");
+const requireRole = require("../middleware/role");
+const adminOnly = requireRole(["admin"]);
 
-router.get("/", showtimeController.getAll);
-router.get("/movie/:movieId", showtimeController.getByMovie);
+const validate = require("../middleware/validate");
+const schemas = require("../validations/schemas");
 
-router.post("/", showtimeController.create);
-router.put("/:id", showtimeController.update);
-router.delete("/:id", showtimeController.delete);
+router.get("/", showtimesController.getAll);
+router.get("/movie/:movieId", showtimesController.getByMovie);
+
+router.use(authMiddleware);
+router.post("/", adminOnly, validate(schemas.showtime), showtimesController.create);
+router.put("/:id", adminOnly, validate(schemas.showtime), showtimesController.update);
+router.delete("/:id", adminOnly, showtimesController.delete);
 
 module.exports = router;
