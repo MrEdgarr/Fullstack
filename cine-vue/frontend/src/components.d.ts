@@ -36,5 +36,6 @@ declare module 'vue' {
     RegisterModal: typeof import('./components/layout/modal/RegisterModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchModal: typeof import('./components/layout/modal/SearchModal.vue')['default']
   }
 }

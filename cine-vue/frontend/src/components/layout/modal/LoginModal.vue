@@ -53,7 +53,7 @@
                         <div class="my-2 flex items-center justify-between">
                             <label class="label cursor-pointer">
                                 <input
-                                    v-model="formData.remember"
+                                    v-model="formData.rememberMe"
                                     type="checkbox"
                                     class="checkbox checkbox-primary checkbox-xs"
                                 />
@@ -68,10 +68,10 @@
                     <button
                         type="submit"
                         class="btn btn-primary w-full"
-                        :class="{ loading: isLoading }"
-                        :disabled="isLoading"
+                        :class="{ loading: authStore.isLoading }"
+                        :disabled="authStore.isLoading"
                     >
-                        {{ isLoading ? "Đang xử lý..." : "Đăng nhập" }}
+                        {{ authStore.isLoading ? "Đang xử lý..." : "Đăng nhập" }}
                     </button>
                     <!-- Divider -->
                     <div class="divider">HOẶC</div>
@@ -140,41 +140,27 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 const authStore = useAuthStore();
 
-const isLoading = ref(false);
-
 const formData = reactive({
-    email: "",
-    password: "",
-    remember: false,
+    email: "nva@gmail.com",
+    password: "123",
 });
 
 const handleLogin = async () => {
-    isLoading.value = true;
-
     try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        console.log("Login data:", formData);
-
-        // Reset form
-        formData.email = "";
-        formData.password = "";
-        formData.remember = false;
-
-        closeLoginModal();
-
-        // Show success message (you can use a toast/notification library)
-        alert("Đăng nhập thành công!");
-    } catch (error) {
-        console.error("Login error:", error);
-        alert("Đăng nhập thất bại!");
-    } finally {
-        isLoading.value = false;
+        await authStore.login({
+            email: formData.email,
+            password: formData.password,
+        });
+        resetForm();
+    } catch (err) {
+        alert(err.response?.data?.message || "Đăng nhập thất bại");
     }
+};
+const resetForm = () => {
+    formData.email = "";
+    formData.password = "";
 };
 </script>

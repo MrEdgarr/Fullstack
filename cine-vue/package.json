@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "frontend": "cd frontend && yarn dev",
+    "backend": "cd backend && yarn start",
+    "dev": "concurrently \"yarn frontend\" \"yarn backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

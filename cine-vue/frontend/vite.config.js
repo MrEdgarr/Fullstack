@@ -72,4 +72,16 @@ export default defineConfig({
     optimizeDeps: {
         include: ["vue"], // pre-bundle nhanh hơn
     },
+
+    server: {
+        port: 5173,
+        proxy: {
+            "/api": {
+                target: "http://localhost:3000", // Port của backend Express
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/api/, ""),
+            },
+        },
+    },
 });

@@ -6,6 +6,7 @@
     <ClientFooter />
     <LoginModal />
     <RegisterModal />
+    <SearchModal />
 </template>
 <script setup></script>
 <style></style>

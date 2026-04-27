@@ -6,6 +6,8 @@ var logger = require("morgan");
 
 //.env
 require("dotenv").config();
+// CORS
+const cors = require("cors");
 
 var indexRouter = require("./routes/index");
 
@@ -14,6 +16,13 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Port Vite
+    credentials: true,
+  }),
+);
 
 app.use(logger("dev"));
 app.use(express.json());

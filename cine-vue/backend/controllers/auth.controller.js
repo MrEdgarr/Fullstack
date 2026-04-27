@@ -30,7 +30,6 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const [rows] = await queries.getAll();
     const customer = rows.find((c) => c.email === email);
 
