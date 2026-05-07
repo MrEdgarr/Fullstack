@@ -1,12 +1,19 @@
-export const toSlug = (str) => {
+export const removeVietnameseTones = (str) => {
     if (!str) return "";
     return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .replace(/([^0-9a-z\s])/gi, "");
+};
+
+export const removeAccents = (str) => {
+    if (!str) return "";
+    return removeVietnameseTones(str)
         .toLowerCase()
-        .normalize("NFD") // Tách dấu
-        .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
-        .replace(/[đĐ]/g, "d")
-        .replace(/([^0-9a-z-\s])/g, "") // Xóa ký tự đặc biệt
-        .replace(/(\s+)/g, "-") // Thay khoảng trắng bằng -
+        .trim()
+        .replace(/\s+/g, "-") // Thay khoảng trắng bằng -
         .replace(/-+/g, "-") // Tránh gạch ngang kép
         .replace(/^-+|-+$/g, ""); // Xóa gạch ngang ở 2 đầu
 };

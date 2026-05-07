@@ -13,10 +13,10 @@ import svgLoader from "vite-svg-loader";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         vue(),
-        vueDevTools(),
+        mode === "development" && vueDevTools(),
         tailwindcss(),
         AutoImport({
             // Tự động import các hàm của vue, vue-router, pinia...
@@ -63,7 +63,6 @@ export default defineConfig({
     },
     build: {
         target: "es2022", // hoặc 'esnext' → bỏ code legacy, build nhanh hơn
-        minify: "esbuild", // Rolldown dùng Oxc/esbuild minifier cực nhanh
         cssMinify: "lightningcss", // mặc định trong Vite 8, nhanh hơn PostCSS
         reportCompressedSize: false, // tắt nếu không cần, tiết kiệm ~0.5-1s
         chunkSizeWarningLimit: 1000, // tránh warning không cần thiết
@@ -84,4 +83,4 @@ export default defineConfig({
             },
         },
     },
-});
+}));

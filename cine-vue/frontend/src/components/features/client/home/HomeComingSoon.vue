@@ -5,7 +5,7 @@
         :toRouter="'/movie/coming-soon'"
     >
         <template #slide="{ slide }">
-            <RouterLink :to="`/movie/${toSlug(slide.title)}-i${slide.id}`">
+            <RouterLink :to="`/movie/${removeAccents(slide.title)}-i${slide.id}`">
                 <div class="relative overflow-hidden rounded-lg">
                     <img
                         :src="slide.poster"
@@ -21,7 +21,7 @@
     </BaseMovieSwiper>
 </template>
 <script setup>
-import { toSlug } from "@/utils/helpers/formatSlug";
+import { removeAccents } from "@/utils/helpers/slug";
 import { MOVIES } from "@/utils/constants/Movie.js";
 </script>
 <style scoped>

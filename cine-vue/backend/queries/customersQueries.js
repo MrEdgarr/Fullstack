@@ -1,6 +1,7 @@
 const db = require("../config/database");
 
 exports.getAll = () => db.execute("SELECT * FROM customers");
+exports.getByEmail = (email) => db.execute("SELECT * FROM customers WHERE email = ?", [email]);
 exports.getById = (id) => db.execute("SELECT * FROM customers WHERE customer_id = ?", [id]);
 exports.create = (full_name, email, phone, password_hash, date_of_birth) =>
   db.execute(

@@ -89,7 +89,7 @@
 import { useRoute } from "vue-router";
 import { useMovieStore } from "@/stores/movie/useMovieStore";
 import { MOVIES } from "@/utils/constants/Movie";
-import { extractId } from "@/utils/helpers/formatSlug";
+import { extractId } from "@/utils/helpers/slug";
 
 const route = useRoute();
 const movieStore = useMovieStore();

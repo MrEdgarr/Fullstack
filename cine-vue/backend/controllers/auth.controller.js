@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const queries = require("../queries/customersQueries");
 
-const JWT_SECRET = process.env.JWT_SECRET || "cinema-secret-key-2025";
+const JWT_SECRET = process.env.JWT_SECRET;
 const SALT_ROUNDS = 10;
 
 // Đăng ký khách hàng mới
@@ -10,9 +10,9 @@ exports.register = async (req, res) => {
   try {
     const { full_name, email, phone, password, date_of_birth } = req.body;
 
-    // Kiểm tra email đã tồn tại
-    const [existing] = await queries.getAll();
-    if (existing.some((u) => u.email === email)) {
+    // Kiểm tra email đã tồn tại bằng query trực tiếp
+    const [existing] = await queries.getByEmail(email);
+    if (existing.length > 0) {
       return res.status(400).json({ success: false, message: "Email already exists" });
     }
 
@@ -30,8 +30,8 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const [rows] = await queries.getAll();
-    const customer = rows.find((c) => c.email === email);
+    const [rows] = await queries.getByEmail(email);
+    const customer = rows[0];
 
     if (!customer) {
       return res.status(401).json({ success: false, message: "Invalid email or password" });
@@ -68,3 +68,4 @@ exports.login = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+

@@ -60,7 +60,7 @@ export const routes = [
                 meta: {
                     title: "Cinemax",
                     requiresAuth: false,
-                    breadcrumb: "Lịch Chiếu",
+                    breadcrumb: "Blog",
                 },
                 // Alias routes
                 alias: ["/tin-tuc"],
@@ -68,14 +68,12 @@ export const routes = [
             {
                 path: "/news",
                 component: () => import("@/views/client/NewsView.vue"),
-                name: "new",
+                name: "news",
                 meta: {
                     title: "Cinemax",
                     requiresAuth: false,
-                    breadcrumb: "Lịch Chiếu",
+                    breadcrumb: "Tin Tức",
                 },
-                // Alias routes
-                alias: ["/tin-tuc"],
             },
             {
                 path: "/about",
@@ -84,7 +82,7 @@ export const routes = [
                 meta: {
                     title: "Cinemax",
                     requiresAuth: false,
-                    breadcrumb: "Lịch Chiếu",
+                    breadcrumb: "Về Chúng Tôi",
                 },
                 // Alias routes
                 alias: ["/ve-chung-toi"],

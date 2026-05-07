@@ -21,10 +21,9 @@ const router = createRouter({
 // Global navigation guards
 router.beforeEach((to, from) => {
     // Kiểm tra authentication, permissions, etc.
-    console.log(`Navigating from ${from.path} to ${to.path}`);
 });
 
-router.afterEach((to, from) => {
+router.afterEach((to) => {
     // Cập nhật title, analytics, etc.
     return (document.title = to.meta.title || "My Vue App");
 });

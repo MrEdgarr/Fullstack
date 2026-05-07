@@ -82,7 +82,7 @@
 </template>
 <script setup>
 import { useBookingStore } from "@/stores/booking";
-import { formatCurrency } from "@/utils/helpers/formatCurrency";
+import { formatCurrency } from "@/utils/helpers/currency";
 
 const bookingStore = useBookingStore();
 const { totalPrice, voucherPrice, finalPrice } = storeToRefs(bookingStore);

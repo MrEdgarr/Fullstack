@@ -30,7 +30,7 @@
                             <button
                                 class="btn btn-link"
                                 tabindex="-1"
-                                onclick="search_modal.showModal()"
+                                @click="searchStore.openModal"
                             >
                                 <BaseIcon name="search" />
                             </button>
@@ -110,7 +110,9 @@
 </template>
 <script setup>
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useSearchStore } from "@/stores/movie/useSearchStore";
 const authStore = useAuthStore();
+const searchStore = useSearchStore();
 const MAIN_NAVIGATION = ref([
     {
         name: "Trang chủ",

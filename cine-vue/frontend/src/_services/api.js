@@ -14,4 +14,18 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// Response interceptor - xử lý lỗi 401 (token hết hạn)
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/";
+        }
+        return Promise.reject(error);
+    },
+);
+
 export default api;
+

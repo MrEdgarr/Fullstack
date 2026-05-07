@@ -43,7 +43,7 @@
 <script setup>
 import { useBookingStore } from "@/stores/booking";
 import { COMBOS_DATA } from "@/utils/constants/combosData";
-import { formatCurrency } from "@/utils/helpers/formatCurrency";
+import { formatCurrency } from "@/utils/helpers/currency";
 
 const bookingStore = useBookingStore();
 const comboStore = bookingStore.comboStore;
