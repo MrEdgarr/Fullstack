@@ -1,50 +1,54 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-
-//.env
-require("dotenv").config();
-// CORS
+const express = require("express");
+const logger = require("morgan");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 
-var indexRouter = require("./routes/index");
+require("dotenv").config();
 
-var app = express();
+const indexRouter = require("./src/routes");
+const errorHandler = require("./src/shared/middleware/error-handler");
 
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+const app = express();
+const allowedOrigins = (process.env.FRONTEND_URLS ||
+  "http://localhost:5173,http://127.0.0.1:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
+app.use(helmet());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Port Vite
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// error handler
-app.use(function (err, req, res, next) {
-  const status = err.status || 500;
-  res.status(status).json({
+app.use("/api/v1", limiter, indexRouter);
+
+app.use((req, res) => {
+  res.status(404).json({
     success: false,
-    message: err.message,
-    ...(req.app.get("env") === "development" && { stack: err.stack }),
+    message: "Not Found",
   });
 });
+
+app.use(errorHandler);
 
 module.exports = app;

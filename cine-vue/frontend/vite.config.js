@@ -75,12 +75,12 @@ export default defineConfig(({ mode }) => ({
     server: {
         port: 5173,
         proxy: {
-            "/api": {
+            "/api/v1": {
                 target: "http://localhost:3000", // Port của backend Express
                 changeOrigin: true,
                 secure: false,
-                rewrite: (path) => path.replace(/^\/api/, ""),
             },
         },
     },
 }));
+

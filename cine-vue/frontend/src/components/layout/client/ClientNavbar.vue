@@ -120,7 +120,7 @@ const MAIN_NAVIGATION = ref([
     },
     {
         name: "Lịch Chiếu",
-        path: "/",
+        path: "/showtimes",
     },
     {
         name: "Khuyến mãi",

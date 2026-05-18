@@ -1,6 +1,6 @@
 <template>
     <BaseMovieSwiper
-        :slides="MOVIES"
+        :slides="movies"
         :titleSlide="`Phim Đang Chiếu`"
         :toRouter="'/movie/now-playing'"
     >
@@ -27,5 +27,12 @@
 <script setup>
 import { removeAccents } from "@/utils/helpers/slug";
 import { MOVIES } from "@/utils/constants/Movie.js";
+
+const props = defineProps({
+    movies: {
+        type: Array,
+        default: () => [],
+    },
+});
 </script>
 <style lang=""></style>

@@ -48,6 +48,16 @@ export const routes = [
                 meta: {
                     title: "Cinemax",
                     requiresAuth: false,
+                    breadcrumb: "Đặt Vé",
+                },
+            },
+            {
+                path: "/showtimes",
+                component: () => import("@/views/client/ShowtimesView.vue"),
+                name: "showtimes",
+                meta: {
+                    title: "Cinemax",
+                    requiresAuth: false,
                     breadcrumb: "Lịch Chiếu",
                 },
                 // Alias routes

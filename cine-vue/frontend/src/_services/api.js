@@ -1,11 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "/api", // Sử dụng proxy trong dev
+    baseURL: import.meta.env.VITE_API_BASE_URL || "/api/v1",
     timeout: 10000,
 });
 
-// Request interceptor - tự động thêm token
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -14,7 +13,6 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Response interceptor - xử lý lỗi 401 (token hết hạn)
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -28,4 +26,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-

@@ -1,14 +1,12 @@
-// stores/useBookingStore.js
-import { defineStore } from "pinia";
-import { computed } from "vue";
 import { useSeatStore } from "./useSeatStore";
 import { useComboStore } from "./useComboStore";
 import { usePaymentStore } from "./usePaymentStore";
 import { useStepStore } from "./useStepStore";
-import { clearBookingData } from "@/utils/helpers/storage";
+import { loadBookingData, saveBookingData, clearBookingData } from "@/utils/helpers/storage";
 
 export const useBookingStore = defineStore("booking", () => {
     // ==================== STATE ======================
+    const selectedShowtime = ref(loadBookingData()?.showtime || null);
     const seatStore = useSeatStore();
     const comboStore = useComboStore();
     const paymentStore = usePaymentStore();
@@ -35,13 +33,29 @@ export const useBookingStore = defineStore("booking", () => {
     });
 
     // ==================== ACTIONS ====================
-    const resetAll = () => {
+    const setSelectedShowtime = (showtime) => {
+        selectedShowtime.value = showtime;
+    };
+
+    const resetAll = async () => {
+        selectedShowtime.value = null;
         seatStore.resetSeats();
         comboStore.resetCombos();
         paymentStore.resetPayment();
         stepStore.setStep(1);
+        await nextTick();
         clearBookingData();
     };
+
+    watch(
+        selectedShowtime,
+        (newShowtime) => {
+            const current = loadBookingData() || {};
+            current.showtime = newShowtime;
+            saveBookingData(current);
+        },
+        { deep: true },
+    );
 
     return {
         seatStore, //  expose toàn bộ seat
@@ -52,6 +66,10 @@ export const useBookingStore = defineStore("booking", () => {
         voucherPrice,
         finalPrice,
         selectedSeatsInfo,
+
+        selectedShowtime,
+        setSelectedShowtime,
+
         resetAll,
     };
 });

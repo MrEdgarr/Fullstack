@@ -88,6 +88,7 @@ const stop = () => {
     if (timer) clearInterval(timer);
     timer = null;
     isPaused.value = true;
+    localStorage.removeItem(props.storageKey);
 };
 
 defineExpose({ pause, resume, stop });
@@ -97,6 +98,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    if (timer) clearInterval(timer);
+    stop();
 });
 </script>

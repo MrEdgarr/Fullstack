@@ -1,16 +1,17 @@
 <template>
     <BaseMovieSwiper
-        :slides="MOVIES"
+        :slides="movies"
         :titleSlide="`Phim Sắp Chiếu`"
         :toRouter="'/movie/coming-soon'"
     >
-        <template #slide="{ slide }">
+        <template #slide="{ slide, index }">
             <RouterLink :to="`/movie/${removeAccents(slide.title)}-i${slide.id}`">
                 <div class="relative overflow-hidden rounded-lg">
                     <img
                         :src="slide.poster"
                         :alt="slide.title"
                         class="rounded-lg duration-300 hover:scale-105"
+                        :class="index % 2 === 0 ? 'odd-img' : 'even-img'"
                     />
                 </div>
                 <div class="line-clamp-2 py-5 text-sm font-medium">
@@ -23,9 +24,16 @@
 <script setup>
 import { removeAccents } from "@/utils/helpers/slug";
 import { MOVIES } from "@/utils/constants/Movie.js";
+
+const props = defineProps({
+    movies: {
+        type: Array,
+        default: () => [],
+    },
+});
 </script>
 <style scoped>
-:deep(.swiper-slide:nth-child(odd) img) {
+:deep(.odd-img) {
     border-radius: 0;
     -webkit-clip-path: polygon(
         94.239% 100%,
@@ -119,7 +127,7 @@ import { MOVIES } from "@/utils/constants/Movie.js";
         100% 96.142%,
         100% 96.142%,
         99.925% 96.768%,
-        99.706% 97.362% 97.362%,
+        99.706% 97.362%,
         99.357% 97.915%,
         98.889% 98.421%,
         98.313% 98.87%,
@@ -130,7 +138,7 @@ import { MOVIES } from "@/utils/constants/Movie.js";
         94.239% 100%
     );
 }
-:deep(.swiper-slide:nth-child(even) img) {
+:deep(.even-img) {
     -webkit-clip-path: polygon(
         5.761% 100%,
         94.239% 100%,

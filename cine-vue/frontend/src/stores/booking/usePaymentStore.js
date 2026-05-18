@@ -3,9 +3,9 @@ import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
 import { PAYMENT_DATA } from "@/utils/constants/paymentData";
 export const usePaymentStore = defineStore("payment", () => {
     // ==================== STATE ======================
-    const promoCode = ref("");
-    const discountPercent = ref(0);
-    const selectedMethod = ref(1);
+    const promoCode = ref(loadBookingData()?.payment?.promoCode || "");
+    const discountPercent = ref(loadBookingData()?.payment?.discountPercent || 0);
+    const selectedMethod = ref(loadBookingData()?.payment?.selectedMethod || 1);
     const promoError = ref("");
     const isTicketInfo = ref(false);
 
@@ -17,7 +17,6 @@ export const usePaymentStore = defineStore("payment", () => {
     // ==================== ACTIONS ====================
     const openTicketModal = () => {
         isTicketInfo.value = true;
-        console.log(isTicketInfo.value);
     };
     const closeTicketModal = () => {
         isTicketInfo.value = false;
@@ -34,10 +33,9 @@ export const usePaymentStore = defineStore("payment", () => {
             promoCode.value = upperCode;
             promoError.value = "";
             return true;
-        } else {
-            promoError.value = "Mã khuyến mãi không tồn tại hoặc đã hết hạn";
-            return false;
         }
+        promoError.value = "Mã khuyến mãi không tồn tại hoặc đã hết hạn";
+        return false;
     };
 
     const validatePromoCode = (code) => {
@@ -77,28 +75,22 @@ export const usePaymentStore = defineStore("payment", () => {
         isTicketInfo.value = false;
     };
 
-    onMounted(() => {
-        const saved = loadBookingData();
-        if (saved?.payment) {
-            promoCode.value = saved.payment.promoCode || "";
-            discountPercent.value = saved.payment.discountPercent || 0;
-            selectedMethod.value = saved.payment.selectedMethod || 1;
-        }
-    });
-
     watch(
         [promoCode, discountPercent, selectedMethod],
-        () => {
+        ([newPromoCode, newDiscount, newMethod]) => {
+            if (newPromoCode === "" && newDiscount !== 0) {
+                discountPercent.value = 0;
+                promoError.value = "";
+                return;
+            }
             const current = loadBookingData() || {};
             current.payment = {
-                promoCode: promoCode.value,
-                discountPercent: discountPercent.value,
-                selectedMethod: selectedMethod.value,
+                promoCode: newPromoCode,
+                discountPercent: newDiscount,
+                selectedMethod: newMethod,
             };
-            if (promoCode.value === "") removePromo();
             saveBookingData(current);
         },
-        { deep: true },
     );
 
     return {

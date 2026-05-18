@@ -6,13 +6,13 @@
     </section>
     <section>
         <div class="container">
-            <HomeNowPlaying />
+            <HomeNowPlaying :movies="moviesStore.nowShowing" />
         </div>
     </section>
     <section>
         <div class="bg-base-100 py-10">
             <div class="container">
-                <HomeComingSoon />
+                <HomeComingSoon :movies="moviesStore.upcoming" />
             </div>
         </div>
     </section>
@@ -30,4 +30,11 @@
     </section>
 </template>
 
-<script setup></script>
+<script setup>
+import { useMoviesStore } from "@/stores/movie/useMovieStore";
+const moviesStore = useMoviesStore();
+onMounted(() => {
+    moviesStore.fetchNowShowing();
+    moviesStore.fetchUpcoming();
+});
+</script>

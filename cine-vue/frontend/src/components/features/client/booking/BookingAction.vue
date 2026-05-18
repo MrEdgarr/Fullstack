@@ -140,8 +140,7 @@
 </template>
 <script setup>
 import { useBookingStore } from "@/stores/booking";
-import { formatCurrency } from "@/utils/helpers/formatCurrency";
-import { clearStepData } from "@/utils/helpers/storage";
+import { formatCurrency } from "@/utils/helpers/currency";
 
 const bookingStore = useBookingStore();
 
@@ -159,7 +158,6 @@ const handleBack = () => {
         if (stepStore.currentStep === 1) seatStore.resetSeats();
         if (stepStore.currentStep === 2) comboStore.resetCombos();
         if (stepStore.currentStep === 3) paymentStore.resetPayment();
-        clearStepData(stepStore.currentStep);
         stepStore.prevStep();
     }
 };

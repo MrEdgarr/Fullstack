@@ -1,6 +1,6 @@
 <template>
     <div class="grid grid-cols-12 gap-2.5">
-        <div class="card bg-base-100 border border-base-300 card-sm col-span-6 md:col-span-4">
+        <div class="card bg-base-100 border border-base-300 card-sm col-span-6">
             <div class="card-body">
                 <div class="flex items-center justify-between pb-2 text-sm md:text-base">
                     <span>1. Vi tri</span>
@@ -16,28 +16,10 @@
                 </div>
             </div>
         </div>
-        <div
-            class="card bg-base-100 border border-base-300 card-sm order-2 col-span-12 md:order-0 md:col-span-4"
-        >
+        <div class="card bg-base-100 border border-base-300 card-sm col-span-6">
             <div class="card-body">
                 <div class="flex items-center justify-between pb-2 text-sm md:text-base">
-                    <span>2. Ngay</span>
-                    <BaseIcon name="calendar" />
-                </div>
-                <div>
-                    <select class="select md:select-md select-sm w-full" required>
-                        <option disabled selected hidden value="">Chon Phim</option>
-                        <option>Crimson</option>
-                        <option>Amber</option>
-                        <option>Velvet</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="card bg-base-100 border border-base-300 card-sm col-span-6 md:col-span-4">
-            <div class="card-body">
-                <div class="flex items-center justify-between pb-2 text-sm md:text-base">
-                    <span>3. Rap</span>
+                    <span>2. Rap</span>
                     <BaseIcon name="calendar" />
                 </div>
                 <div>
@@ -55,7 +37,10 @@
             </div>
         </div>
     </div>
-    <div class="card bg-base-100 card-sm mt-5">
+    <div class="flex items-center justify-center py-2">
+        <BaseTimeSwiper />
+    </div>
+    <div class="card bg-base-100 card-sm">
         <div
             class="collapse collapse-arrow border border-base-300 rounded-none"
             v-for="cinema in cinemaBrands"

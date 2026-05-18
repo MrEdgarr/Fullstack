@@ -1,29 +1,29 @@
 import { defineStore } from "pinia";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
 
+const STEP_LABELS = [
+    { id: 1, label: "Chọn ghế" },
+    { id: 2, label: "Bắp nước" },
+    { id: 3, label: "Thanh toán" },
+];
+
 export const useStepStore = defineStore("step", () => {
     // ==================== STATE ======================
-    const currentStep = ref(1);
-
-    const stepLabels = reactive([
-        { id: 1, label: "Chọn ghế" },
-        { id: 2, label: "Bắp nước" },
-        { id: 3, label: "Thanh toán" },
-    ]);
-    const totalSteps = ref(stepLabels.length);
+    const currentStep = ref(loadBookingData()?.currentStep || 1);
+    const stepLabels = STEP_LABELS;
+    const totalSteps = STEP_LABELS.length;
 
     // ==================== GETTERS ====================
     const isFirstStep = computed(() => currentStep.value === 1);
-
-    const isLastStep = computed(() => currentStep.value === totalSteps.value);
+    const isLastStep = computed(() => currentStep.value === totalSteps);
 
     const progressPercentage = computed(() => {
-        return (currentStep.value / totalSteps.value) * 100;
+        return (currentStep.value / totalSteps) * 100;
     });
 
     // ==================== ACTIONS ====================
     const nextStep = () => {
-        if (currentStep.value < totalSteps.value) currentStep.value++;
+        if (currentStep.value < totalSteps) currentStep.value++;
     };
     const prevStep = () => {
         if (currentStep.value > 1) currentStep.value--;
@@ -32,28 +32,22 @@ export const useStepStore = defineStore("step", () => {
         currentStep.value = stepNumber;
     };
 
-    onMounted(() => {
-        const saved = loadBookingData();
-        if (saved?.currentStep) currentStep.value = saved.currentStep;
+    watch(currentStep, (newStep) => {
+        const current = loadBookingData() || {};
+        current.currentStep = newStep;
+        saveBookingData(current);
     });
 
-    watch(
-        currentStep,
-        (newStep) => {
-            const current = loadBookingData() || {};
-            current.currentStep = newStep;
-            saveBookingData(current);
-        },
-        { deep: true },
-    );
-
     return {
-        stepLabels,
+        // STATE
         currentStep,
+        stepLabels,
         totalSteps,
+        // GETTERS
         isFirstStep,
         isLastStep,
         progressPercentage,
+        // ACTIONS
         nextStep,
         prevStep,
         setStep,

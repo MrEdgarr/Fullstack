@@ -27,8 +27,7 @@
                 <div class="contents lg:order-2 lg:flex lg:flex-col lg:gap-5">
                     <div class="order-1">
                         <BookingCountdownTimer
-                            ref="countdownRef"
-                            :initial-minutes="5"
+                            :initial-minutes="1"
                             @time-up="handleTimeUp"
                             storage-key="countdown_expiry"
                             :auto-restart="false"
@@ -48,25 +47,19 @@
     <BookingTicket v-if="paymentStore.isTicketInfo" />
 </template>
 <script setup>
+import { onBeforeRouteLeave } from "vue-router";
 import { useBookingStore } from "@/stores/booking";
-import { clearBookingData } from "@/utils/helpers/storage";
 const bookingStore = useBookingStore();
 const stepStore = bookingStore.stepStore;
 const paymentStore = bookingStore.paymentStore;
 
-const countdownRef = ref(null);
-
-const handleBeforeUnload = () => {
-    clearBookingData();
-};
-const handleTimeUp = () => {
+const handleTimeUp = async () => {
     alert("Hết thời gian chọn ghế.");
-    clearBookingData();
-    bookingStore.resetAll();
+    await bookingStore.resetAll();
 };
-onUnmounted(() => {
-    bookingStore.resetAll();
-    window.removeEventListener("beforeunload", handleBeforeUnload);
+
+onBeforeRouteLeave(async () => {
+    await bookingStore.resetAll();
 });
 </script>
 <style lang=""></style>

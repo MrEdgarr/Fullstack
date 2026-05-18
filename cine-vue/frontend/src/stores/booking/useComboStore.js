@@ -2,7 +2,7 @@ import { COMBOS_DATA } from "@/utils/constants/combosData";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
 export const useComboStore = defineStore("combo", () => {
     // ==================== STATE ======================
-    const selectedCombos = ref({});
+    const selectedCombos = ref(loadBookingData()?.combos || {});
 
     // ==================== GETTERS ====================
 
@@ -42,14 +42,7 @@ export const useComboStore = defineStore("combo", () => {
     };
     const resetCombos = () => {
         selectedCombos.value = {};
-        singleCombosList.value = [];
     };
-
-    onMounted(() => {
-        const saved = loadBookingData();
-        if (saved?.combos) selectedCombos.value = saved.combos;
-    });
-
     watch(
         selectedCombos,
         (newCombos) => {

@@ -1,48 +1,59 @@
-// stores/useSeatStore.js
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
 import { SEATS_DATA } from "@/utils/constants/seatsData";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
+
+// Pre-build lookup maps (chạy 1 lần khi module load)
+const seatById = new Map(SEATS_DATA.map((s) => [s.id, s]));
+const couplePairs = new Map();
+SEATS_DATA.filter((s) => s.type === "couple").forEach((s) => {
+    const pairNumber = s.number % 2 === 1 ? s.number + 1 : s.number - 1;
+    const pair = SEATS_DATA.find(
+        (p) => p.row === s.row && p.number === pairNumber && p.type === "couple",
+    );
+    if (pair) couplePairs.set(s.id, pair.id);
+});
+
+const MAX_SEATS = 10;
+
 export const useSeatStore = defineStore("seat", () => {
     // ==================== STATE ======================
-    const selectedSeats = ref([]);
+    const selectedSeats = ref(loadBookingData()?.seats || []);
+
+    // Set để kiểm tra ghế đã chọn O(1)
+    const selectedIds = computed(() => new Set(selectedSeats.value.map((s) => s.id)));
 
     // ==================== GETTERS ====================
-    // Tạo computed để nhóm ghế đã chọn theo loại
+    // Nhóm ghế đã chọn theo loại (computed duy nhất, các getter khác derive từ đây)
     const groupedSelectedSeats = computed(() => {
-        const singles = selectedSeats.value.filter((s) => s.type === "single" || s.type === "vip");
-        // .sort((a, b) => a.id - b.id)
-        const couples = selectedSeats.value.filter((s) => s.type === "couple");
-        // .sort((a, b) => a.id - b.id)
+        const singles = [];
+        const couples = [];
+        for (const s of selectedSeats.value) {
+            if (s.type === "single" || s.type === "vip") {
+                singles.push(s);
+            } else if (s.type === "couple") {
+                couples.push(s);
+            }
+        }
         return { singles, couples };
     });
 
-    const totalSeatsSelected = computed(() => {
-        const singles = selectedSeats.value.filter((s) => s.type === "single").length;
-        const couples = Math.floor(selectedSeats.value.filter((s) => s.type === "couple").length);
-        return singles + couples;
-    });
-
-    // Tạo computed để đếm số lượng và hiển thị danh sách ghế đã chọn theo loại
+    // Đếm số lượng ghế theo loại
     const singleSeatsCount = computed(() => groupedSelectedSeats.value.singles.length);
     const coupleSeatsCount = computed(() =>
         Math.floor(groupedSelectedSeats.value.couples.length / 2),
     );
 
-    // Tạo computed để hiển thị danh sách ghế đã chọn theo loại
-    const singleSeatsList = computed(
-        () => groupedSelectedSeats.value.singles.map((s) => `${s.row}${s.number}`).join(", ") || "",
+    // Tổng ghế đã chọn (ghế đơn + ghế đôi tính là 1)
+    const totalSeatsSelected = computed(() => singleSeatsCount.value + coupleSeatsCount.value * 2);
+
+    // Danh sách ghế đã chọn dạng text
+    const singleSeatsList = computed(() =>
+        groupedSelectedSeats.value.singles.map((s) => `${s.row}${s.number}`).join(", "),
+    );
+    const coupleSeatsList = computed(() =>
+        groupedSelectedSeats.value.couples.map((s) => `${s.row}${s.number}`).join(", "),
     );
 
-    const coupleSeatsList = computed(
-        () =>
-            groupedSelectedSeats.value.couples
-                .map((s) => `${s.row}${s.number}`)
-                // .sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)))
-                .join(", ") || "",
-    );
-
-    // Tính tổng tiền của ghế đã chọn theo loại
+    // Tổng tiền theo loại ghế
     const singleTotalPrice = computed(() =>
         groupedSelectedSeats.value.singles.reduce((sum, s) => sum + s.price, 0),
     );
@@ -51,63 +62,49 @@ export const useSeatStore = defineStore("seat", () => {
     );
 
     // ==================== ACTIONS ====================
-    // Helper tìm ghế đôi
-    const getPairSeat = (seat) => {
-        if (seat.type !== "couple") return null;
-        const n = seat.number;
-        const pairNumber = n % 2 === 1 ? n + 1 : n - 1;
-        return SEATS_DATA.find(
-            (s) => s.row === seat.row && s.number === pairNumber && s.type === "couple",
-        );
-    };
+    const isSeatSelected = (seatId) => selectedIds.value.has(seatId);
 
-    // Toggle chọn/bỏ ghế
     const toggleSeat = (seat) => {
         if (!seat.isAvailable) return;
 
-        const isSelectedNow = selectedSeats.value.some((s) => s.id === seat.id);
-        if (
-            (!isSelectedNow && totalSeatsSelected.value >= 10) ||
-            (totalSeatsSelected.value == 9 && seat.type === "couple")
-        )
-            return alert("Bạn chỉ được chọn tối đa 10 ghế (ghế đơn + ghế đôi)!");
+        const isSelected = isSeatSelected(seat.id);
+        const remaining = MAX_SEATS - totalSeatsSelected.value;
 
         if (seat.type === "single" || seat.type === "vip") {
-            const index = selectedSeats.value.findIndex((s) => s.id === seat.id);
-            if (index !== -1) {
-                selectedSeats.value.splice(index, 1);
+            if (isSelected) {
+                selectedSeats.value = selectedSeats.value.filter((s) => s.id !== seat.id);
             } else {
+                if (remaining < 1) {
+                    return alert("Bạn chỉ được chọn tối đa 10 ghế (ghế đơn + ghế đôi)!");
+                }
                 selectedSeats.value.push({ ...seat });
             }
         } else {
             // Ghế đôi: tự động chọn/bỏ cả cặp
-            const pair = getPairSeat(seat);
-            if (!pair || !pair.isAvailable) return;
+            const pairId = couplePairs.get(seat.id);
+            if (!pairId) return;
 
-            const seatIds = [seat.id, pair.id];
-            const bothSelected = seatIds.every((id) =>
-                selectedSeats.value.some((s) => s.id === id),
-            );
+            const pairSeat = seatById.get(pairId);
+            if (!pairSeat?.isAvailable) return;
+
+            const bothSelected = isSeatSelected(seat.id) && isSeatSelected(pairId);
 
             if (bothSelected) {
-                selectedSeats.value = selectedSeats.value.filter((s) => !seatIds.includes(s.id));
+                const removeIds = new Set([seat.id, pairId]);
+                selectedSeats.value = selectedSeats.value.filter((s) => !removeIds.has(s.id));
             } else {
-                [seat, pair].forEach((s) => {
-                    if (!selectedSeats.value.some((sel) => sel.id === s.id)) {
-                        selectedSeats.value.push({ ...s });
-                    }
-                });
+                if (remaining < 2) {
+                    return alert("Bạn chỉ được chọn tối đa 10 ghế! Ghế đôi cần 2 chỗ trống.");
+                }
+                if (!isSeatSelected(seat.id)) selectedSeats.value.push({ ...seat });
+                if (!isSeatSelected(pairId)) selectedSeats.value.push({ ...pairSeat });
             }
         }
     };
+
     const resetSeats = () => {
         selectedSeats.value = [];
     };
-
-    onMounted(() => {
-        const saved = loadBookingData();
-        if (saved?.seats) selectedSeats.value = saved.seats;
-    });
 
     watch(
         selectedSeats,
@@ -120,14 +117,19 @@ export const useSeatStore = defineStore("seat", () => {
     );
 
     return {
+        // STATE
         selectedSeats,
-        toggleSeat,
+        // GETTERS
         singleSeatsCount,
         coupleSeatsCount,
+        totalSeatsSelected,
         singleSeatsList,
         coupleSeatsList,
         singleTotalPrice,
         coupleTotalPrice,
+        // ACTIONS
+        isSeatSelected,
+        toggleSeat,
         resetSeats,
     };
 });
