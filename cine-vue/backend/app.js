@@ -40,6 +40,14 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Cine Vue Backend API is running",
+    api: "/api/v1",
+  });
+});
+
 app.use("/api/v1", limiter, indexRouter);
 
 app.use((req, res) => {

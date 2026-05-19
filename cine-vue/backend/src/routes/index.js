@@ -23,6 +23,16 @@ router.get("/", (req, res) => {
   });
 });
 
+// const db = require("../shared/config/database");
+// router.get("/debug/tables", async (req, res) => {
+//   try {
+//     const [rows] = await db.query("SHOW TABLES FROM cinema_db");
+//     res.json(rows);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
 router.use("/auth", authRoutes);
 router.use("/brands", brandsRoutes);
 router.use("/cities", citiesRoutes);

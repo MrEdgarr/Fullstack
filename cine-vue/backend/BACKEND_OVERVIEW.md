@@ -186,8 +186,11 @@ Script hỗ trợ:
 
 ```bash
 yarn import-schema
+yarn seed:demo
 yarn expire-holds
 ```
+
+`yarn seed:demo` thêm dữ liệu mẫu cho database: rạp, phòng, ghế, phim, suất chiếu, combo, mã khuyến mãi và một booking demo đã thanh toán.
 
 ## 9. Các biến môi trường chính
 

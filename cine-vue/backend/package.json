@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "expire-holds": "node ./scripts/expire-held-seats.js",
-    "import-schema": "node ./scripts/import-schema.js"
+    "import-schema": "node ./scripts/import-schema.js",
+    "seed:demo": "node ./scripts/seed-demo-data.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
