@@ -25,7 +25,7 @@
         <div class="bg-base-100 py-10">
             <div class="container">
                 <HomeNews />
-            </div>
+            </div> 
         </div>
     </section>
 </template>

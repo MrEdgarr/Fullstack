@@ -94,13 +94,17 @@ exports.create = async (customerId, payload) => {
     );
     const bookingId = bookingResult.insertId;
 
-    await bookingsRepository.holdSeats(
+    const [holdResult] = await bookingsRepository.holdSeats(
       connection,
       bookingId,
       expiresAt,
       showtimeId,
       showtimeSeatIds,
     );
+
+    if (holdResult.affectedRows !== showtimeSeatIds.length) {
+      throw new AppError("Could not hold all selected seats", 409);
+    }
 
     if (foodCombos.length > 0) {
       const comboPriceMap = new Map(

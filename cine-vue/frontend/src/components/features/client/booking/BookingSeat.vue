@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="card bg-base-100 border border-base-300 card-sm">
         <div
             ref="viewportRef"
@@ -12,7 +12,20 @@
             @touchmove="onDrag"
             @touchend="endDrag"
         >
+            <div v-if="!showtimeId" class="flex h-full items-center justify-center text-sm text-base-content/60">
+                Vui lòng chọn suất chiếu trước khi chọn ghế.
+            </div>
+            <div v-else-if="seatStore.isLoading" class="flex h-full items-center justify-center text-sm text-base-content/60">
+                Đang tải sơ đồ ghế...
+            </div>
+            <div v-else-if="seatStore.error" class="flex h-full items-center justify-center text-sm text-error">
+                {{ seatStore.error }}
+            </div>
+            <div v-else-if="seatStore.seats.length === 0" class="flex h-full items-center justify-center text-sm text-base-content/60">
+                Chưa có dữ liệu ghế cho suất chiếu này.
+            </div>
             <div
+                v-else
                 ref="contentRef"
                 class="absolute top-1/2 left-1/2 flex items-center justify-center origin-center will-change-transform w-max"
                 :style="{
@@ -29,6 +42,7 @@
                     <div
                         class="flex gap-1 mb-1 items-center justify-center"
                         v-for="(rowSeats, row) in seatsByRow"
+                        :key="row"
                     >
                         <div
                             v-for="seat in rowSeats"
@@ -58,38 +72,16 @@
                     @click="updateZoom(transform.scale + ZOOM_CONFIG.STEP)"
                     class="btn btn-circle btn-sm bg-base-100 shadow-lg border-base-300"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 4v16m8-8H4"
-                        />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                 </button>
                 <button
                     @click="updateZoom(transform.scale - ZOOM_CONFIG.STEP)"
                     class="btn btn-circle btn-sm bg-base-100 shadow-lg border-base-300"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M20 12H4"
-                        />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                     </svg>
                 </button>
                 <button
@@ -102,45 +94,34 @@
         </div>
         <div class="py-5 flex flex-wrap items-center justify-center gap-5">
             <div class="flex items-center gap-1">
-                <div
-                    class="bg-disabled flex aspect-square size-5 items-center justify-center rounded-sm"
-                    disabled="disabled"
-                ></div>
-                <div class="text-xs md:text-sm">Ghế đã bán</div>
+                <div class="bg-disabled flex aspect-square size-5 items-center justify-center rounded-sm"></div>
+                <div class="text-xs md:text-sm">Ghế đã bán/đang giữ</div>
             </div>
             <div class="flex items-center gap-1">
-                <div
-                    class="bg-info flex aspect-square size-5 items-center justify-center rounded-sm"
-                ></div>
+                <div class="bg-info flex aspect-square size-5 items-center justify-center rounded-sm"></div>
                 <div class="text-xs md:text-sm">Ghế đang chọn</div>
             </div>
             <div class="flex items-center gap-1">
-                <div
-                    class="flex bg-base-300 aspect-square size-5 items-center justify-center rounded-sm"
-                ></div>
+                <div class="flex bg-base-300 aspect-square size-5 items-center justify-center rounded-sm"></div>
                 <div class="text-xs md:text-sm">Ghế thường</div>
             </div>
             <div class="flex items-center gap-1">
-                <div
-                    class="bg-warning flex aspect-square size-5 items-center justify-center rounded-sm"
-                ></div>
+                <div class="bg-warning flex aspect-square size-5 items-center justify-center rounded-sm"></div>
                 <div class="text-xs md:text-sm">Ghế VIP</div>
             </div>
             <div class="flex items-center gap-1">
-                <div
-                    class="bg-error flex aspect-square size-5 items-center justify-center rounded-sm"
-                ></div>
+                <div class="bg-error flex aspect-square size-5 items-center justify-center rounded-sm"></div>
                 <div class="text-xs md:text-sm">Ghế đôi</div>
             </div>
         </div>
     </div>
 </template>
+
 <script setup>
+import { useBookingStore } from "@/stores/booking";
 import { useSeatStore } from "@/stores/booking/useSeatStore";
-import { SEATS_DATA } from "@/utils/constants/seatsData";
 import { useSeatMap } from "@/composables/useSeatMap";
 
-// Composable quản lý zoom và drag cho bản đồ chỗ ngồi
 const viewportRef = ref(null);
 const contentRef = ref(null);
 const {
@@ -154,22 +135,44 @@ const {
     endDrag,
     fitToViewport,
 } = useSeatMap(viewportRef, contentRef);
-// Store quản lý trạng thái chỗ ngồi đã chọn
+
+const bookingStore = useBookingStore();
 const seatStore = useSeatStore();
+
+const showtimeId = computed(() =>
+    Number(bookingStore.selectedShowtime?.showtime_id || bookingStore.selectedShowtime?.id || 0),
+);
 
 const seatsByRow = computed(() => {
     const group = {};
-    SEATS_DATA.forEach((seat) => {
+
+    seatStore.seats.forEach((seat) => {
         if (!group[seat.row]) group[seat.row] = [];
         group[seat.row].push(seat);
     });
+
+    Object.values(group).forEach((rowSeats) => {
+        rowSeats.sort((a, b) => a.number - b.number);
+    });
+
     return group;
 });
 
-onMounted(async () => {
+const loadSeats = async (id) => {
+    await seatStore.fetchSeats(id);
     await nextTick();
     fitToViewport();
-});
+};
+
+watch(
+    showtimeId,
+    async (newId, oldId) => {
+        if (newId !== oldId) seatStore.resetSeats();
+        if (newId) await loadSeats(newId);
+    },
+    { immediate: true },
+);
+
 watch(
     seatsByRow,
     async () => {
@@ -179,8 +182,9 @@ watch(
     { deep: true },
 );
 
-const isSelected = (seat) => seatStore.selectedSeats.some((s) => s.id === seat.id);
+const isSelected = (seat) => seatStore.isSeatSelected(seat.id);
 </script>
+
 <style scoped>
 * {
     user-select: none;

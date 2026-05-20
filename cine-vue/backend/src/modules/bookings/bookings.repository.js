@@ -218,8 +218,7 @@ exports.cancelPendingBookings = (connection, bookingIds) =>
   connection.query(
     `
     UPDATE bookings
-    SET status = 'cancelled',
-        cancelled_at = NOW()
+    SET status = 'cancelled'
     WHERE booking_id IN (?)
       AND status = 'pending'
     `,

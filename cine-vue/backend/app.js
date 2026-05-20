@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 const indexRouter = require("./src/routes");
 const errorHandler = require("./src/shared/middleware/error-handler");

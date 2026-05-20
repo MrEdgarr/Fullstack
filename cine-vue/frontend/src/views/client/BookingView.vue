@@ -27,7 +27,7 @@
                 <div class="contents lg:order-2 lg:flex lg:flex-col lg:gap-5">
                     <div class="order-1">
                         <BookingCountdownTimer
-                            :initial-minutes="1"
+                            :initial-minutes="10"
                             @time-up="handleTimeUp"
                             storage-key="countdown_expiry"
                             :auto-restart="false"

@@ -1,15 +1,9 @@
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 const fs = require("fs");
 const mysql = require("mysql2/promise");
 
-const requiredEnvVars = [
-  "DB_HOST",
-  "DB_PORT",
-  "DB_USERNAME",
-  "DB_PASSWORD",
-  "DB_DBNAME",
-];
+const requiredEnvVars = ["DB_HOST", "DB_PORT", "DB_USERNAME", "DB_PASSWORD", "DB_DBNAME"];
 
 const missingEnvVars = requiredEnvVars.filter((name) => !process.env[name]);
 
@@ -18,20 +12,18 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
-const ssl =
-  process.env.DB_SSL_CA_BASE64
+const ssl = process.env.DB_SSL_CA_BASE64
+  ? {
+      ca: Buffer.from(process.env.DB_SSL_CA_BASE64, "base64").toString("utf8"),
+    }
+  : process.env.DB_SSL_CA_PATH
     ? {
-        ca: Buffer.from(process.env.DB_SSL_CA_BASE64, "base64").toString("utf8"),
+        ca: fs.readFileSync(process.env.DB_SSL_CA_PATH, "utf8"),
       }
-    : process.env.DB_SSL_CA_PATH
-      ? {
-          ca: fs.readFileSync(process.env.DB_SSL_CA_PATH, "utf8"),
-        }
-      : undefined;
+    : undefined;
 
 // bcrypt hash for password: 123
-const DEMO_PASSWORD_HASH =
-  "$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC";
+const DEMO_PASSWORD_HASH = "$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC";
 
 const cities = [
   { city_name: "Hà Nội", country: "Vietnam", province_code: "HN" },
@@ -333,10 +325,9 @@ async function seedCustomers(connection) {
       [customer.full_name, customer.email, customer.phone, DEMO_PASSWORD_HASH, customer.role],
     );
 
-    const [rows] = await connection.execute(
-      "SELECT customer_id FROM customers WHERE email = ?",
-      [customer.email],
-    );
+    const [rows] = await connection.execute("SELECT customer_id FROM customers WHERE email = ?", [
+      customer.email,
+    ]);
     ids.set(customer.email, rows[0].customer_id);
   }
 

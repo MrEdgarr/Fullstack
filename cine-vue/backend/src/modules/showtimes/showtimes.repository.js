@@ -2,11 +2,33 @@ const db = require("../../shared/config/database");
 
 exports.getAll = () =>
   db.execute(`
-  SELECT s.*, m.title, r.room_name, c.cinema_name 
-  FROM showtimes s 
-  JOIN movies m ON s.movie_id = m.movie_id 
-  JOIN screening_rooms r ON s.room_id = r.room_id 
-  JOIN cinemas c ON r.cinema_id = c.cinema_id 
+  SELECT
+    s.showtime_id,
+    s.movie_id,
+    s.room_id,
+    s.start_time,
+    s.end_time,
+    DATE_FORMAT(s.start_time, '%Y-%m-%d') AS show_date,
+    DATE_FORMAT(s.start_time, '%H:%i') AS show_time,
+    s.price_standard,
+    s.price_vip,
+    s.price_couple,
+    s.status,
+    m.title,
+    m.genre,
+    m.age_rating,
+    m.duration_minutes,
+    m.poster_url,
+    r.room_name,
+    r.room_type,
+    c.cinema_id,
+    c.cinema_name,
+    c.city_id
+  FROM showtimes s
+  JOIN movies m ON s.movie_id = m.movie_id
+  JOIN screening_rooms r ON s.room_id = r.room_id
+  JOIN cinemas c ON r.cinema_id = c.cinema_id
+  WHERE s.status = 'scheduled'
   ORDER BY s.start_time
 `);
 exports.getByMovie = (movie_id) =>

@@ -7,6 +7,7 @@ export const useMoviesStore = defineStore("movies", () => {
     const nowShowing = ref([]);
     const upcoming = ref([]);
     const allMovies = ref([]);
+    const currentMovie = ref(null);
     const isLoading = ref(false);
     const error = ref(null);
 
@@ -64,11 +65,16 @@ export const useMoviesStore = defineStore("movies", () => {
     const fetchMovieById = async (id) => {
         try {
             const res = await api.get(`/movies/${id}`);
-            return res.data.data;
+            currentMovie.value = res.data.data;
+            return currentMovie.value;
         } catch (err) {
             console.error(err);
             return null;
         }
+    };
+
+    const setCurrentMovie = (movie) => {
+        currentMovie.value = movie;
     };
 
     return {
@@ -76,6 +82,7 @@ export const useMoviesStore = defineStore("movies", () => {
         nowShowing,
         upcoming,
         allMovies,
+        currentMovie,
         isLoading,
         error,
 
@@ -88,5 +95,8 @@ export const useMoviesStore = defineStore("movies", () => {
         fetchUpcoming,
         fetchAll,
         fetchMovieById,
+        setCurrentMovie,
     };
 });
+
+export const useMovieStore = useMoviesStore;

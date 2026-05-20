@@ -14,7 +14,7 @@
                                 class="input md:input-md input-sm w-full"
                                 :class="{ 'input-error': paymentStore.promoError }"
                                 @input="handleInput"
-                                maxlength="10"
+                                maxlength="50"
                                 placeholder="Ma khuyen mai"
                                 required
                                 @keyup.enter="applyPromo"

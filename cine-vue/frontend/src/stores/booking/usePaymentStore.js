@@ -8,6 +8,7 @@ export const usePaymentStore = defineStore("payment", () => {
     const selectedMethod = ref(loadBookingData()?.payment?.selectedMethod || 1);
     const promoError = ref("");
     const isTicketInfo = ref(false);
+    const lastTicket = ref(null);
 
     // ==================== GETTERS ====================
     const paymentMethod = computed(() => {
@@ -45,8 +46,8 @@ export const usePaymentStore = defineStore("payment", () => {
             promoError.value = "";
             return false;
         }
-        if (trimmed.length < 4 || trimmed.length > 10) {
-            promoError.value = "Mã khuyến mãi phải từ 4 đến 10 ký tự";
+        if (trimmed.length < 4 || trimmed.length > 50) {
+            promoError.value = "Mã khuyến mãi phải từ 4 đến 50 ký tự";
             return false;
         }
         if (!/^[A-Z0-9]+$/.test(trimmed)) {
@@ -67,12 +68,16 @@ export const usePaymentStore = defineStore("payment", () => {
     const setPaymentMethod = (methodId) => {
         selectedMethod.value = methodId;
     };
+    const setLastTicket = (ticket) => {
+        lastTicket.value = ticket;
+    };
 
     const resetPayment = () => {
         promoCode.value = "";
         discountPercent.value = 0;
         selectedMethod.value = 1;
         isTicketInfo.value = false;
+        lastTicket.value = null;
     };
 
     watch(
@@ -100,6 +105,7 @@ export const usePaymentStore = defineStore("payment", () => {
         selectedMethod,
         promoError,
         isTicketInfo,
+        lastTicket,
         //GETTERS
         paymentMethod,
         //Action
@@ -109,6 +115,7 @@ export const usePaymentStore = defineStore("payment", () => {
         applyPromo,
         removePromo,
         setPaymentMethod,
+        setLastTicket,
         resetPayment,
     };
 });

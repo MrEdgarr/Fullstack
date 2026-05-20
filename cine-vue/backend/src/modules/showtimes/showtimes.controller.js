@@ -1,5 +1,5 @@
 const showtimesRepository = require("./showtimes.repository");
-const showtimeSeatsRepository = require("./showtime-seats.repository");
+const showtimeSeatsService = require("./showtime-seats.service");
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -21,7 +21,7 @@ exports.getByMovie = async (req, res, next) => {
 
 exports.getSeats = async (req, res, next) => {
   try {
-    const [rows] = await showtimeSeatsRepository.getByShowtime(req.params.id);
+    const [rows] = await showtimeSeatsService.getByShowtime(req.params.id);
     res.json({ success: true, data: rows });
   } catch (error) {
     next(error);

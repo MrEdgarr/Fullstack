@@ -16,23 +16,6 @@ const paymentsRoutes = require("../modules/payments/payments.routes");
 const combosRoutes = require("../modules/combos/combos.routes");
 const promotionsRoutes = require("../modules/promotions/promotions.routes");
 
-router.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "Cine Vue API is running",
-  });
-});
-
-// const db = require("../shared/config/database");
-// router.get("/debug/tables", async (req, res) => {
-//   try {
-//     const [rows] = await db.query("SHOW TABLES FROM cinema_db");
-//     res.json(rows);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
 router.use("/auth", authRoutes);
 router.use("/brands", brandsRoutes);
 router.use("/cities", citiesRoutes);

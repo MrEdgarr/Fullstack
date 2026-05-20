@@ -8,7 +8,7 @@
             <RouterLink :to="`/movie/${removeAccents(slide.title)}-i${slide.id}`">
                 <div class="relative overflow-hidden rounded-lg">
                     <img
-                        :src="slide.poster"
+                        :src="slide.poster_url"
                         :alt="slide.title"
                         class="rounded-lg duration-300 hover:scale-105"
                     />

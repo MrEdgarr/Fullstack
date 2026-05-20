@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 const { expireStaleHolds } = require("../src/modules/bookings/booking-maintenance.service");
 
 expireStaleHolds()
