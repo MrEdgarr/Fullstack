@@ -1,30 +1,19 @@
-//.env
-
-const fs = require("fs");
 const mysql = require("mysql2");
+const { getDatabaseConfig } = require("./database-env");
 
-const ssl =
-  process.env.DB_SSL_CA_BASE64
-    ? {
-        ca: Buffer.from(process.env.DB_SSL_CA_BASE64, "base64").toString("utf8"),
-      }
-    : process.env.DB_SSL_CA_PATH
-      ? {
-          ca: fs.readFileSync(process.env.DB_SSL_CA_PATH, "utf8"),
-        }
-      : undefined;
+const databaseConfig = getDatabaseConfig();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DBNAME,
+  host: databaseConfig.host,
+  port: databaseConfig.port,
+  user: databaseConfig.user,
+  password: databaseConfig.password,
+  database: databaseConfig.database,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  timezone: process.env.DB_TIMEZONE || "Z",
-  ...(ssl && { ssl }),
+  timezone: databaseConfig.timezone,
+  ...(databaseConfig.ssl && { ssl: databaseConfig.ssl }),
 });
 
 pool.getConnection((err, conn) => {
