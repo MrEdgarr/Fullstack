@@ -144,7 +144,7 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 const authStore = useAuthStore();
 
 const formData = reactive({
-    email: "nva@gmail.com",
+    email: "admin@example.com",
     password: "123",
 });
 

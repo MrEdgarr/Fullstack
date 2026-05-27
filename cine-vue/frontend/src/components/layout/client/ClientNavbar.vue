@@ -51,10 +51,7 @@
                         </div>
                         <div v-else class="dropdown dropdown-bottom dropdown-end">
                             <div role="button" tabindex="-1" class="btn btn-circle btn-sm">
-                                <img
-                                    src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp"
-                                    class="rounded-full"
-                                />
+                                <img :src="authStore.user.avatar_url" class="rounded-full" />
                             </div>
                             <ul
                                 tabindex="-1"

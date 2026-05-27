@@ -48,6 +48,7 @@ export const useAuthStore = defineStore("auth", () => {
 
             setToken(res.data.token);
             setUser(res.data.customer);
+            console.log(res.data);
 
             closeModal();
 

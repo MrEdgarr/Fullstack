@@ -1,4 +1,4 @@
-﻿-- Lean cinema ticketing schema
+-- Lean cinema ticketing schema
 -- Scope: ticket sales, seat inventory, food combos, simple promotions, and payments.
 -- Import into MySQL 8+.
 SET
@@ -345,8 +345,8 @@ VALUES
 INSERT INTO
   cities (city_name, country, province_code)
 VALUES
-  ('HÃ  Ná»™i', 'Vietnam', 'HN'),
-  ('TP. Há»“ ChÃ­ Minh', 'Vietnam', 'HCM');
+  ('Hà Nội', 'Vietnam', 'HN'),
+  ('TP. Hồ Chí Minh', 'Vietnam', 'HCM');
 
 INSERT INTO
   cinema_brands (brand_name, logo_url)
@@ -361,14 +361,14 @@ VALUES
     1,
     1,
     'Cinemax Royal City',
-    'Táº§ng B2, Royal City, HÃ  Ná»™i',
+    'Tầng B2, Royal City, Hà Nội',
     '19009999'
   ),
   (
     2,
     2,
     'Cinemax Landmark',
-    'Quáº­n 1, TP. Há»“ ChÃ­ Minh',
+    'Quận 1, TP. Hồ Chí Minh',
     '19008888'
   );
 
@@ -416,11 +416,11 @@ INSERT INTO
   )
 VALUES
   (
-    'Shin Cáº­u BÃ© BÃºt ChÃ¬',
+    'Shin Cậu Bé Bút Chì',
     'Crayon Shin-chan',
     'shin-cau-be-but-chi',
     95,
-    'Hoáº¡t hÃ¬nh, Gia Ä‘Ã¬nh',
+    'Hoạt hình, Gia đình',
     'K',
     88.50,
     '2026-05-01',
@@ -431,7 +431,7 @@ VALUES
     'Avengers: Secret Empire',
     'avengers-secret-empire',
     135,
-    'HÃ nh Ä‘á»™ng, Sci-Fi',
+    'Hành động, Sci-Fi',
     'T13',
     0.00,
     '2026-06-05',
@@ -517,9 +517,9 @@ VALUES
 INSERT INTO
   food_combos (cinema_id, combo_name, description, price)
 VALUES
-  (1, 'Combo Couple', '1 báº¯p lá»›n + 2 nÆ°á»›c ngá»t vá»«a', 115000),
-  (1, 'Combo Solo', '1 báº¯p vá»«a + 1 nÆ°á»›c ngá»t vá»«a', 70000),
-  (2, 'Combo Premium', '1 báº¯p lá»›n + 2 nÆ°á»›c ngá»t lá»›n', 135000);
+  (1, 'Combo Couple', '1 bắp lớn + 2 nước ngọt vừa', 115000),
+  (1, 'Combo Solo', '1 bắp vừa + 1 nước ngọt vừa', 70000),
+  (2, 'Combo Premium', '1 bắp lớn + 2 nước ngọt lớn', 135000);
 
 -- =========================
 -- 8. Extended demo data
@@ -529,8 +529,8 @@ INSERT INTO customers (full_name, email, phone, password_hash, role)
 VALUES
   ('System Admin', 'admin@example.com', '0900000000', '$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC', 'admin'),
   ('Demo Customer', 'customer@example.com', '0911111111', '$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC', 'customer'),
-  ('Nguyá»…n Minh', 'minh.nguyen@example.com', '0922222222', '$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC', 'customer'),
-  ('Tráº§n Lan', 'lan.tran@example.com', '0933333333', '$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC', 'customer')
+  ('Nguyễn Minh', 'minh.nguyen@example.com', '0922222222', '$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC', 'customer'),
+  ('Trần Lan', 'lan.tran@example.com', '0933333333', '$2b$10$cOKnf93qNph9yLI./pG8yegWHx9OhRZoOLOci8y/atvVv0ywU.6NC', 'customer')
 ON DUPLICATE KEY UPDATE
   full_name = VALUES(full_name),
   phone = VALUES(phone),
@@ -539,11 +539,11 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO cities (city_name, country, province_code)
 VALUES
-  ('HÃ  Ná»™i', 'Vietnam', 'HN'),
-  ('TP. Há»“ ChÃ­ Minh', 'Vietnam', 'HCM'),
-  ('ÄÃ  Náºµng', 'Vietnam', 'DN'),
-  ('Háº£i PhÃ²ng', 'Vietnam', 'HP'),
-  ('Cáº§n ThÆ¡', 'Vietnam', 'CT')
+  ('Hà Nội', 'Vietnam', 'HN'),
+  ('TP. Hồ Chí Minh', 'Vietnam', 'HCM'),
+  ('Đà Nẵng', 'Vietnam', 'DN'),
+  ('Hải Phòng', 'Vietnam', 'HP'),
+  ('Cần Thơ', 'Vietnam', 'CT')
 ON DUPLICATE KEY UPDATE
   province_code = VALUES(province_code);
 
@@ -559,69 +559,69 @@ ON DUPLICATE KEY UPDATE
   status = 'active';
 
 INSERT INTO cinemas (brand_id, city_id, cinema_name, address, phone)
-SELECT b.brand_id, c.city_id, 'CGV Vincom Center BÃ  Triá»‡u', '191 BÃ  Triá»‡u, Hai BÃ  TrÆ°ng, HÃ  Ná»™i', '19006017'
+SELECT b.brand_id, c.city_id, 'CGV Vincom Center Bà Triệu', '191 Bà Triệu, Hai Bà Trưng, Hà Nội', '19006017'
 FROM cinema_brands b
-JOIN cities c ON c.city_name = 'HÃ  Ná»™i' AND c.country = 'Vietnam'
+JOIN cities c ON c.city_name = 'Hà Nội' AND c.country = 'Vietnam'
 WHERE b.brand_name = 'CGV Cinemas'
   AND NOT EXISTS (
     SELECT 1 FROM cinemas existing
-    WHERE existing.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u'
-      AND existing.address = '191 BÃ  Triá»‡u, Hai BÃ  TrÆ°ng, HÃ  Ná»™i'
+    WHERE existing.cinema_name = 'CGV Vincom Center Bà Triệu'
+      AND existing.address = '191 Bà Triệu, Hai Bà Trưng, Hà Nội'
   );
 
 INSERT INTO cinemas (brand_id, city_id, cinema_name, address, phone)
-SELECT b.brand_id, c.city_id, 'CGV Crescent Mall', '101 TÃ´n Dáº­t TiÃªn, Quáº­n 7, TP. Há»“ ChÃ­ Minh', '19006018'
+SELECT b.brand_id, c.city_id, 'CGV Crescent Mall', '101 Tôn Dật Tiên, Quận 7, TP. Hồ Chí Minh', '19006018'
 FROM cinema_brands b
-JOIN cities c ON c.city_name = 'TP. Há»“ ChÃ­ Minh' AND c.country = 'Vietnam'
+JOIN cities c ON c.city_name = 'TP. Hồ Chí Minh' AND c.country = 'Vietnam'
 WHERE b.brand_name = 'CGV Cinemas'
   AND NOT EXISTS (
     SELECT 1 FROM cinemas existing
     WHERE existing.cinema_name = 'CGV Crescent Mall'
-      AND existing.address = '101 TÃ´n Dáº­t TiÃªn, Quáº­n 7, TP. Há»“ ChÃ­ Minh'
+      AND existing.address = '101 Tôn Dật Tiên, Quận 7, TP. Hồ Chí Minh'
   );
 
 INSERT INTO cinemas (brand_id, city_id, cinema_name, address, phone)
-SELECT b.brand_id, c.city_id, 'Lotte Cinema ÄÃ  Náºµng', '255-257 HÃ¹ng VÆ°Æ¡ng, Háº£i ChÃ¢u, ÄÃ  Náºµng', '19005588'
+SELECT b.brand_id, c.city_id, 'Lotte Cinema Đà Nẵng', '255-257 Hùng Vương, Hải Châu, Đà Nẵng', '19005588'
 FROM cinema_brands b
-JOIN cities c ON c.city_name = 'ÄÃ  Náºµng' AND c.country = 'Vietnam'
+JOIN cities c ON c.city_name = 'Đà Nẵng' AND c.country = 'Vietnam'
 WHERE b.brand_name = 'Lotte Cinema'
   AND NOT EXISTS (
     SELECT 1 FROM cinemas existing
-    WHERE existing.cinema_name = 'Lotte Cinema ÄÃ  Náºµng'
-      AND existing.address = '255-257 HÃ¹ng VÆ°Æ¡ng, Háº£i ChÃ¢u, ÄÃ  Náºµng'
+    WHERE existing.cinema_name = 'Lotte Cinema Đà Nẵng'
+      AND existing.address = '255-257 Hùng Vương, Hải Châu, Đà Nẵng'
   );
 
 INSERT INTO cinemas (brand_id, city_id, cinema_name, address, phone)
-SELECT b.brand_id, c.city_id, 'Galaxy Nguyá»…n Du', '116 Nguyá»…n Du, Quáº­n 1, TP. Há»“ ChÃ­ Minh', '19002224'
+SELECT b.brand_id, c.city_id, 'Galaxy Nguyễn Du', '116 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', '19002224'
 FROM cinema_brands b
-JOIN cities c ON c.city_name = 'TP. Há»“ ChÃ­ Minh' AND c.country = 'Vietnam'
+JOIN cities c ON c.city_name = 'TP. Hồ Chí Minh' AND c.country = 'Vietnam'
 WHERE b.brand_name = 'Galaxy Cinema'
   AND NOT EXISTS (
     SELECT 1 FROM cinemas existing
-    WHERE existing.cinema_name = 'Galaxy Nguyá»…n Du'
-      AND existing.address = '116 Nguyá»…n Du, Quáº­n 1, TP. Há»“ ChÃ­ Minh'
+    WHERE existing.cinema_name = 'Galaxy Nguyễn Du'
+      AND existing.address = '116 Nguyễn Du, Quận 1, TP. Hồ Chí Minh'
   );
 
 INSERT INTO cinemas (brand_id, city_id, cinema_name, address, phone)
-SELECT b.brand_id, c.city_id, 'BHD Star Pháº¡m Ngá»c Tháº¡ch', '2 Pháº¡m Ngá»c Tháº¡ch, Äá»‘ng Äa, HÃ  Ná»™i', '19002099'
+SELECT b.brand_id, c.city_id, 'BHD Star Phạm Ngọc Thạch', '2 Phạm Ngọc Thạch, Đống Đa, Hà Nội', '19002099'
 FROM cinema_brands b
-JOIN cities c ON c.city_name = 'HÃ  Ná»™i' AND c.country = 'Vietnam'
+JOIN cities c ON c.city_name = 'Hà Nội' AND c.country = 'Vietnam'
 WHERE b.brand_name = 'BHD Star Cineplex'
   AND NOT EXISTS (
     SELECT 1 FROM cinemas existing
-    WHERE existing.cinema_name = 'BHD Star Pháº¡m Ngá»c Tháº¡ch'
-      AND existing.address = '2 Pháº¡m Ngá»c Tháº¡ch, Äá»‘ng Äa, HÃ  Ná»™i'
+    WHERE existing.cinema_name = 'BHD Star Phạm Ngọc Thạch'
+      AND existing.address = '2 Phạm Ngọc Thạch, Đống Đa, Hà Nội'
   );
 
 INSERT INTO cinemas (brand_id, city_id, cinema_name, address, phone)
-SELECT b.brand_id, c.city_id, 'CineStar Cáº§n ThÆ¡', 'Sense City, Ninh Kiá»u, Cáº§n ThÆ¡', '19006660'
+SELECT b.brand_id, c.city_id, 'CineStar Cần Thơ', 'Sense City, Ninh Kiều, Cần Thơ', '19006660'
 FROM cinema_brands b
-JOIN cities c ON c.city_name = 'Cáº§n ThÆ¡' AND c.country = 'Vietnam'
+JOIN cities c ON c.city_name = 'Cần Thơ' AND c.country = 'Vietnam'
 WHERE b.brand_name = 'CineStar'
   AND NOT EXISTS (
     SELECT 1 FROM cinemas existing
-    WHERE existing.cinema_name = 'CineStar Cáº§n ThÆ¡'
-      AND existing.address = 'Sense City, Ninh Kiá»u, Cáº§n ThÆ¡'
+    WHERE existing.cinema_name = 'CineStar Cần Thơ'
+      AND existing.address = 'Sense City, Ninh Kiều, Cần Thơ'
   );
 
 INSERT INTO screening_rooms (cinema_id, room_name, room_type)
@@ -634,7 +634,7 @@ CROSS JOIN (
   UNION ALL
   SELECT 'Room 3', '3D'
 ) rt
-WHERE c.cinema_name IN ('CGV Vincom Center BÃ  Triá»‡u', 'CGV Crescent Mall', 'Lotte Cinema ÄÃ  Náºµng', 'Galaxy Nguyá»…n Du', 'BHD Star Pháº¡m Ngá»c Tháº¡ch', 'CineStar Cáº§n ThÆ¡')
+WHERE c.cinema_name IN ('CGV Vincom Center Bà Triệu', 'CGV Crescent Mall', 'Lotte Cinema Đà Nẵng', 'Galaxy Nguyễn Du', 'BHD Star Phạm Ngọc Thạch', 'CineStar Cần Thơ')
 ON DUPLICATE KEY UPDATE
   room_type = VALUES(room_type),
   status = 'active';
@@ -677,7 +677,7 @@ CROSS JOIN (
   UNION ALL
   SELECT 10
 ) n
-WHERE c.cinema_name IN ('CGV Vincom Center BÃ  Triá»‡u', 'CGV Crescent Mall', 'Lotte Cinema ÄÃ  Náºµng', 'Galaxy Nguyá»…n Du', 'BHD Star Pháº¡m Ngá»c Tháº¡ch', 'CineStar Cáº§n ThÆ¡')
+WHERE c.cinema_name IN ('CGV Vincom Center Bà Triệu', 'CGV Crescent Mall', 'Lotte Cinema Đà Nẵng', 'Galaxy Nguyễn Du', 'BHD Star Phạm Ngọc Thạch', 'CineStar Cần Thơ')
 ON DUPLICATE KEY UPDATE
   seat_type = VALUES(seat_type),
   status = 'active';
@@ -687,14 +687,14 @@ INSERT INTO movies (
   poster_url, banner_url, trailer_url, description, release_date, status
 )
 VALUES
-  ('Láº­t Máº·t 9: VÃ²ng XoÃ¡y', 'Face Off 9', 'lat-mat-9-vong-xoay', 118, 'HÃ nh Ä‘á»™ng, TÃ¢m lÃ½', 'T16', 92, 'https://placehold.co/400x600?text=Lat+Mat+9', 'https://placehold.co/1200x500?text=Lat+Mat+9', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Má»™t bá»™ phim hÃ nh Ä‘á»™ng Viá»‡t Nam vá»›i nhá»‹p ká»ƒ nhanh vÃ  nhiá»u nÃºt tháº¯t.', '2026-05-10', 'now_showing'),
-  ('Doraemon: Nobita VÃ  Báº£n Giao HÆ°á»Ÿng Äá»‹a Cáº§u', 'Doraemon: Nobita''s Earth Symphony', 'doraemon-nobita-va-ban-giao-huong-dia-cau', 115, 'Hoáº¡t hÃ¬nh, Gia Ä‘Ã¬nh', 'P', 89, 'https://placehold.co/400x600?text=Doraemon', 'https://placehold.co/1200x500?text=Doraemon', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Chuyáº¿n phiÃªu lÆ°u Ã¢m nháº¡c dÃ nh cho gia Ä‘Ã¬nh vÃ  tráº» em.', '2026-05-12', 'now_showing'),
-  ('Mission: Impossible - Final Reckoning', 'Mission: Impossible - Final Reckoning', 'mission-impossible-final-reckoning', 169, 'HÃ nh Ä‘á»™ng, PhiÃªu lÆ°u', 'T16', 91, 'https://placehold.co/400x600?text=Mission+Impossible', 'https://placehold.co/1200x500?text=Mission+Impossible', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Má»™t nhiá»‡m vá»¥ cuá»‘i cÃ¹ng vá»›i quy mÃ´ toÃ n cáº§u.', '2026-05-15', 'now_showing'),
-  ('Conan: DÆ° áº¢nh Cá»§a Äá»™c NhÃ£n', 'Detective Conan: One-Eyed Flashback', 'conan-du-anh-cua-doc-nhan', 110, 'Hoáº¡t hÃ¬nh, Trinh thÃ¡m', 'T13', 0, 'https://placehold.co/400x600?text=Conan', 'https://placehold.co/1200x500?text=Conan', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Má»™t vá»¥ Ã¡n má»›i kÃ©o Conan vÃ o cuá»™c truy tÃ¬m sá»± tháº­t.', '2026-06-01', 'upcoming'),
-  ('MÆ°a Äá»', 'Red Rain', 'mua-do', 124, 'Chiáº¿n tranh, Lá»‹ch sá»­', 'T16', 86, 'https://placehold.co/400x600?text=Mua+Do', 'https://placehold.co/1200x500?text=Mua+Do', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'CÃ¢u chuyá»‡n lá»‹ch sá»­ Ä‘Æ°á»£c ká»ƒ qua gÃ³c nhÃ¬n nhÃ¢n váº­t tráº».', '2026-05-08', 'now_showing'),
-  ('Inside Out 3', 'Inside Out 3', 'inside-out-3', 102, 'Hoáº¡t hÃ¬nh, Gia Ä‘Ã¬nh', 'P', 0, 'https://placehold.co/400x600?text=Inside+Out+3', 'https://placehold.co/1200x500?text=Inside+Out+3', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Má»™t hÃ nh trÃ¬nh má»›i vÃ o tháº¿ giá»›i cáº£m xÃºc.', '2026-06-20', 'upcoming'),
-  ('Äá»‹a Äáº¡o: Máº·t Trá»i Trong BÃ³ng Tá»‘i', 'Tunnel: Sun in the Dark', 'dia-dao-mat-troi-trong-bong-toi', 128, 'Lá»‹ch sá»­, TÃ¢m lÃ½', 'T16', 84, 'https://placehold.co/400x600?text=Dia+Dao', 'https://placehold.co/1200x500?text=Dia+Dao', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Bá»™ phim khai thÃ¡c tinh tháº§n bá»n bá»‰ trong thá»i chiáº¿n.', '2026-04-10', 'ended'),
-  ('Fantastic Four: First Steps', 'Fantastic Four: First Steps', 'fantastic-four-first-steps', 130, 'SiÃªu anh hÃ¹ng, Sci-Fi', 'T13', 0, 'https://placehold.co/400x600?text=Fantastic+Four', 'https://placehold.co/1200x500?text=Fantastic+Four', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Má»™t khá»Ÿi Ä‘áº§u má»›i cho gia Ä‘Ã¬nh siÃªu anh hÃ¹ng.', '2026-07-05', 'upcoming')
+  ('Lật Mặt 9: Vòng Xoáy', 'Face Off 9', 'lat-mat-9-vong-xoay', 118, 'Hành động, Tâm lý', 'T16', 92, 'https://placehold.co/400x600?text=Lat+Mat+9', 'https://placehold.co/1200x500?text=Lat+Mat+9', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Một bộ phim hành động Việt Nam với nhịp kể nhanh và nhiều nút thắt.', '2026-05-10', 'now_showing'),
+  ('Doraemon: Nobita Và Bản Giao Hưởng Địa Cầu', 'Doraemon: Nobita''s Earth Symphony', 'doraemon-nobita-va-ban-giao-huong-dia-cau', 115, 'Hoạt hình, Gia đình', 'P', 89, 'https://placehold.co/400x600?text=Doraemon', 'https://placehold.co/1200x500?text=Doraemon', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Chuyến phiêu lưu âm nhạc dành cho gia đình và trẻ em.', '2026-05-12', 'now_showing'),
+  ('Mission: Impossible - Final Reckoning', 'Mission: Impossible - Final Reckoning', 'mission-impossible-final-reckoning', 169, 'Hành động, Phiêu lưu', 'T16', 91, 'https://placehold.co/400x600?text=Mission+Impossible', 'https://placehold.co/1200x500?text=Mission+Impossible', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Một nhiệm vụ cuối cùng với quy mô toàn cầu.', '2026-05-15', 'now_showing'),
+  ('Conan: Dư Ảnh Của Độc Nhãn', 'Detective Conan: One-Eyed Flashback', 'conan-du-anh-cua-doc-nhan', 110, 'Hoạt hình, Trinh thám', 'T13', 0, 'https://placehold.co/400x600?text=Conan', 'https://placehold.co/1200x500?text=Conan', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Một vụ án mới kéo Conan vào cuộc truy tìm sự thật.', '2026-06-01', 'upcoming'),
+  ('Mưa Đỏ', 'Red Rain', 'mua-do', 124, 'Chiến tranh, Lịch sử', 'T16', 86, 'https://placehold.co/400x600?text=Mua+Do', 'https://placehold.co/1200x500?text=Mua+Do', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Câu chuyện lịch sử được kể qua góc nhìn nhân vật trẻ.', '2026-05-08', 'now_showing'),
+  ('Inside Out 3', 'Inside Out 3', 'inside-out-3', 102, 'Hoạt hình, Gia đình', 'P', 0, 'https://placehold.co/400x600?text=Inside+Out+3', 'https://placehold.co/1200x500?text=Inside+Out+3', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Một hành trình mới vào thế giới cảm xúc.', '2026-06-20', 'upcoming'),
+  ('Địa Đạo: Mặt Trời Trong Bóng Tối', 'Tunnel: Sun in the Dark', 'dia-dao-mat-troi-trong-bong-toi', 128, 'Lịch sử, Tâm lý', 'T16', 84, 'https://placehold.co/400x600?text=Dia+Dao', 'https://placehold.co/1200x500?text=Dia+Dao', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Bộ phim khai thác tinh thần bền bỉ trong thời chiến.', '2026-04-10', 'ended'),
+  ('Fantastic Four: First Steps', 'Fantastic Four: First Steps', 'fantastic-four-first-steps', 130, 'Siêu anh hùng, Sci-Fi', 'T13', 0, 'https://placehold.co/400x600?text=Fantastic+Four', 'https://placehold.co/1200x500?text=Fantastic+Four', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Một khởi đầu mới cho gia đình siêu anh hùng.', '2026-07-05', 'upcoming')
 ON DUPLICATE KEY UPDATE
   title = VALUES(title),
   title_en = VALUES(title_en),
@@ -736,7 +736,7 @@ CROSS JOIN (
   UNION ALL
   SELECT 'Combo Family', '2 b???p l???n + 4 n?????c ng???t v???a', 'https://placehold.co/500x350?text=Combo+Family', 210000
 ) ct
-WHERE c.cinema_name IN ('CGV Vincom Center BÃ  Triá»‡u', 'CGV Crescent Mall', 'Lotte Cinema ÄÃ  Náºµng', 'Galaxy Nguyá»…n Du', 'BHD Star Pháº¡m Ngá»c Tháº¡ch', 'CineStar Cáº§n ThÆ¡')
+WHERE c.cinema_name IN ('CGV Vincom Center Bà Triệu', 'CGV Crescent Mall', 'Lotte Cinema Đà Nẵng', 'Galaxy Nguyễn Du', 'BHD Star Phạm Ngọc Thạch', 'CineStar Cần Thơ')
 ON DUPLICATE KEY UPDATE
   description = VALUES(description),
   image_url = VALUES(image_url),
@@ -748,29 +748,29 @@ INSERT INTO showtimes (
 )
 SELECT m.movie_id, r.room_id, p.start_time, p.end_time, p.price_standard, p.price_vip, p.price_couple
 FROM (
-  SELECT 'lat-mat-9-vong-xoay' AS slug, 'CGV Vincom Center BÃ  Triá»‡u' AS cinema_name, 'Room 1' AS room_name, '2026-05-20 10:00:00' AS start_time, '2026-05-20 12:18:00' AS end_time, 80000 AS price_standard, 110000 AS price_vip, 160000 AS price_couple
+  SELECT 'lat-mat-9-vong-xoay' AS slug, 'CGV Vincom Center Bà Triệu' AS cinema_name, 'Room 1' AS room_name, '2026-05-20 10:00:00' AS start_time, '2026-05-20 12:18:00' AS end_time, 80000 AS price_standard, 110000 AS price_vip, 160000 AS price_couple
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-20 10:00:00', '2026-05-20 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 10:00:00', '2026-05-20 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-20 14:00:00', '2026-05-20 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 14:00:00', '2026-05-20 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-20 18:00:00', '2026-05-20 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 18:00:00', '2026-05-20 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-20 21:15:00', '2026-05-20 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 21:15:00', '2026-05-20 23:50:00', 95000, 125000, 190000
   UNION ALL
   SELECT 'lat-mat-9-vong-xoay', 'CGV Crescent Mall', 'Room 1', '2026-05-20 10:00:00', '2026-05-20 12:18:00', 80000, 110000, 160000
   UNION ALL
@@ -796,45 +796,45 @@ FROM (
   UNION ALL
   SELECT 'avengers-secret-empire', 'CGV Crescent Mall', 'Room 3', '2026-05-20 21:15:00', '2026-05-20 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-20 10:00:00', '2026-05-20 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 10:00:00', '2026-05-20 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-21 10:00:00', '2026-05-21 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 10:00:00', '2026-05-21 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-21 14:00:00', '2026-05-21 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 14:00:00', '2026-05-21 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-21 18:00:00', '2026-05-21 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 18:00:00', '2026-05-21 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-21 21:15:00', '2026-05-21 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 21:15:00', '2026-05-21 23:30:00', 95000, 125000, 190000
   UNION ALL
   SELECT 'mission-impossible-final-reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
   UNION ALL
@@ -860,45 +860,45 @@ FROM (
   UNION ALL
   SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Crescent Mall', 'Room 3', '2026-05-21 21:15:00', '2026-05-21 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-22 10:00:00', '2026-05-22 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 10:00:00', '2026-05-22 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-22 14:00:00', '2026-05-22 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 14:00:00', '2026-05-22 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-22 18:00:00', '2026-05-22 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 18:00:00', '2026-05-22 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-22 21:15:00', '2026-05-22 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 21:15:00', '2026-05-22 23:39:00', 95000, 125000, 190000
   UNION ALL
   SELECT 'shin-cau-be-but-chi', 'CGV Crescent Mall', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
   UNION ALL
@@ -924,45 +924,45 @@ FROM (
   UNION ALL
   SELECT 'mua-do', 'CGV Crescent Mall', 'Room 3', '2026-05-22 21:15:00', '2026-05-22 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-23 10:00:00', '2026-05-23 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 10:00:00', '2026-05-23 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-23 14:00:00', '2026-05-23 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 14:00:00', '2026-05-23 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-23 18:00:00', '2026-05-23 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 18:00:00', '2026-05-23 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-23 21:15:00', '2026-05-23 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 21:15:00', '2026-05-23 23:50:00', 95000, 125000, 190000
   UNION ALL
   SELECT 'lat-mat-9-vong-xoay', 'CGV Crescent Mall', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
   UNION ALL
@@ -988,45 +988,45 @@ FROM (
   UNION ALL
   SELECT 'avengers-secret-empire', 'CGV Crescent Mall', 'Room 3', '2026-05-23 21:15:00', '2026-05-23 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-24 10:00:00', '2026-05-24 11:55:00', 80000, 110000, 160000
+  SELECT 'shin-cau-be-but-chi', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 10:00:00', '2026-05-24 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-24 14:00:00', '2026-05-24 16:35:00', 80000, 110000, 160000
+  SELECT 'avengers-secret-empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 14:00:00', '2026-05-24 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-24 18:00:00', '2026-05-24 20:18:00', 95000, 125000, 190000
+  SELECT 'lat-mat-9-vong-xoay', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 18:00:00', '2026-05-24 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center BÃ  Triá»‡u', 'Room 3', '2026-05-24 21:15:00', '2026-05-24 23:30:00', 95000, 125000, 190000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 21:15:00', '2026-05-24 23:30:00', 95000, 125000, 190000
   UNION ALL
   SELECT 'mission-impossible-final-reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
   UNION ALL
@@ -1052,21 +1052,21 @@ FROM (
   UNION ALL
   SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'CGV Crescent Mall', 'Room 3', '2026-05-24 21:15:00', '2026-05-24 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
+  SELECT 'shin-cau-be-but-chi', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'avengers-secret-empire', 'Lotte Cinema ÄÃ  Náºµng', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
+  SELECT 'avengers-secret-empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
+  SELECT 'lat-mat-9-vong-xoay', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
+  SELECT 'doraemon-nobita-va-ban-giao-huong-dia-cau', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
+  SELECT 'mission-impossible-final-reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'mua-do', 'Lotte Cinema ÄÃ  Náºµng', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
+  SELECT 'mua-do', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
 ) p
 JOIN movies m ON m.slug = p.slug
 JOIN cinemas c ON c.cinema_name = p.cinema_name
@@ -1097,14 +1097,14 @@ LEFT JOIN showtime_seats ss
  AND ss.seat_id = s.seat_id
 WHERE st.start_time BETWEEN '2026-05-20 00:00:00' AND '2026-05-24 23:59:59'
   AND (
-      (c.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u' AND r.room_name = 'Room 1')
-      OR (c.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u' AND r.room_name = 'Room 2')
-      OR (c.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u' AND r.room_name = 'Room 3')
+      (c.cinema_name = 'CGV Vincom Center Bà Triệu' AND r.room_name = 'Room 1')
+      OR (c.cinema_name = 'CGV Vincom Center Bà Triệu' AND r.room_name = 'Room 2')
+      OR (c.cinema_name = 'CGV Vincom Center Bà Triệu' AND r.room_name = 'Room 3')
       OR (c.cinema_name = 'CGV Crescent Mall' AND r.room_name = 'Room 1')
       OR (c.cinema_name = 'CGV Crescent Mall' AND r.room_name = 'Room 2')
       OR (c.cinema_name = 'CGV Crescent Mall' AND r.room_name = 'Room 3')
-      OR (c.cinema_name = 'Lotte Cinema ÄÃ  Náºµng' AND r.room_name = 'Room 1')
-      OR (c.cinema_name = 'Lotte Cinema ÄÃ  Náºµng' AND r.room_name = 'Room 2')
+      OR (c.cinema_name = 'Lotte Cinema Đà Nẵng' AND r.room_name = 'Room 1')
+      OR (c.cinema_name = 'Lotte Cinema Đà Nẵng' AND r.room_name = 'Room 2')
   )
   AND s.status = 'active'
   AND ss.showtime_seat_id IS NULL;
@@ -1124,7 +1124,7 @@ SELECT
 FROM customers customer
 JOIN showtimes st ON st.start_time = '2026-05-20 10:00:00'
 JOIN screening_rooms room ON room.room_id = st.room_id AND room.room_name = 'Room 1'
-JOIN cinemas cinema ON cinema.cinema_id = room.cinema_id AND cinema.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u'
+JOIN cinemas cinema ON cinema.cinema_id = room.cinema_id AND cinema.cinema_name = 'CGV Vincom Center Bà Triệu'
 JOIN food_combos combo ON combo.cinema_id = cinema.cinema_id AND combo.combo_name = 'Combo Solo'
 CROSS JOIN (
   SELECT SUM(selected_seats.price) AS ticket_subtotal
@@ -1134,7 +1134,7 @@ CROSS JOIN (
     JOIN showtimes selected_showtime ON selected_showtime.showtime_id = ss.showtime_id
     JOIN screening_rooms selected_room ON selected_room.room_id = selected_showtime.room_id
     JOIN cinemas selected_cinema ON selected_cinema.cinema_id = selected_room.cinema_id
-    WHERE selected_cinema.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u'
+    WHERE selected_cinema.cinema_name = 'CGV Vincom Center Bà Triệu'
       AND selected_room.room_name = 'Room 1'
       AND selected_showtime.start_time = '2026-05-20 10:00:00'
       AND ss.status = 'available'
@@ -1160,7 +1160,7 @@ WHERE showtime_seat_id IN (
     JOIN showtimes st ON st.showtime_id = ss.showtime_id
     JOIN screening_rooms room ON room.room_id = st.room_id
     JOIN cinemas cinema ON cinema.cinema_id = room.cinema_id
-    WHERE cinema.cinema_name = 'CGV Vincom Center BÃ  Triá»‡u'
+    WHERE cinema.cinema_name = 'CGV Vincom Center Bà Triệu'
       AND room.room_name = 'Room 1'
       AND st.start_time = '2026-05-20 10:00:00'
     ORDER BY ss.showtime_seat_id

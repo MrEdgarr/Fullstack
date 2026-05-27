@@ -15,10 +15,6 @@
             <Swiper
                 :slidesPerView="2"
                 :spaceBetween="10"
-                :navigation="{
-                    nextEl: '.button-next',
-                    prevEl: '.button-prev',
-                }"
                 :breakpoints="{
                     '480': {
                         slidesPerView: 3,
@@ -37,9 +33,14 @@
                         spaceBetween: 20,
                     },
                 }"
-                :loop="true"
+                :watch-overflow="true"
+                :rewind="true"
                 :modules="modules"
-                @swiper="(s) => (swiperRef = s)"
+                @swiper="handleSwiper"
+                @resize="syncNavigation"
+                @breakpoint="syncNavigation"
+                @lock="syncNavigationState"
+                @unlock="syncNavigationState"
             >
                 <SwiperSlide
                     v-for="(slide, index) in slides"
@@ -51,12 +52,14 @@
                 </SwiperSlide>
             </Swiper>
             <button
+                v-if="canNavigate"
                 class="button-prev bg-base-200/75 hover:bg-base-200 absolute top-[calc(50%-40px)] left-2 z-10 flex h-8 w-8 -translate-y-1/2 rotate-45 cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in"
                 @click="swiperRef?.slidePrev()"
             >
                 <BaseIcon name="chevron-left" class="-rotate-45 md:text-xl" />
             </button>
             <button
+                v-if="canNavigate"
                 class="button-next bg-base-200/75 hover:bg-base-200 absolute top-[calc(50%-40px)] right-2 z-10 flex h-8 w-8 -translate-y-1/2 -rotate-45 cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in"
                 @click="swiperRef?.slideNext()"
             >
@@ -66,9 +69,12 @@
     </div>
 </template>
 <script setup>
-// Import Swiper Vue.js components
+import { nextTick, ref, watch } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
+
 const emit = defineEmits(["slideClick"]);
+const swiperRef = ref(null);
+const canNavigate = ref(false);
 
 const props = defineProps({
     modules: {
@@ -97,6 +103,34 @@ const props = defineProps({
         default: "/",
     },
 });
+
+const syncNavigationState = (swiper = swiperRef.value) => {
+    canNavigate.value = Boolean(swiper && !swiper.destroyed && !swiper.isLocked);
+};
+
+const syncNavigation = (swiper = swiperRef.value) => {
+    if (!swiper || swiper.destroyed) {
+        canNavigate.value = false;
+        return;
+    }
+
+    swiper.update();
+    syncNavigationState(swiper);
+};
+
+const handleSwiper = async (swiper) => {
+    swiperRef.value = swiper;
+    await nextTick();
+    syncNavigation(swiper);
+};
+
+watch(
+    () => props.slides.length,
+    async () => {
+        await nextTick();
+        syncNavigation();
+    },
+);
 
 const handleSlideClick = (slide, index) => {
     emit("slideClick", { slide, index });

@@ -5,14 +5,7 @@ const AppError = require("../../shared/utils/app-error");
 
 const SALT_ROUNDS = 10;
 
-exports.register = async ({
-  full_name,
-  email,
-  phone,
-  password,
-  avatar_url,
-  date_of_birth,
-}) => {
+exports.register = async ({ full_name, email, phone, password, avatar_url, date_of_birth }) => {
   const [existingCustomers] = await customersRepository.getByEmail(email);
 
   if (existingCustomers.length > 0) {
@@ -49,6 +42,7 @@ exports.login = async ({ email, password }) => {
       customer_id: customer.customer_id,
       email: customer.email,
       full_name: customer.full_name,
+      avatar_url: customer.avatar_url,
       role: customer.role,
     },
     process.env.JWT_SECRET,
@@ -61,6 +55,7 @@ exports.login = async ({ email, password }) => {
       customer_id: customer.customer_id,
       full_name: customer.full_name,
       email: customer.email,
+      avatar_url: customer.avatar_url,
     },
   };
 };
