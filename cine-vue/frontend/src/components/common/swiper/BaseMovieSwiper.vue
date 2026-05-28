@@ -13,38 +13,18 @@
         </div>
         <div class="relative">
             <Swiper
-                :slidesPerView="2"
-                :spaceBetween="10"
-                :breakpoints="{
-                    '480': {
-                        slidesPerView: 3,
-                        spaceBetween: 10,
-                    },
-                    '768': {
-                        slidesPerView: 4,
-                        spaceBetween: 15,
-                    },
-                    '1024': {
-                        slidesPerView: 5,
-                        spaceBetween: 20,
-                    },
-                    '1280': {
-                        slidesPerView: 6,
-                        spaceBetween: 20,
-                    },
-                }"
+                :key="swiperKey"
+                :slidesPerView="DEFAULT_SLIDES_PER_VIEW"
+                :spaceBetween="DEFAULT_SPACE_BETWEEN"
+                :breakpoints="SWIPER_BREAKPOINTS"
                 :watch-overflow="true"
-                :rewind="true"
+                :loop="shouldLoop"
                 :modules="modules"
                 @swiper="handleSwiper"
-                @resize="syncNavigation"
-                @breakpoint="syncNavigation"
-                @lock="syncNavigationState"
-                @unlock="syncNavigationState"
             >
                 <SwiperSlide
                     v-for="(slide, index) in slides"
-                    :key="index"
+                    :key="slide.id ?? index"
                     :class="slideClass"
                     @click="handleSlideClick(slide, index)"
                 >
@@ -69,16 +49,40 @@
     </div>
 </template>
 <script setup>
-import { nextTick, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 
 const emit = defineEmits(["slideClick"]);
 const swiperRef = ref(null);
-const canNavigate = ref(false);
+
+const DEFAULT_SLIDES_PER_VIEW = 2;
+const DEFAULT_SPACE_BETWEEN = 10;
+const SWIPER_BREAKPOINTS = {
+    480: {
+        slidesPerView: 3,
+        spaceBetween: 10,
+    },
+    768: {
+        slidesPerView: 4,
+        spaceBetween: 15,
+    },
+    1024: {
+        slidesPerView: 5,
+        spaceBetween: 20,
+    },
+    1280: {
+        slidesPerView: 6,
+        spaceBetween: 20,
+    },
+};
+const BREAKPOINT_WIDTHS = Object.keys(SWIPER_BREAKPOINTS)
+    .map(Number)
+    .sort((first, second) => second - first);
 
 const props = defineProps({
     modules: {
         type: Array,
+        default: () => [],
     },
     titleSlide: {
         type: String,
@@ -104,37 +108,41 @@ const props = defineProps({
     },
 });
 
-const syncNavigationState = (swiper = swiperRef.value) => {
-    canNavigate.value = Boolean(swiper && !swiper.destroyed && !swiper.isLocked);
+const resolveSlidesPerView = () => {
+    if (typeof window === "undefined") return DEFAULT_SLIDES_PER_VIEW;
+
+    const breakpoint = BREAKPOINT_WIDTHS.find((width) => window.innerWidth >= width);
+    return breakpoint
+        ? SWIPER_BREAKPOINTS[breakpoint].slidesPerView
+        : DEFAULT_SLIDES_PER_VIEW;
 };
 
-const syncNavigation = (swiper = swiperRef.value) => {
-    if (!swiper || swiper.destroyed) {
-        canNavigate.value = false;
-        return;
-    }
+const slidesPerView = ref(resolveSlidesPerView());
+const canNavigate = computed(() => props.slides.length > slidesPerView.value);
+const shouldLoop = computed(() => canNavigate.value);
+const swiperKey = computed(() => {
+    const mode = shouldLoop.value ? "loop" : "static";
+    return `${slidesPerView.value}-${props.slides.length}-${mode}`;
+});
 
-    swiper.update();
-    syncNavigationState(swiper);
+const updateSlidesPerView = () => {
+    slidesPerView.value = resolveSlidesPerView();
 };
 
-const handleSwiper = async (swiper) => {
+const handleSwiper = (swiper) => {
     swiperRef.value = swiper;
-    await nextTick();
-    syncNavigation(swiper);
 };
 
-watch(
-    () => props.slides.length,
-    async () => {
-        await nextTick();
-        syncNavigation();
-    },
-);
+onMounted(() => {
+    updateSlidesPerView();
+    window.addEventListener("resize", updateSlidesPerView);
+});
+
+onUnmounted(() => {
+    window.removeEventListener("resize", updateSlidesPerView);
+});
 
 const handleSlideClick = (slide, index) => {
     emit("slideClick", { slide, index });
 };
 </script>
-
-<style scoped></style>

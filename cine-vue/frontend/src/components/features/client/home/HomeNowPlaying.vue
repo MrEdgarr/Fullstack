@@ -6,7 +6,7 @@
     >
         <template #slide="{ slide }">
             <RouterLink :to="`/movie/${removeAccents(slide.title)}-i${slide.id}`">
-                <div class="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
+                <div class="relative aspect-2/3 w-full overflow-hidden rounded-lg">
                     <img
                         :src="slide.poster_url"
                         :alt="slide.title"

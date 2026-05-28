@@ -6,11 +6,11 @@
     >
         <template #slide="{ slide, index }">
             <RouterLink :to="`/movie/${removeAccents(slide.title)}-i${slide.id}`">
-                <div class="relative overflow-hidden rounded-lg">
+                <div class="relative aspect-2/3 w-full overflow-hidden rounded-lg">
                     <img
                         :src="slide.poster_url"
                         :alt="slide.title"
-                        class="rounded-lg duration-300 hover:scale-105"
+                        class="h-full w-full object-cover object-center duration-300 hover:scale-105"
                         :class="index % 2 === 0 ? 'odd-img' : 'even-img'"
                     />
                 </div>
@@ -23,9 +23,8 @@
 </template>
 <script setup>
 import { removeAccents } from "@/utils/helpers/slug";
-import { MOVIES } from "@/utils/constants/Movie.js";
 
-const props = defineProps({
+defineProps({
     movies: {
         type: Array,
         default: () => [],
