@@ -11,6 +11,7 @@
                 <button
                     class="btn btn-sm btn-circle btn-ghost"
                     aria-label="Đóng"
+                    :disabled="authStore.isLoading"
                     @click="authStore.closeModal"
                 >
                     <BaseIcon name="close" />
@@ -18,7 +19,7 @@
             </div>
             <!-- Form -->
             <form @submit.prevent="handleRegister">
-                <fieldset class="fieldset">
+                <fieldset class="fieldset" :disabled="authStore.isLoading">
                     <!-- Full Name -->
                     <div class="form-control">
                         <div class="label">
@@ -43,6 +44,20 @@
                             type="email"
                             placeholder="email@example.com"
                             class="input input-bordered w-full"
+                            required
+                        />
+                    </div>
+                    <!-- Phone -->
+                    <div class="form-control">
+                        <div class="label">
+                            <span class="label-text">Số điện thoại</span>
+                        </div>
+                        <input
+                            v-model="formData.phone"
+                            type="tel"
+                            placeholder="0901234567"
+                            class="input input-bordered w-full"
+                            pattern="[0-9]{10,11}"
                             required
                         />
                     </div>
@@ -106,10 +121,10 @@
                     <button
                         type="submit"
                         class="btn btn-primary w-full"
-                        :class="{ loading: isLoading }"
-                        :disabled="isLoading || !isFormValid"
+                        :class="{ loading: authStore.isLoading }"
+                        :disabled="authStore.isLoading || !isFormValid"
                     >
-                        {{ isLoading ? "Đang xử lý..." : "Đăng ký" }}
+                        {{ authStore.isLoading ? "Đang xử lý..." : "Đăng ký" }}
                     </button>
                     <!-- Divider -->
                     <div class="divider">HOẶC</div>
@@ -177,15 +192,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { reactive, computed } from "vue";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 const authStore = useAuthStore();
-
-const isLoading = ref(false);
 
 const formData = reactive({
     fullName: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
@@ -209,6 +223,7 @@ const isFormValid = computed(() => {
     return (
         formData.fullName &&
         formData.email &&
+        /^[0-9]{10,11}$/.test(formData.phone) &&
         formData.password.length >= 8 &&
         formData.password === formData.confirmPassword &&
         formData.agreeToTerms
@@ -220,34 +235,25 @@ const handleRegister = async () => {
         return;
     }
 
-    isLoading.value = true;
-
     try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        console.log("Register data:", {
-            fullName: formData.fullName,
+        await authStore.register({
+            full_name: formData.fullName,
             email: formData.email,
+            phone: formData.phone,
             password: formData.password,
         });
 
-        // Reset form
         formData.fullName = "";
         formData.email = "";
+        formData.phone = "";
         formData.password = "";
         formData.confirmPassword = "";
         formData.agreeToTerms = false;
 
-        closeRegisterModal();
-
-        // Show success message
         alert("Đăng ký thành công!");
     } catch (error) {
         console.error("Register error:", error);
-        alert("Đăng ký thất bại!");
-    } finally {
-        isLoading.value = false;
+        alert(error.response?.data?.message || "Đăng ký thất bại!");
     }
 };
 </script>

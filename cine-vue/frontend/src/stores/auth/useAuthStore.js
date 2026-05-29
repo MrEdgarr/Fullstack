@@ -44,7 +44,9 @@ export const useAuthStore = defineStore("auth", () => {
     const login = async (credentials) => {
         isLoading.value = true;
         try {
-            const res = await api.post("/auth/login", credentials);
+            const res = await api.post("/auth/login", credentials, {
+                skipServerLoading: true,
+            });
 
             setToken(res.data.token);
             setUser(res.data.customer);
@@ -62,7 +64,9 @@ export const useAuthStore = defineStore("auth", () => {
     const register = async (userData) => {
         isLoading.value = true;
         try {
-            const res = await api.post("/auth/register", userData);
+            const res = await api.post("/auth/register", userData, {
+                skipServerLoading: true,
+            });
             closeModal();
             return res.data;
         } finally {

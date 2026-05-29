@@ -19,8 +19,8 @@
                     <p class="text-base font-semibold">
                         {{ serverConnectionStore.message }}
                     </p>
-                    <p class="text-base-content/60 text-sm">
-                        Lần kết nối đầu tiên có thể mất thêm vài giây.
+                    <p v-if="serverConnectionStore.subMessage" class="text-base-content/60 text-sm">
+                        {{ serverConnectionStore.subMessage }}
                     </p>
                 </div>
             </div>

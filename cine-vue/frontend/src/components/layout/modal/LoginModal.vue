@@ -11,6 +11,7 @@
                 <button
                     class="btn btn-sm btn-circle btn-ghost"
                     aria-label="Đóng"
+                    :disabled="authStore.isLoading"
                     @click="authStore.closeModal"
                 >
                     <BaseIcon name="close" />
@@ -19,7 +20,7 @@
 
             <!-- Form -->
             <form @submit.prevent="handleLogin">
-                <fieldset class="fieldset">
+                <fieldset class="fieldset" :disabled="authStore.isLoading">
                     <!-- Email -->
                     <div class="form-control">
                         <div class="label">

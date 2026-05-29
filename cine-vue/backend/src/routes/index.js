@@ -16,14 +16,6 @@ const paymentsRoutes = require("../modules/payments/payments.routes");
 const combosRoutes = require("../modules/combos/combos.routes");
 const promotionsRoutes = require("../modules/promotions/promotions.routes");
 
-router.get("/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "API is healthy",
-    uptime: process.uptime(),
-  });
-});
-
 router.use("/auth", authRoutes);
 router.use("/brands", brandsRoutes);
 router.use("/cities", citiesRoutes);
