@@ -24,13 +24,16 @@ export const routes = [
                         meta: {
                             title: "Cinemax",
                             requiresAuth: false,
-                            breadcrumb: "Phim đang chiếu",
+                            breadcrumb: (route) =>
+                                route.params.slug === "coming-soon"
+                                    ? "Phim sắp chiếu"
+                                    : "Phim đang chiếu",
                         },
                         // Alias routes
                         alias: ["dang-chieu"],
                     },
                     {
-                        path: ":slug",
+                        path: ":slug(.+-i\\d+)",
                         component: () => import("@/views/client/MovieView.vue"),
                         name: "movie",
                         meta: {

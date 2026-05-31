@@ -77,7 +77,7 @@ Các route được khai báo trong `src/router/routes.js`.
 | Route | Chức năng |
 | --- | --- |
 | `/` | trang chủ |
-| `/movie/:slug` | trang chi tiết phim |
+| `/movie/{slug}-i{id}` | trang chi tiết phim |
 | `/movie/now-playing`, `/movie/coming-soon` | danh sách theo trạng thái |
 | `/showtimes` | lịch chiếu |
 | `/booking` | luồng đặt vé |

@@ -1,5 +1,5 @@
 import router from "@/router";
-import { removeVietnameseTones, removeAccents } from "@/utils/helpers/slug";
+import { createMovieSlug, normalizeVietnameseText } from "@/utils/helpers/slug";
 import { MOVIES } from "@/utils/constants/Movie";
 export const useSearchStore = defineStore("search", () => {
     // ==================== STATE ======================
@@ -12,9 +12,9 @@ export const useSearchStore = defineStore("search", () => {
         const query = searchQuery.value.trim();
         if (!query) return MOVIES;
         // Chuẩn hóa query: bỏ dấu, chuyển về chữ thường
-        const normalizedQuery = removeVietnameseTones(query.toLowerCase());
+        const normalizedQuery = normalizeVietnameseText(query.toLowerCase());
         return MOVIES.filter((movie) => {
-            const normalizedTitle = removeVietnameseTones(movie.title.toLowerCase());
+            const normalizedTitle = normalizeVietnameseText(movie.title.toLowerCase());
             return normalizedTitle.includes(normalizedQuery);
         });
     });
@@ -32,7 +32,12 @@ export const useSearchStore = defineStore("search", () => {
     };
 
     const selectMovie = (movie) => {
-        router.push(`movie/${removeAccents(movie.title)}-i${movie.id}`);
+        router.push({
+            name: "movie",
+            params: {
+                slug: createMovieSlug(movie),
+            },
+        });
         closeModal();
     };
 

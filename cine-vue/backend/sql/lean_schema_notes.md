@@ -125,7 +125,6 @@ Các loại ghế:
 Lưu thông tin phim:
 
 - tên phim
-- slug
 - thời lượng
 - thể loại
 - độ tuổi
@@ -314,7 +313,6 @@ Việc lưu `unit_price` và `line_total` tại đây giúp dữ liệu booking 
 - Dùng unique key cho các dữ liệu cần duy nhất:
   - email
   - phone
-  - slug phim
   - ghế trong từng phòng
   - ghế trong từng suất chiếu
   - transaction id thanh toán

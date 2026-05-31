@@ -1,5 +1,6 @@
-export const removeVietnameseTones = (str) => {
+export const normalizeVietnameseText = (str) => {
     if (!str) return "";
+
     return str
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -8,19 +9,31 @@ export const removeVietnameseTones = (str) => {
         .replace(/([^0-9a-z\s])/gi, "");
 };
 
-export const removeAccents = (str) => {
+export const slugify = (str) => {
     if (!str) return "";
-    return removeVietnameseTones(str)
+
+    return normalizeVietnameseText(str)
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, "-") // Thay khoảng trắng bằng -
-        .replace(/-+/g, "-") // Tránh gạch ngang kép
-        .replace(/^-+|-+$/g, ""); // Xóa gạch ngang ở 2 đầu
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
 };
 
-export const extractId = (slug) => {
+export const getMovieId = (movie) => movie?.movie_id ?? movie?.id;
+
+export const createMovieSlug = (movie) => {
+    const movieId = getMovieId(movie);
+    const movieSlug = slugify(movie?.title);
+
+    return movieId ? `${movieSlug}-i${movieId}` : movieSlug;
+};
+
+export const extractIdFromSlug = (slug) => {
     if (!slug) return null;
+
     const cleanSlug = slug.split("?")[0].replace(/\/$/, "");
     const match = cleanSlug.match(/-i(\d+)$/);
+
     return match ? parseInt(match[1], 10) : null;
 };

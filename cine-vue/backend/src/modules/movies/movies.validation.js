@@ -3,7 +3,6 @@ const Joi = require("joi");
 const movieSchema = Joi.object({
   title: Joi.string().trim().min(3).max(255).required(),
   title_en: Joi.string().trim().max(255).allow("", null).optional(),
-  slug: Joi.string().trim().min(3).max(255).required(),
   duration_minutes: Joi.number().integer().min(30).max(300).required(),
   genre: Joi.string().max(100).allow("", null).optional(),
   age_rating: Joi.string().valid("G", "P", "K", "T13", "T16", "T18", "C18").required(),

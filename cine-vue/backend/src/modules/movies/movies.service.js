@@ -7,7 +7,6 @@ exports.create = async (payload, files) => {
   const {
     title,
     title_en,
-    slug,
     duration_minutes,
     genre,
     age_rating,
@@ -30,7 +29,6 @@ exports.create = async (payload, files) => {
   await moviesRepository.create(
     title,
     title_en,
-    slug,
     duration_minutes,
     genre,
     age_rating,
@@ -55,7 +53,6 @@ exports.update = async (movieId, payload, files) => {
   const {
     title,
     title_en,
-    slug,
     duration_minutes,
     genre,
     age_rating,
@@ -85,7 +82,6 @@ exports.update = async (movieId, payload, files) => {
     movieId,
     title,
     title_en,
-    slug,
     duration_minutes,
     genre,
     age_rating,

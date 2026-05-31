@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col justify-between gap-5 bg-transparent p-0" :class="containerClass">
         <div class="flex w-full shrink-0 grow flex-row items-center justify-between gap-5 p-0">
-            <div class="text-sm font-bold md:text-2xl">{{ titleSlide }}</div>
+            <h2 class="text-sm font-bold md:text-2xl">{{ titleSlide }}</h2>
             <div class="cursor-pointer text-sm">
                 <router-link
                     :to="toRouter"
@@ -24,7 +24,7 @@
             >
                 <SwiperSlide
                     v-for="(slide, index) in slides"
-                    :key="slide.id ?? index"
+                    :key="slide.movie_id ?? slide.id ?? index"
                     :class="slideClass"
                     @click="handleSlideClick(slide, index)"
                 >
@@ -103,7 +103,7 @@ const props = defineProps({
         default: "",
     },
     toRouter: {
-        type: String,
+        type: [String, Object],
         default: "/",
     },
 });
@@ -112,9 +112,7 @@ const resolveSlidesPerView = () => {
     if (typeof window === "undefined") return DEFAULT_SLIDES_PER_VIEW;
 
     const breakpoint = BREAKPOINT_WIDTHS.find((width) => window.innerWidth >= width);
-    return breakpoint
-        ? SWIPER_BREAKPOINTS[breakpoint].slidesPerView
-        : DEFAULT_SLIDES_PER_VIEW;
+    return breakpoint ? SWIPER_BREAKPOINTS[breakpoint].slidesPerView : DEFAULT_SLIDES_PER_VIEW;
 };
 
 const slidesPerView = ref(resolveSlidesPerView());

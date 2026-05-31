@@ -42,7 +42,6 @@ exports.getByStatus = (status) =>
 exports.create = (
   title,
   title_en,
-  slug,
   duration_minutes,
   genre,
   age_rating,
@@ -55,11 +54,10 @@ exports.create = (
   status,
 ) =>
   db.execute(
-    "INSERT INTO movies (title, title_en, slug, duration_minutes, genre, age_rating, rating_percent, banner_url, poster_url, trailer_url, description, release_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO movies (title, title_en, duration_minutes, genre, age_rating, rating_percent, banner_url, poster_url, trailer_url, description, release_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
       title,
       title_en,
-      slug,
       duration_minutes,
       genre,
       age_rating,
@@ -76,7 +74,6 @@ exports.update = (
   id,
   title,
   title_en,
-  slug,
   duration_minutes,
   genre,
   age_rating,
@@ -89,11 +86,10 @@ exports.update = (
   status,
 ) =>
   db.execute(
-    "UPDATE movies SET title = ?, title_en = ?, slug = ?, duration_minutes = ?, genre = ?, age_rating = ?, rating_percent = ?, banner_url = ?, poster_url = ?, trailer_url = ?, description = ?, release_date = ?, status = ? WHERE movie_id = ?",
+    "UPDATE movies SET title = ?, title_en = ?, duration_minutes = ?, genre = ?, age_rating = ?, rating_percent = ?, banner_url = ?, poster_url = ?, trailer_url = ?, description = ?, release_date = ?, status = ? WHERE movie_id = ?",
     [
       title,
       title_en,
-      slug,
       duration_minutes,
       genre,
       age_rating,

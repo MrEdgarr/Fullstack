@@ -1,5 +1,6 @@
 const showtimesRepository = require("./showtimes.repository");
 const showtimeSeatsService = require("./showtime-seats.service");
+const showtimeSeatsRepository = require("./showtime-seats.repository");
 
 exports.getAll = async (req, res, next) => {
   try {

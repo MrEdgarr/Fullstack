@@ -2,10 +2,10 @@
     <BaseMovieSwiper
         :slides="movies"
         :titleSlide="`Phim Sắp Chiếu`"
-        :toRouter="'/movie/coming-soon'"
+        :toRouter="listRoute"
     >
         <template #slide="{ slide, index }">
-            <RouterLink :to="`/movie/${removeAccents(slide.title)}-i${slide.id}`">
+            <RouterLink :to="slide.detailRoute">
                 <div class="relative aspect-2/3 w-full overflow-hidden rounded-lg">
                     <img
                         :src="slide.poster_url"
@@ -22,12 +22,14 @@
     </BaseMovieSwiper>
 </template>
 <script setup>
-import { removeAccents } from "@/utils/helpers/slug";
-
 defineProps({
     movies: {
         type: Array,
         default: () => [],
+    },
+    listRoute: {
+        type: [String, Object],
+        default: "/movie/coming-soon",
     },
 });
 </script>

@@ -4,79 +4,71 @@
             <div class="grid gap-5 text-center lg:grid-cols-12 lg:text-left">
                 <div class="lg:col-span-2">
                     <img
-                        :src="movieStore.currentMovie?.poster"
-                        alt=""
+                        :src="movie?.poster_url || movie?.poster"
+                        :alt="movie?.title || 'Movie poster'"
                         class="m-auto w-30 rounded-lg lg:w-full"
                     />
                 </div>
+
                 <div class="text-base-100 lg:col-span-10">
                     <div class="grid gap-2.5">
                         <div>
                             <div class="truncate text-lg font-semibold md:text-2xl">
-                                {{ movieStore.currentMovie?.title }}
+                                {{ movie?.title || "Không tìm thấy phim" }}
                             </div>
                             <div class="text-base-300/75 text-xs md:text-sm">
-                                NOBODY (浪浪山小妖怪) - Comedy, Adventu re, Animation, Fantasy
+                                {{ movieMeta || "Thông tin phim đang được cập nhật" }}
                             </div>
                         </div>
+
                         <div>
                             <div class="inline-flex gap-1">
                                 <div class="btn btn-outline btn-sm">
-                                    <BaseIcon name="heart" /> Thich
+                                    <BaseIcon name="heart" /> Thích
                                 </div>
                                 <div class="btn btn-outline btn-sm">
                                     <BaseIcon name="star" />
-                                    Danh gia
+                                    Đánh giá
                                 </div>
                                 <div class="btn btn-outline btn-sm">Trailer</div>
                             </div>
                         </div>
+
                         <div class="mb-2 text-justify text-sm md:text-base">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga quis quae
-                            qui molestiae culpa ipsum temporibus a est quod odio, quidem itaque enim
-                            pariatur hic. Odio ipsam perspiciatis dolores voluptatibus. Lorem ipsum
-                            dolor sit amet consectetur adipisicing elit. Cupiditate, dicta
-                            explicabo. Facere beatae eaque, similique veniam illum illo enim
-                            adipisci tenetur vero, suscipit ea dicta tempora velit! Autem, quisquam
-                            harum. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Cupiditate, dicta explicabo. Facere beatae eaque, similique veniam illum
-                            illo enim adipisci tenetur vero, suscipit ea dicta tempora velit! Autem,
-                            quisquam harum. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Cupiditate, dicta explicabo. Facere beatae eaque, similique veniam illum
-                            illo enim adipisci tenetur vero, suscipit ea dicta tempora velit! Autem,
-                            quisquam harum. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Cupiditate, dicta explicabo. Facere beatae eaque, similique veniam illum
-                            illo enim adipisci tenetur vero, suscipit ea dicta tempora velit! Autem,
-                            quisquam harum.
+                            {{ movie?.description || "Chưa có mô tả cho phim này." }}
                         </div>
+
                         <div class="grid grid-cols-4">
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
                                     <BaseIcon name="like" />
-                                    <div class="text-xs md:text-sm">Hai long</div>
+                                    <div class="text-xs md:text-sm">Hài lòng</div>
                                 </div>
-                                <div class="text-xs md:text-sm">100%</div>
+                                <div class="text-xs md:text-sm">{{ movie?.rating_percent ?? 0 }}%</div>
                             </div>
+
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
                                     <BaseIcon name="calendar" />
-                                    <div class="text-xs md:text-sm">Khoi chieu</div>
+                                    <div class="text-xs md:text-sm">Khởi chiếu</div>
                                 </div>
-                                <div class="text-xs md:text-sm">00/00/0000</div>
+                                <div class="text-xs md:text-sm">{{ formatDate(movie?.release_date) }}</div>
                             </div>
+
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
                                     <BaseIcon name="time" />
-                                    <div class="text-xs md:text-sm">Thoi luong</div>
+                                    <div class="text-xs md:text-sm">Thời lượng</div>
                                 </div>
-                                <div class="text-xs md:text-sm">000</div>
+                                <div class="text-xs md:text-sm">{{ movie?.duration_minutes || "--" }} phút</div>
                             </div>
+
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
                                     <BaseIcon name="user-check" />
-                                    <div class="text-xs md:text-sm">Gioi han tuoi</div>
+                                    <div class="text-xs md:text-sm">Giới hạn tuổi</div>
                                 </div>
-                                <div class="text-xs md:text-sm">T13</div>
+                                <div class="text-xs md:text-sm">{{ movie?.age_rating || "--" }}</div>
                             </div>
                         </div>
                     </div>
@@ -85,21 +77,40 @@
         </div>
     </div>
 </template>
+
 <script setup>
+import { computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useMovieStore } from "@/stores/movie/useMovieStore";
-import { MOVIES } from "@/utils/constants/Movie";
-import { extractId } from "@/utils/helpers/slug";
+import { extractIdFromSlug } from "@/utils/helpers/slug";
 
 const route = useRoute();
 const movieStore = useMovieStore();
 
-onMounted(() => {
-    const movieId = extractId(route.params.slug);
-    if (movieId) {
-        const movie = MOVIES.find((m) => m.id === movieId);
-        if (movie) movieStore.setCurrentMovie(movie);
+const movie = computed(() => movieStore.currentMovie);
+
+const movieMeta = computed(() =>
+    [movie.value?.title_en, movie.value?.genre].filter(Boolean).join(" - "),
+);
+
+const formatDate = (dateString) => {
+    if (!dateString) return "--";
+
+    const date = new Date(dateString);
+    return Number.isNaN(date.getTime()) ? dateString : date.toLocaleDateString("vi-VN");
+};
+
+const loadMovie = () => {
+    const movieId = extractIdFromSlug(route.params.slug);
+
+    if (!movieId) {
+        movieStore.setCurrentMovie(null);
+        return;
     }
-});
+
+    movieStore.fetchMovieById(movieId);
+};
+
+onMounted(loadMovie);
+watch(() => route.params.slug, loadMovie);
 </script>
-<style lang=""></style>

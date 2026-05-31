@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col justify-between gap-5 bg-transparent p-0">
         <div class="flex w-full shrink-0 grow flex-row items-center justify-between gap-5 p-0">
-            <div class="text-sm font-bold md:text-2xl">Góc phim ảnh</div>
+            <h2 class="text-sm font-bold md:text-2xl">Góc phim ảnh</h2>
             <div class="cursor-pointer text-sm">
                 <router-link
                     to="/blog"
