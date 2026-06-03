@@ -26,10 +26,11 @@
                     </div>
                     <button
                         class="btn btn-primary"
-                        :class="{ 'btn-disabled': !paymentStore.promoCode.trim() }"
+                        :disabled="!paymentStore.promoCode.trim() || paymentStore.isApplyingPromo"
+                        :class="{ 'btn-disabled': !paymentStore.promoCode.trim() || paymentStore.isApplyingPromo }"
                         @click="applyPromo"
                     >
-                        Áp dụng
+                        {{ paymentStore.isApplyingPromo ? "Đang kiểm tra..." : "Áp dụng" }}
                     </button>
                 </div>
             </div>
@@ -77,9 +78,9 @@ const paymentStore = bookingStore.paymentStore;
 const handleInput = () => {
     paymentStore.validatePromoCode(paymentStore.promoCode);
 };
-const applyPromo = () => {
+const applyPromo = async () => {
     if (!paymentStore.validatePromoCode(paymentStore.promoCode)) return;
-    const success = paymentStore.applyPromo(paymentStore.promoCode);
+    const success = await paymentStore.applyPromo(paymentStore.promoCode);
     if (success) {
         paymentStore.promoError = "";
     }

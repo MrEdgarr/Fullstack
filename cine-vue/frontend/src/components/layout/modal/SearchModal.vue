@@ -27,18 +27,18 @@
             <Transition name="fade" mode="out-in" v-else-if="filteredMovies.length > 0">
                 <ul class="list">
                     <li class="p-4 pb-2 text-xs tracking-wide opacity-50">
-                        Most played songs this week
+                        Kết quả tìm kiếm phim
                     </li>
                     <li
                         class="list-row"
                         v-for="movie in filteredMovies"
-                        :key="movie.id"
+                        :key="movie.movie_id ?? movie.id"
                         @click="searchStore.selectMovie(movie)"
                     >
                         <div>
                             <img
                                 class="rounded-box w-12"
-                                :src="movie.poster"
+                                :src="movie.poster_url || movie.poster"
                                 :alt="movie.title"
                                 loading="lazy"
                             />
@@ -48,12 +48,12 @@
                                 {{ movie.title }}
                             </p>
                             <p class="text-tiny text-base-content/50 mt-1 leading-tight">
-                                {{ movie.genre }}
+                                {{ movie.genre || "Đang cập nhật" }}
                             </p>
                             <div class="flex items-center">
                                 <div class="text-tiny text-base-content/50 mt-1 flex items-center">
                                     <BaseIcon name="star" class="mr-1 text-yellow-500" />
-                                    <p class="text-sm">9.3</p>
+                                    <p class="text-sm">{{ movie.rating_percent ?? 0 }}%</p>
                                 </div>
                                 <button class="btn btn-primary btn-xs mt-1 ml-2">Đang chiếu</button>
                             </div>
@@ -79,7 +79,7 @@
 import { useSearchStore } from "@/stores/movie/useSearchStore";
 const searchStore = useSearchStore();
 
-const isLoading = ref(false);
+const isTyping = ref(false);
 const searchInput = ref(null);
 let timeout = null;
 
@@ -91,12 +91,12 @@ watch(searchQuery, (newQuery) => {
     if (timeout) clearTimeout(timeout);
 
     if (newQuery.trim().length > 0) {
-        isLoading.value = true;
+        isTyping.value = true;
         timeout = setTimeout(() => {
-            isLoading.value = false;
+            isTyping.value = false;
         }, 400);
     } else {
-        isLoading.value = false;
+        isTyping.value = false;
     }
 });
 
@@ -118,16 +118,17 @@ watch(
         if (timeout) clearTimeout(timeout);
 
         if (newQuery.trim().length > 0) {
-            isLoading.value = true;
+            isTyping.value = true;
             timeout = setTimeout(() => {
-                isLoading.value = false;
+                isTyping.value = false;
             }, 450); // Giả lập độ trễ tìm kiếm
         } else {
-            isLoading.value = false;
+            isTyping.value = false;
         }
     },
 );
 
+const isLoading = computed(() => isTyping.value || searchStore.isLoading);
 const filteredMovies = computed(() => searchStore.filteredMovies);
 
 onUnmounted(() => {

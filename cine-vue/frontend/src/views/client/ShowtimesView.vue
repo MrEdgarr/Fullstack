@@ -26,8 +26,9 @@
                     </div>
                     <select v-model="selectedLocationId" class="select md:select-md select-sm w-full">
                         <option value="">Toàn quốc</option>
-                        <option value="1">Hà Nội</option>
-                        <option value="2">TP. Hồ Chí Minh</option>
+                        <option v-for="city in cityOptions" :key="city.id" :value="city.id">
+                            {{ city.name }}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -123,12 +124,22 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/_services/api";
 import { useBookingStore } from "@/stores/booking";
-import { MOVIES } from "@/utils/constants/Movie";
+import {
+    createAvailableCinemaOptions,
+    createCityOptions,
+    createMovieOptions,
+    filterShowtimes,
+    formatDuration,
+    getTodayDate,
+    groupShowtimesByMovie,
+    isShowtimePast,
+    normalizeMovieShowtime,
+} from "@/utils/helpers/showtime";
 
 const router = useRouter();
 const bookingStore = useBookingStore();
 
-const selectedDate = ref(new Date().toISOString().split("T")[0]);
+const selectedDate = ref(getTodayDate());
 const selectedCinemaId = ref("");
 const selectedMovieId = ref("");
 const selectedLocationId = ref("");
@@ -136,25 +147,16 @@ const showtimes = ref([]);
 const isLoading = ref(false);
 const error = ref("");
 
-const movieOptions = computed(() => {
-    const movies = new Map();
-    showtimes.value.forEach((showtime) => movies.set(showtime.movie.id, showtime.movie));
-    return Array.from(movies.values()).sort((a, b) => a.title.localeCompare(b.title, "vi"));
-});
+const movieOptions = computed(() => createMovieOptions(showtimes.value));
+const cityOptions = computed(() => createCityOptions(showtimes.value));
 
-const filteredCinemas = computed(() => {
-    const cinemas = new Map();
-
-    showtimes.value.forEach((showtime) => {
-        if (showtime.date !== selectedDate.value) return;
-        if (selectedLocationId.value && showtime.cityId !== Number(selectedLocationId.value)) return;
-        if (isTimePast(showtime.date, showtime.time)) return;
-
-        cinemas.set(showtime.cinema.id, showtime.cinema);
-    });
-
-    return Array.from(cinemas.values()).sort((a, b) => a.name.localeCompare(b.name, "vi"));
-});
+const filteredCinemas = computed(() =>
+    createAvailableCinemaOptions(showtimes.value, {
+        selectedDate: selectedDate.value,
+        selectedCityId: selectedLocationId.value,
+        selectedMovieId: selectedMovieId.value,
+    }),
+);
 
 watch(filteredCinemas, (newCinemas) => {
     if (
@@ -165,63 +167,16 @@ watch(filteredCinemas, (newCinemas) => {
     }
 });
 
-const filteredMovies = computed(() => {
-    const matchingShowtimes = showtimes.value.filter((showtime) => {
-        const matchDate = showtime.date === selectedDate.value;
-        const matchCinema = selectedCinemaId.value
-            ? showtime.cinema.id === Number(selectedCinemaId.value)
-            : true;
-        const matchMovie = selectedMovieId.value
-            ? showtime.movie.id === Number(selectedMovieId.value)
-            : true;
-        const matchLocation = selectedLocationId.value
-            ? showtime.cityId === Number(selectedLocationId.value)
-            : true;
+const matchingShowtimes = computed(() =>
+    filterShowtimes(showtimes.value, {
+        selectedDate: selectedDate.value,
+        selectedCinemaId: selectedCinemaId.value,
+        selectedMovieId: selectedMovieId.value,
+        selectedCityId: selectedLocationId.value,
+    }),
+);
 
-        return matchDate && matchCinema && matchMovie && matchLocation;
-    });
-
-    const moviesMap = new Map();
-
-    matchingShowtimes.forEach((showtime) => {
-        if (!moviesMap.has(showtime.movie.id)) {
-            moviesMap.set(showtime.movie.id, {
-                movie: showtime.movie,
-                showtimes: [],
-            });
-        }
-
-        const item = moviesMap.get(showtime.movie.id);
-        const groupKey = `${showtime.cinema.id}-${showtime.room}-${showtime.format}-${showtime.date}`;
-        let group = item.showtimes.find((candidate) => candidate.key === groupKey);
-
-        if (!group) {
-            group = {
-                key: groupKey,
-                cinema: showtime.cinema,
-                cinemaId: showtime.cinema.id,
-                date: showtime.date,
-                format: showtime.format,
-                ageRestriction: showtime.ageRestriction,
-                room: showtime.room,
-                times: [],
-            };
-            item.showtimes.push(group);
-        }
-
-        group.times.push({
-            id: showtime.id,
-            showtime_id: showtime.showtime_id,
-            time: showtime.time,
-        });
-    });
-
-    moviesMap.forEach((item) => {
-        item.showtimes.forEach((group) => group.times.sort((a, b) => a.time.localeCompare(b.time)));
-    });
-
-    return Array.from(moviesMap.values());
-});
+const filteredMovies = computed(() => groupShowtimesByMovie(matchingShowtimes.value));
 
 const fetchShowtimes = async () => {
     isLoading.value = true;
@@ -229,7 +184,7 @@ const fetchShowtimes = async () => {
 
     try {
         const res = await api.get("/showtimes");
-        showtimes.value = (res.data.data || []).map(normalizeShowtime);
+        showtimes.value = (res.data.data || []).map((row) => normalizeMovieShowtime(row));
     } catch (err) {
         error.value = err.response?.data?.message || "Không thể tải lịch chiếu";
         showtimes.value = [];
@@ -238,73 +193,7 @@ const fetchShowtimes = async () => {
     }
 };
 
-const normalizeShowtime = (row) => {
-    const fallbackMovie = MOVIES.find((movie) => movie.id === Number(row.movie_id));
-    const date = row.show_date || toDatePart(row.start_time);
-    const time = row.show_time || toTimePart(row.start_time);
-
-    return {
-        id: Number(row.showtime_id),
-        showtime_id: Number(row.showtime_id),
-        date,
-        time,
-        room: row.room_name,
-        format: formatRoomType(row.room_type),
-        ageRestriction: row.age_rating || "T13",
-        cityId: Number(row.city_id),
-        cinema: {
-            id: Number(row.cinema_id),
-            cinema_id: Number(row.cinema_id),
-            name: row.cinema_name,
-        },
-        movie: {
-            id: Number(row.movie_id),
-            movie_id: Number(row.movie_id),
-            title: row.title || fallbackMovie?.title || "Phim chưa xác định",
-            poster: row.poster_url || fallbackMovie?.poster || "https://placehold.co/500x750?text=Movie",
-            genre: row.genre || fallbackMovie?.genre || "Đang cập nhật",
-            durationMinutes: Number(row.duration_minutes || 0),
-        },
-    };
-};
-
-const formatRoomType = (roomType) => {
-    if (roomType === "imax") return "IMAX";
-    if (roomType === "vip") return "2D VIP";
-    return "2D Phụ Đề";
-};
-
-const toDatePart = (value) => {
-    if (!value) return "";
-    return String(value).slice(0, 10);
-};
-
-const toTimePart = (value) => {
-    if (!value) return "";
-    const text = String(value);
-    if (text.includes("T")) return text.slice(11, 16);
-    if (text.length >= 16) return text.slice(11, 16);
-    return text.slice(0, 5);
-};
-
-const isTimePast = (date, timeStr) => {
-    const now = new Date();
-    const todayStr = now.toISOString().split("T")[0];
-    if (date < todayStr) return true;
-    if (date > todayStr) return false;
-
-    const [hour, minute] = timeStr.split(":").map(Number);
-    if (hour < now.getHours()) return true;
-    if (hour === now.getHours() && minute < now.getMinutes()) return true;
-    return false;
-};
-
-const formatDuration = (minutes) => {
-    if (!minutes) return "Đang cập nhật";
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h${String(mins).padStart(2, "0")}'`;
-};
+const isTimePast = isShowtimePast;
 
 const selectShowtime = (movie, group, timeItem) => {
     if (isTimePast(group.date, timeItem.time)) return;

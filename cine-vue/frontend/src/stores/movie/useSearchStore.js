@@ -1,29 +1,38 @@
 import router from "@/router";
 import { createMovieSlug, normalizeVietnameseText } from "@/utils/helpers/slug";
-import { MOVIES } from "@/utils/constants/Movie";
+import { useMoviesStore } from "@/stores/movie/useMovieStore";
+
 export const useSearchStore = defineStore("search", () => {
-    // ==================== STATE ======================
+    const moviesStore = useMoviesStore();
+
     const isOpen = ref(false);
     const searchQuery = ref("");
 
-    // ==================== GETTERS ====================
-    // Computed: Kết quả tìm kiếm
+    const movies = computed(() => moviesStore.allMovies);
+
     const filteredMovies = computed(() => {
         const query = searchQuery.value.trim();
-        if (!query) return MOVIES;
-        // Chuẩn hóa query: bỏ dấu, chuyển về chữ thường
+        if (!query) return movies.value;
+
         const normalizedQuery = normalizeVietnameseText(query.toLowerCase());
-        return MOVIES.filter((movie) => {
-            const normalizedTitle = normalizeVietnameseText(movie.title.toLowerCase());
-            return normalizedTitle.includes(normalizedQuery);
+
+        return movies.value.filter((movie) => {
+            const normalizedTitle = normalizeVietnameseText(movie.title?.toLowerCase() || "");
+            const normalizedTitleEn = normalizeVietnameseText(movie.title_en?.toLowerCase() || "");
+
+            return (
+                normalizedTitle.includes(normalizedQuery) ||
+                normalizedTitleEn.includes(normalizedQuery)
+            );
         });
     });
 
-    // ==================== ACTIONS ====================
+    const fetchMovies = () => moviesStore.fetchAll();
 
     const openModal = () => {
         isOpen.value = true;
         searchQuery.value = "";
+        fetchMovies();
     };
 
     const closeModal = () => {
@@ -42,12 +51,11 @@ export const useSearchStore = defineStore("search", () => {
     };
 
     return {
-        // STATE
         isOpen,
         searchQuery,
-        // GETTERS
         filteredMovies,
-        // ACTIONS
+        isLoading: computed(() => moviesStore.isLoading),
+        fetchMovies,
         openModal,
         closeModal,
         selectMovie,

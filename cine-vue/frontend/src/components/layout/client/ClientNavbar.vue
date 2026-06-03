@@ -76,8 +76,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="dropdown dropdown-bottom dropdown-end">
-                            <div tabindex="-1" role="button" class="lg:hidden btn btn-link-sm">
+                        <div ref="mobileDropdownRef" class="dropdown dropdown-bottom dropdown-end">
+                            <div
+                                ref="mobileDropdownButtonRef"
+                                tabindex="-1"
+                                role="button"
+                                class="lg:hidden btn btn-link btn-sm"
+                            >
                                 <BaseIcon name="bars" size="20" />
                             </div>
                             <ul
@@ -93,7 +98,11 @@
                                     </button>
                                 </li>
                                 <li v-for="value in MAIN_NAVIGATION" :key="value.name">
-                                    <RouterLink :to="value.path" tabindex="-1">
+                                    <RouterLink
+                                        :to="value.path"
+                                        tabindex="-1"
+                                        @click="closeMobileDropdown"
+                                    >
                                         {{ value.name }}
                                     </RouterLink>
                                 </li>
@@ -106,10 +115,31 @@
     </header>
 </template>
 <script setup>
+import { nextTick, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useSearchStore } from "@/stores/movie/useSearchStore";
+
+const route = useRoute();
 const authStore = useAuthStore();
 const searchStore = useSearchStore();
+const mobileDropdownRef = ref(null);
+const mobileDropdownButtonRef = ref(null);
+
+const closeMobileDropdown = () => {
+    nextTick(() => {
+        const activeElement = document.activeElement;
+
+        if (mobileDropdownRef.value?.contains(activeElement)) {
+            activeElement?.blur();
+        }
+
+        mobileDropdownButtonRef.value?.blur();
+    });
+};
+
+watch(() => route.fullPath, closeMobileDropdown);
+
 const MAIN_NAVIGATION = ref([
     {
         name: "Trang chủ",

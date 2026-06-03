@@ -447,8 +447,8 @@ VALUES
   (
     1,
     1,
-    '2026-05-20 19:00:00',
-    '2026-05-20 20:35:00',
+    '2026-05-31 19:00:00',
+    '2026-05-31 20:35:00',
     90000,
     120000,
     180000
@@ -456,8 +456,8 @@ VALUES
   (
     1,
     2,
-    '2026-05-20 21:00:00',
-    '2026-05-20 22:35:00',
+    '2026-05-31 21:00:00',
+    '2026-05-31 22:35:00',
     120000,
     150000,
     220000
@@ -743,325 +743,325 @@ INSERT INTO showtimes (
 )
 SELECT m.movie_id, r.room_id, p.start_time, p.end_time, p.price_standard, p.price_vip, p.price_couple
 FROM (
-  SELECT 'Face Off 9' AS movie_title_en, 'CGV Vincom Center Bà Triệu' AS cinema_name, 'Room 1' AS room_name, '2026-05-20 10:00:00' AS start_time, '2026-05-20 12:18:00' AS end_time, 80000 AS price_standard, 110000 AS price_vip, 160000 AS price_couple
+  SELECT 'Face Off 9' AS movie_title_en, 'CGV Vincom Center Bà Triệu' AS cinema_name, 'Room 1' AS room_name, '2026-05-31 10:00:00' AS start_time, '2026-05-31 12:18:00' AS end_time, 80000 AS price_standard, 110000 AS price_vip, 160000 AS price_couple
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-31 14:00:00', '2026-05-31 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-31 18:00:00', '2026-05-31 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-31 21:15:00', '2026-05-31 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-31 10:00:00', '2026-05-31 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-31 14:00:00', '2026-05-31 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-31 18:00:00', '2026-05-31 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-31 21:15:00', '2026-05-31 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 10:00:00', '2026-05-20 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-31 10:00:00', '2026-05-31 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 14:00:00', '2026-05-20 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-31 14:00:00', '2026-05-31 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 18:00:00', '2026-05-20 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-31 18:00:00', '2026-05-31 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-20 21:15:00', '2026-05-20 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-31 21:15:00', '2026-05-31 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 1', '2026-05-20 10:00:00', '2026-05-20 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 1', '2026-05-31 10:00:00', '2026-05-31 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 1', '2026-05-31 14:00:00', '2026-05-31 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-31 18:00:00', '2026-05-31 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-05-31 21:15:00', '2026-05-31 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 2', '2026-05-31 10:00:00', '2026-05-31 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 2', '2026-05-31 14:00:00', '2026-05-31 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-05-31 18:00:00', '2026-05-31 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-05-31 21:15:00', '2026-05-31 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 3', '2026-05-20 10:00:00', '2026-05-20 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 3', '2026-05-31 10:00:00', '2026-05-31 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 3', '2026-05-20 14:00:00', '2026-05-20 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 3', '2026-05-31 14:00:00', '2026-05-31 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-05-20 18:00:00', '2026-05-20 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-05-31 18:00:00', '2026-05-31 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-05-20 21:15:00', '2026-05-20 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-05-31 21:15:00', '2026-05-31 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 10:00:00', '2026-05-20 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-31 10:00:00', '2026-05-31 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 14:00:00', '2026-05-20 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-31 14:00:00', '2026-05-31 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 18:00:00', '2026-05-20 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-31 18:00:00', '2026-05-31 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-20 21:15:00', '2026-05-20 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-31 21:15:00', '2026-05-31 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 10:00:00', '2026-05-20 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-31 10:00:00', '2026-05-31 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 14:00:00', '2026-05-20 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-31 14:00:00', '2026-05-31 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 18:00:00', '2026-05-20 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-31 18:00:00', '2026-05-31 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-20 21:15:00', '2026-05-20 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-31 21:15:00', '2026-05-31 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-01 10:00:00', '2026-06-01 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-01 14:00:00', '2026-06-01 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-01 18:00:00', '2026-06-01 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-01 21:15:00', '2026-06-01 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-01 10:00:00', '2026-06-01 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-01 14:00:00', '2026-06-01 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-01 18:00:00', '2026-06-01 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-01 21:15:00', '2026-06-01 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 10:00:00', '2026-05-21 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-01 10:00:00', '2026-06-01 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 14:00:00', '2026-05-21 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-01 14:00:00', '2026-06-01 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 18:00:00', '2026-05-21 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-01 18:00:00', '2026-06-01 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-21 21:15:00', '2026-05-21 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-01 21:15:00', '2026-06-01 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-06-01 10:00:00', '2026-06-01 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-06-01 14:00:00', '2026-06-01 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 1', '2026-06-01 18:00:00', '2026-06-01 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 1', '2026-06-01 21:15:00', '2026-06-01 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-06-01 10:00:00', '2026-06-01 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-06-01 14:00:00', '2026-06-01 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 2', '2026-06-01 18:00:00', '2026-06-01 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 2', '2026-06-01 21:15:00', '2026-06-01 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-05-21 10:00:00', '2026-05-21 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-06-01 10:00:00', '2026-06-01 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-05-21 14:00:00', '2026-05-21 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-06-01 14:00:00', '2026-06-01 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 3', '2026-05-21 18:00:00', '2026-05-21 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 3', '2026-06-01 18:00:00', '2026-06-01 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 3', '2026-05-21 21:15:00', '2026-05-21 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 3', '2026-06-01 21:15:00', '2026-06-01 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 10:00:00', '2026-05-21 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-01 10:00:00', '2026-06-01 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 14:00:00', '2026-05-21 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-01 14:00:00', '2026-06-01 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 18:00:00', '2026-05-21 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-01 18:00:00', '2026-06-01 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-21 21:15:00', '2026-05-21 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-01 21:15:00', '2026-06-01 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 10:00:00', '2026-05-21 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-01 10:00:00', '2026-06-01 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 14:00:00', '2026-05-21 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-01 14:00:00', '2026-06-01 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 18:00:00', '2026-05-21 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-01 18:00:00', '2026-06-01 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-21 21:15:00', '2026-05-21 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-01 21:15:00', '2026-06-01 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-02 10:00:00', '2026-06-02 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-02 14:00:00', '2026-06-02 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-02 18:00:00', '2026-06-02 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-02 21:15:00', '2026-06-02 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-02 10:00:00', '2026-06-02 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-02 14:00:00', '2026-06-02 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-02 18:00:00', '2026-06-02 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-02 21:15:00', '2026-06-02 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 10:00:00', '2026-05-22 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-02 10:00:00', '2026-06-02 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 14:00:00', '2026-05-22 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-02 14:00:00', '2026-06-02 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 18:00:00', '2026-05-22 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-02 18:00:00', '2026-06-02 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-22 21:15:00', '2026-05-22 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-02 21:15:00', '2026-06-02 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 1', '2026-06-02 10:00:00', '2026-06-02 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 1', '2026-06-02 14:00:00', '2026-06-02 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 1', '2026-06-02 18:00:00', '2026-06-02 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 1', '2026-06-02 21:15:00', '2026-06-02 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 2', '2026-06-02 10:00:00', '2026-06-02 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 2', '2026-06-02 14:00:00', '2026-06-02 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 2', '2026-06-02 18:00:00', '2026-06-02 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 2', '2026-06-02 21:15:00', '2026-06-02 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 3', '2026-05-22 10:00:00', '2026-05-22 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 3', '2026-06-02 10:00:00', '2026-06-02 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 3', '2026-05-22 14:00:00', '2026-05-22 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 3', '2026-06-02 14:00:00', '2026-06-02 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 3', '2026-05-22 18:00:00', '2026-05-22 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 3', '2026-06-02 18:00:00', '2026-06-02 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 3', '2026-05-22 21:15:00', '2026-05-22 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 3', '2026-06-02 21:15:00', '2026-06-02 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 10:00:00', '2026-05-22 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-02 10:00:00', '2026-06-02 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 14:00:00', '2026-05-22 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-02 14:00:00', '2026-06-02 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 18:00:00', '2026-05-22 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-02 18:00:00', '2026-06-02 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-22 21:15:00', '2026-05-22 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-02 21:15:00', '2026-06-02 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 10:00:00', '2026-05-22 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-02 10:00:00', '2026-06-02 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 14:00:00', '2026-05-22 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-02 14:00:00', '2026-06-02 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 18:00:00', '2026-05-22 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-02 18:00:00', '2026-06-02 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-22 21:15:00', '2026-05-22 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-02 21:15:00', '2026-06-02 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-03 10:00:00', '2026-06-03 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-03 14:00:00', '2026-06-03 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-03 18:00:00', '2026-06-03 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-03 21:15:00', '2026-06-03 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-03 10:00:00', '2026-06-03 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-03 14:00:00', '2026-06-03 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-03 18:00:00', '2026-06-03 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-03 21:15:00', '2026-06-03 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 10:00:00', '2026-05-23 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-03 10:00:00', '2026-06-03 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 14:00:00', '2026-05-23 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-03 14:00:00', '2026-06-03 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 18:00:00', '2026-05-23 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-03 18:00:00', '2026-06-03 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-23 21:15:00', '2026-05-23 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-03 21:15:00', '2026-06-03 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 1', '2026-06-03 10:00:00', '2026-06-03 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 1', '2026-06-03 14:00:00', '2026-06-03 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-06-03 18:00:00', '2026-06-03 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-06-03 21:15:00', '2026-06-03 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 2', '2026-06-03 10:00:00', '2026-06-03 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 2', '2026-06-03 14:00:00', '2026-06-03 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-06-03 18:00:00', '2026-06-03 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-06-03 21:15:00', '2026-06-03 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 3', '2026-05-23 10:00:00', '2026-05-23 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 3', '2026-06-03 10:00:00', '2026-06-03 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 3', '2026-05-23 14:00:00', '2026-05-23 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 3', '2026-06-03 14:00:00', '2026-06-03 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-05-23 18:00:00', '2026-05-23 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-06-03 18:00:00', '2026-06-03 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-05-23 21:15:00', '2026-05-23 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-06-03 21:15:00', '2026-06-03 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 10:00:00', '2026-05-23 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-03 10:00:00', '2026-06-03 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 14:00:00', '2026-05-23 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-03 14:00:00', '2026-06-03 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 18:00:00', '2026-05-23 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-03 18:00:00', '2026-06-03 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-23 21:15:00', '2026-05-23 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-03 21:15:00', '2026-06-03 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 10:00:00', '2026-05-23 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-03 10:00:00', '2026-06-03 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 14:00:00', '2026-05-23 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-03 14:00:00', '2026-06-03 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 18:00:00', '2026-05-23 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-03 18:00:00', '2026-06-03 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-23 21:15:00', '2026-05-23 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-03 21:15:00', '2026-06-03 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-04 10:00:00', '2026-06-04 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-04 14:00:00', '2026-06-04 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-04 18:00:00', '2026-06-04 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 1', '2026-06-04 21:15:00', '2026-06-04 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-04 10:00:00', '2026-06-04 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-04 14:00:00', '2026-06-04 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-04 18:00:00', '2026-06-04 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Vincom Center Bà Triệu', 'Room 2', '2026-06-04 21:15:00', '2026-06-04 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 10:00:00', '2026-05-24 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-04 10:00:00', '2026-06-04 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 14:00:00', '2026-05-24 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-04 14:00:00', '2026-06-04 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 18:00:00', '2026-05-24 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-04 18:00:00', '2026-06-04 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-05-24 21:15:00', '2026-05-24 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Vincom Center Bà Triệu', 'Room 3', '2026-06-04 21:15:00', '2026-06-04 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 1', '2026-06-04 10:00:00', '2026-06-04 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 1', '2026-06-04 14:00:00', '2026-06-04 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 1', '2026-06-04 18:00:00', '2026-06-04 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 1', '2026-06-04 21:15:00', '2026-06-04 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 2', '2026-06-04 10:00:00', '2026-06-04 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 2', '2026-06-04 14:00:00', '2026-06-04 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'CGV Crescent Mall', 'Room 2', '2026-06-04 18:00:00', '2026-06-04 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'CGV Crescent Mall', 'Room 2', '2026-06-04 21:15:00', '2026-06-04 23:39:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-05-24 10:00:00', '2026-05-24 11:55:00', 80000, 110000, 160000
+  SELECT 'Crayon Shin-chan', 'CGV Crescent Mall', 'Room 3', '2026-06-04 10:00:00', '2026-06-04 11:55:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-05-24 14:00:00', '2026-05-24 16:35:00', 80000, 110000, 160000
+  SELECT 'Avengers: Secret Empire', 'CGV Crescent Mall', 'Room 3', '2026-06-04 14:00:00', '2026-06-04 16:35:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 3', '2026-05-24 18:00:00', '2026-05-24 20:18:00', 95000, 125000, 190000
+  SELECT 'Face Off 9', 'CGV Crescent Mall', 'Room 3', '2026-06-04 18:00:00', '2026-06-04 20:18:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 3', '2026-05-24 21:15:00', '2026-05-24 23:30:00', 95000, 125000, 190000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'CGV Crescent Mall', 'Room 3', '2026-06-04 21:15:00', '2026-06-04 23:30:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 10:00:00', '2026-05-24 13:09:00', 80000, 110000, 160000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-04 10:00:00', '2026-06-04 13:09:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 14:00:00', '2026-05-24 16:24:00', 80000, 110000, 160000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-04 14:00:00', '2026-06-04 16:24:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 18:00:00', '2026-05-24 19:55:00', 95000, 125000, 190000
+  SELECT 'Crayon Shin-chan', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-04 18:00:00', '2026-06-04 19:55:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-05-24 21:15:00', '2026-05-24 23:50:00', 95000, 125000, 190000
+  SELECT 'Avengers: Secret Empire', 'Lotte Cinema Đà Nẵng', 'Room 1', '2026-06-04 21:15:00', '2026-06-04 23:50:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 10:00:00', '2026-05-24 12:18:00', 80000, 110000, 160000
+  SELECT 'Face Off 9', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-04 10:00:00', '2026-06-04 12:18:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 14:00:00', '2026-05-24 16:15:00', 80000, 110000, 160000
+  SELECT 'Doraemon: Nobita''s Earth Symphony', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-04 14:00:00', '2026-06-04 16:15:00', 80000, 110000, 160000
   UNION ALL
-  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 18:00:00', '2026-05-24 21:09:00', 95000, 125000, 190000
+  SELECT 'Mission: Impossible - Final Reckoning', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-04 18:00:00', '2026-06-04 21:09:00', 95000, 125000, 190000
   UNION ALL
-  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-05-24 21:15:00', '2026-05-24 23:39:00', 95000, 125000, 190000
+  SELECT 'Red Rain', 'Lotte Cinema Đà Nẵng', 'Room 2', '2026-06-04 21:15:00', '2026-06-04 23:39:00', 95000, 125000, 190000
 ) p
 JOIN movies m ON m.title_en = p.movie_title_en
 JOIN cinemas c ON c.cinema_name = p.cinema_name
@@ -1090,7 +1090,7 @@ JOIN seats s ON s.room_id = st.room_id
 LEFT JOIN showtime_seats ss
   ON ss.showtime_id = st.showtime_id
  AND ss.seat_id = s.seat_id
-WHERE st.start_time BETWEEN '2026-05-20 00:00:00' AND '2026-05-24 23:59:59'
+WHERE st.start_time BETWEEN '2026-05-31 00:00:00' AND '2026-06-04 23:59:59'
   AND (
       (c.cinema_name = 'CGV Vincom Center Bà Triệu' AND r.room_name = 'Room 1')
       OR (c.cinema_name = 'CGV Vincom Center Bà Triệu' AND r.room_name = 'Room 2')
@@ -1117,7 +1117,7 @@ SELECT
   seat_summary.ticket_subtotal + combo.price,
   NULL
 FROM customers customer
-JOIN showtimes st ON st.start_time = '2026-05-20 10:00:00'
+JOIN showtimes st ON st.start_time = '2026-05-31 10:00:00'
 JOIN screening_rooms room ON room.room_id = st.room_id AND room.room_name = 'Room 1'
 JOIN cinemas cinema ON cinema.cinema_id = room.cinema_id AND cinema.cinema_name = 'CGV Vincom Center Bà Triệu'
 JOIN food_combos combo ON combo.cinema_id = cinema.cinema_id AND combo.combo_name = 'Combo Solo'
@@ -1131,7 +1131,7 @@ CROSS JOIN (
     JOIN cinemas selected_cinema ON selected_cinema.cinema_id = selected_room.cinema_id
     WHERE selected_cinema.cinema_name = 'CGV Vincom Center Bà Triệu'
       AND selected_room.room_name = 'Room 1'
-      AND selected_showtime.start_time = '2026-05-20 10:00:00'
+      AND selected_showtime.start_time = '2026-05-31 10:00:00'
       AND ss.status = 'available'
     ORDER BY ss.showtime_seat_id
     LIMIT 2
@@ -1157,7 +1157,7 @@ WHERE showtime_seat_id IN (
     JOIN cinemas cinema ON cinema.cinema_id = room.cinema_id
     WHERE cinema.cinema_name = 'CGV Vincom Center Bà Triệu'
       AND room.room_name = 'Room 1'
-      AND st.start_time = '2026-05-20 10:00:00'
+      AND st.start_time = '2026-05-31 10:00:00'
     ORDER BY ss.showtime_seat_id
     LIMIT 2
   ) selected

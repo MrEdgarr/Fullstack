@@ -13,9 +13,9 @@
                 <div class="text-base-100 lg:col-span-10">
                     <div class="grid gap-2.5">
                         <div>
-                            <div class="truncate text-lg font-semibold md:text-2xl">
+                            <h2 class="truncate text-lg font-semibold md:text-2xl">
                                 {{ movie?.title || "Không tìm thấy phim" }}
-                            </div>
+                            </h2>
                             <div class="text-base-300/75 text-xs md:text-sm">
                                 {{ movieMeta || "Thông tin phim đang được cập nhật" }}
                             </div>
@@ -23,14 +23,14 @@
 
                         <div>
                             <div class="inline-flex gap-1">
-                                <div class="btn btn-outline btn-sm">
+                                <div class="btn btn-outline btn-xs md:btn-sm">
                                     <BaseIcon name="heart" /> Thích
                                 </div>
-                                <div class="btn btn-outline btn-sm">
+                                <div class="btn btn-outline btn-xs md:btn-sm">
                                     <BaseIcon name="star" />
                                     Đánh giá
                                 </div>
-                                <div class="btn btn-outline btn-sm">Trailer</div>
+                                <div class="btn btn-outline btn-xs md:btn-sm">Trailer</div>
                             </div>
                         </div>
 
@@ -41,34 +41,44 @@
                         <div class="grid grid-cols-4">
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
-                                    <BaseIcon name="like" />
-                                    <div class="text-xs md:text-sm">Hài lòng</div>
+                                    <BaseIcon name="like" class="text-xs md:text-base" />
+                                    <div class="text-xs md:text-sm hidden md:flex">Hài lòng</div>
                                 </div>
-                                <div class="text-xs md:text-sm">{{ movie?.rating_percent ?? 0 }}%</div>
+                                <div class="text-xs md:text-sm">
+                                    {{ movie?.rating_percent ?? 0 }}%
+                                </div>
                             </div>
 
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
-                                    <BaseIcon name="calendar" />
-                                    <div class="text-xs md:text-sm">Khởi chiếu</div>
+                                    <BaseIcon name="calendar" class="text-xs md:text-base" />
+                                    <div class="text-xs md:text-sm hidden md:flex">Khởi chiếu</div>
                                 </div>
-                                <div class="text-xs md:text-sm">{{ formatDate(movie?.release_date) }}</div>
+                                <div class="text-xs md:text-sm">
+                                    {{ formatDate(movie?.release_date) }}
+                                </div>
                             </div>
 
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
-                                    <BaseIcon name="time" />
-                                    <div class="text-xs md:text-sm">Thời lượng</div>
+                                    <BaseIcon name="time" class="text-xs md:text-base" />
+                                    <div class="text-xs md:text-sm hidden md:flex">Thời lượng</div>
                                 </div>
-                                <div class="text-xs md:text-sm">{{ movie?.duration_minutes || "--" }} phút</div>
+                                <div class="text-xs md:text-sm">
+                                    {{ movie?.duration_minutes || "--" }} phút
+                                </div>
                             </div>
 
                             <div class="md:text-left">
                                 <div class="inline-flex items-center gap-2 font-medium">
-                                    <BaseIcon name="user-check" />
-                                    <div class="text-xs md:text-sm">Giới hạn tuổi</div>
+                                    <BaseIcon name="user-check" class="text-xs md:text-base" />
+                                    <div class="text-xs md:text-sm hidden md:flex">
+                                        Giới hạn tuổi
+                                    </div>
                                 </div>
-                                <div class="text-xs md:text-sm">{{ movie?.age_rating || "--" }}</div>
+                                <div class="text-xs md:text-sm">
+                                    {{ movie?.age_rating || "--" }}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -18,12 +18,14 @@ export const useBookingStore = defineStore("booking", () => {
         () => seatStore.singleTotalPrice + seatStore.coupleTotalPrice + comboStore.totalFoodPrice,
     );
     const voucherPrice = computed(() =>
-        Math.round(totalPrice.value * (paymentStore.discountPercent / 100)),
+        calculatePromotionDiscount(
+            totalPrice.value,
+            paymentStore.promotion,
+            paymentStore.discountPercent,
+        ),
     );
 
-    const finalPrice = computed(() =>
-        Math.round(totalPrice.value * (1 - paymentStore.discountPercent / 100)),
-    );
+    const finalPrice = computed(() => Math.max(totalPrice.value - voucherPrice.value, 0));
     // Tạo computed để hiển thị thông tin ghế đã chọn
     const selectedSeatsInfo = computed(() => {
         const parts = [];
@@ -73,3 +75,27 @@ export const useBookingStore = defineStore("booking", () => {
         resetAll,
     };
 });
+
+const calculatePromotionDiscount = (subtotal, promotion, fallbackPercent = 0) => {
+    if (!subtotal) return 0;
+
+    if (!promotion) {
+        return Math.round(subtotal * (Number(fallbackPercent || 0) / 100));
+    }
+
+    if (subtotal < Number(promotion.min_order_amount || 0)) {
+        return 0;
+    }
+
+    const rawDiscount =
+        promotion.discount_type === "percent"
+            ? subtotal * (Number(promotion.discount_value || 0) / 100)
+            : Number(promotion.discount_value || 0);
+
+    const maxDiscount =
+        promotion.max_discount_amount === null || promotion.max_discount_amount === undefined
+            ? rawDiscount
+            : Number(promotion.max_discount_amount);
+
+    return Math.round(Math.min(rawDiscount, maxDiscount, subtotal));
+};

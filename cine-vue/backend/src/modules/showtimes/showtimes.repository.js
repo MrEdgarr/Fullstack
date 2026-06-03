@@ -20,14 +20,20 @@ const SHOWTIME_SELECT = `
     m.poster_url,
     r.room_name,
     r.room_type,
+    b.brand_id,
+    b.brand_name,
+    b.logo_url AS brand_logo_url,
     c.cinema_id,
     c.cinema_name,
     c.address AS cinema_address,
-    c.city_id
+    c.city_id,
+    city.city_name
   FROM showtimes s
   JOIN movies m ON s.movie_id = m.movie_id
   JOIN screening_rooms r ON s.room_id = r.room_id
   JOIN cinemas c ON r.cinema_id = c.cinema_id
+  JOIN cinema_brands b ON c.brand_id = b.brand_id
+  JOIN cities city ON c.city_id = city.city_id
 `;
 
 exports.getAll = () =>

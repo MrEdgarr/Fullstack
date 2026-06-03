@@ -71,11 +71,11 @@
                     <span>Tổng tiền:</span>
                     <span>{{ formatCurrency(totalPrice) }}</span>
                 </div>
-                <div v-if="paymentStore.discountPercent > 0">
+                <div v-if="voucherPrice > 0">
                     <div class="flex items-center justify-between md:text-sm">
                         <div>
                             Voucher
-                            <span class="font-medium">({{ paymentStore.discountPercent }}%)</span>
+                            <span class="font-medium">({{ promotionLabel }})</span>
                         </div>
                         <div>- {{ formatCurrency(voucherPrice) }}</div>
                     </div>
@@ -83,7 +83,7 @@
             </div>
 
             <div
-                v-if="paymentStore.discountPercent > 0"
+                v-if="voucherPrice > 0"
                 class="border-base-content/25 border-t border-dashed pt-2"
             >
                 <div class="flex items-center justify-between pb-2 text-xs font-medium md:text-sm">
@@ -178,6 +178,14 @@ const canGoNext = computed(
     () => showtimeId.value > 0 && seatStore.selectedSeats.length > 0 && !seatStore.isLoading,
 );
 const canPay = computed(() => canGoNext.value && isAgreed.value && !isSubmitting.value);
+const promotionLabel = computed(() => {
+    const promotion = paymentStore.promotion;
+
+    if (!promotion) return `${paymentStore.discountPercent}%`;
+    if (promotion.discount_type === "percent") return `${Number(promotion.discount_value)}%`;
+
+    return formatCurrency(Number(promotion.discount_value || 0));
+});
 
 const handleNext = () => {
     submitError.value = "";
