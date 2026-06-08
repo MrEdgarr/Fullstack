@@ -1,5 +1,14 @@
 const paymentsService = require("./payments.service");
 
+exports.getMethods = async (req, res, next) => {
+  try {
+    const [rows] = await paymentsService.getMethods();
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.getByBooking = async (req, res, next) => {
   try {
     const [rows] = await paymentsService.getByBooking(req.user, req.params.bookingId);

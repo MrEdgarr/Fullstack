@@ -4,6 +4,8 @@ const bookingsRepository = require("../bookings/bookings.repository");
 const bookingsService = require("../bookings/bookings.service");
 const AppError = require("../../shared/utils/app-error");
 
+exports.getMethods = () => paymentsRepository.getMethods();
+
 exports.getByBooking = async (currentUser, bookingId) => {
   const [bookingRows] = await bookingsRepository.getById(bookingId);
   const booking = bookingRows[0];
@@ -44,6 +46,13 @@ exports.create = async (
 
     if (Number(amount) !== Number(booking.final_amount)) {
       throw new AppError("Payment amount mismatch", 400);
+    }
+
+    const [paymentMethodRows] =
+      await paymentsRepository.getActiveMethodByPaymentMethod(paymentMethod);
+
+    if (!paymentMethodRows.length) {
+      throw new AppError("Payment method is not supported", 400);
     }
 
     const [paymentResult] = await paymentsRepository.create(

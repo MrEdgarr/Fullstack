@@ -1,6 +1,6 @@
 import api from "@/_services/api";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
-import { PAYMENT_DATA } from "@/utils/constants/paymentData";
+import { PAYMENT_DATA, resolvePaymentIcon } from "@/utils/constants/paymentData";
 
 export const usePaymentStore = defineStore("payment", () => {
     const savedPayment = loadBookingData()?.payment || {};
@@ -9,12 +9,65 @@ export const usePaymentStore = defineStore("payment", () => {
     const promotion = ref(savedPayment.promotion || null);
     const discountPercent = ref(savedPayment.discountPercent || 0);
     const selectedMethod = ref(savedPayment.selectedMethod || 1);
+    const paymentMethods = ref(PAYMENT_DATA);
+    const isLoadingMethods = ref(false);
+    const methodsError = ref("");
     const promoError = ref("");
     const isApplyingPromo = ref(false);
     const isTicketInfo = ref(false);
     const lastTicket = ref(null);
 
-    const paymentMethod = computed(() => PAYMENT_DATA.find((p) => p.id === selectedMethod.value));
+    const paymentMethod = computed(
+        () =>
+            paymentMethods.value.find((p) => Number(p.id) === Number(selectedMethod.value)) ||
+            paymentMethods.value[0] ||
+            null,
+    );
+
+    const fetchPaymentMethods = async () => {
+        if (isLoadingMethods.value) return;
+
+        isLoadingMethods.value = true;
+        methodsError.value = "";
+
+        try {
+            const res = await api.get("/payments/methods");
+            const methods = (res.data.data || []).map(normalizePaymentMethod);
+
+            paymentMethods.value = methods.length ? methods : PAYMENT_DATA;
+            ensureSelectedMethod();
+        } catch (err) {
+            paymentMethods.value = PAYMENT_DATA;
+            methodsError.value =
+                err.response?.data?.message ||
+                "Không thể tải phương thức thanh toán. Đang dùng dữ liệu mặc định.";
+            ensureSelectedMethod();
+        } finally {
+            isLoadingMethods.value = false;
+        }
+    };
+
+    const normalizePaymentMethod = (method) => ({
+        id: Number(method.payment_method_id || method.id),
+        payment_method_id: Number(method.payment_method_id || method.id),
+        code: method.code,
+        name: method.name,
+        payment_method: method.payment_method,
+        icon_key: method.icon_key,
+        image: method.icon_url || resolvePaymentIcon(method.icon_key),
+        description: method.description || "",
+        sort_order: Number(method.sort_order || 0),
+    });
+
+    const ensureSelectedMethod = () => {
+        const hasSelectedMethod = paymentMethods.value.some(
+            (method) => Number(method.id) === Number(selectedMethod.value),
+        );
+
+        if (!hasSelectedMethod) {
+            selectedMethod.value = paymentMethods.value[0]?.id || 1;
+        }
+    };
 
     const openTicketModal = () => {
         isTicketInfo.value = true;
@@ -93,7 +146,7 @@ export const usePaymentStore = defineStore("payment", () => {
         promoCode.value = "";
         promotion.value = null;
         discountPercent.value = 0;
-        selectedMethod.value = 1;
+        selectedMethod.value = paymentMethods.value[0]?.id || 1;
         promoError.value = "";
         isTicketInfo.value = false;
         lastTicket.value = null;
@@ -126,11 +179,15 @@ export const usePaymentStore = defineStore("payment", () => {
         promotion,
         discountPercent,
         selectedMethod,
+        paymentMethods,
+        isLoadingMethods,
+        methodsError,
         promoError,
         isApplyingPromo,
         isTicketInfo,
         lastTicket,
         paymentMethod,
+        fetchPaymentMethods,
         openTicketModal,
         closeTicketModal,
         validatePromoCode,

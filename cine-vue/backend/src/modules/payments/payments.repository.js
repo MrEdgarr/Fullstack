@@ -1,5 +1,32 @@
 const db = require("../../shared/config/database");
 
+exports.getMethods = () =>
+  db.execute(`
+    SELECT
+      payment_method_id,
+      code,
+      name,
+      payment_method,
+      icon_key,
+      description,
+      sort_order
+    FROM payment_methods
+    WHERE status = 'active'
+    ORDER BY sort_order ASC, payment_method_id ASC
+  `);
+
+exports.getActiveMethodByPaymentMethod = (paymentMethod) =>
+  db.execute(
+    `
+    SELECT payment_method_id
+    FROM payment_methods
+    WHERE payment_method = ?
+      AND status = 'active'
+    LIMIT 1
+    `,
+    [paymentMethod],
+  );
+
 exports.getByBooking = (bookingId) =>
   db.execute("SELECT * FROM payments WHERE booking_id = ?", [bookingId]);
 

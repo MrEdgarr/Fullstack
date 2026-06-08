@@ -3,7 +3,9 @@ const Joi = require("joi");
 const paymentSchema = Joi.object({
   booking_id: Joi.number().integer().positive().required(),
   amount: Joi.number().min(0).required(),
-  payment_method: Joi.string().valid("cash", "card", "momo", "vnpay", "zalopay").required(),
+  payment_method: Joi.string()
+    .valid("cash", "card", "momo", "vnpay", "zalopay", "shopeepay", "applepay", "payoo")
+    .required(),
   transaction_id: Joi.string().allow("", null).optional(),
 });
 

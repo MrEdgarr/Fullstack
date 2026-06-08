@@ -6,6 +6,8 @@ const { paymentSchema, paymentStatusSchema } = require("./payments.validation");
 
 const router = express.Router();
 
+router.get("/methods", paymentsController.getMethods);
+
 router.use(authMiddleware);
 router.post("/", validate(paymentSchema), paymentsController.create);
 router.get("/booking/:bookingId", paymentsController.getByBooking);

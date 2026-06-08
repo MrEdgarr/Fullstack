@@ -149,13 +149,6 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useBookingStore } from "@/stores/booking";
 import { formatCurrency } from "@/utils/helpers/currency";
 
-const PAYMENT_METHOD_MAP = {
-    1: "card",
-    2: "zalopay",
-    3: "card",
-    4: "momo",
-};
-
 const bookingStore = useBookingStore();
 const authStore = useAuthStore();
 
@@ -246,7 +239,10 @@ const handlePay = async () => {
         const bookingRes = await api.post("/bookings", bookingPayload);
         const booking = bookingRes.data.data;
         createdBookingId = booking.booking_id;
-        const paymentMethod = PAYMENT_METHOD_MAP[paymentStore.selectedMethod] || "card";
+        await paymentStore.fetchPaymentMethods();
+
+        const selectedPaymentMethod = paymentStore.paymentMethod;
+        const paymentMethod = selectedPaymentMethod?.payment_method || "card";
 
         const paymentRes = await api.post("/payments", {
             booking_id: booking.booking_id,
@@ -263,6 +259,7 @@ const handlePay = async () => {
             booking,
             payment,
             payment_method: paymentMethod,
+            payment_method_label: selectedPaymentMethod?.name,
             showtime: bookingStore.selectedShowtime,
             seats: [...seatStore.selectedSeats],
             combos: [...comboStore.singleCombosList],

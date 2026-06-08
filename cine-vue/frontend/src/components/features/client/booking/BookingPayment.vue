@@ -1,5 +1,4 @@
 <template>
-    <!-- QRCODE -->
     <section>
         <div class="card bg-base-100 border border-base-300 card-sm">
             <div class="card-body">
@@ -13,10 +12,10 @@
                                 type="text"
                                 class="input md:input-md input-sm w-full"
                                 :class="{ 'input-error': paymentStore.promoError }"
-                                @input="handleInput"
                                 maxlength="50"
-                                placeholder="Ma khuyen mai"
+                                placeholder="Mã khuyến mãi"
                                 required
+                                @input="handleInput"
                                 @keyup.enter="applyPromo"
                             />
                         </label>
@@ -27,7 +26,10 @@
                     <button
                         class="btn btn-primary"
                         :disabled="!paymentStore.promoCode.trim() || paymentStore.isApplyingPromo"
-                        :class="{ 'btn-disabled': !paymentStore.promoCode.trim() || paymentStore.isApplyingPromo }"
+                        :class="{
+                            'btn-disabled':
+                                !paymentStore.promoCode.trim() || paymentStore.isApplyingPromo,
+                        }"
                         @click="applyPromo"
                     >
                         {{ paymentStore.isApplyingPromo ? "Đang kiểm tra..." : "Áp dụng" }}
@@ -36,27 +38,44 @@
             </div>
         </div>
     </section>
+
     <section>
         <div class="card bg-base-100 border border-base-300 card-sm">
             <div class="card-body">
                 <div class="list">
                     <div class="text-base font-semibold sm:text-lg">Phương thức thanh toán</div>
+
+                    <div
+                        v-if="paymentStore.isLoadingMethods"
+                        class="py-3 text-sm text-base-content/50"
+                    >
+                        Đang tải phương thức thanh toán...
+                    </div>
+
+                    <div v-if="paymentStore.methodsError" class="py-2 text-sm text-warning">
+                        {{ paymentStore.methodsError }}
+                    </div>
+
                     <label
-                        v-for="payment in PAYMENT_DATA"
+                        v-for="payment in paymentStore.paymentMethods"
                         :key="payment.id"
                         class="list-row hover:bg-base-200 cursor-pointer items-center transition-colors"
                     >
                         <input
                             v-model="paymentStore.selectedMethod"
                             type="radio"
-                            name="song-select"
+                            name="payment-method"
                             class="radio radio-primary radio-xs"
                             :value="payment.id"
                             @change="paymentStore.setPaymentMethod(payment.id)"
                         />
 
                         <div class="flex items-center justify-start gap-2 md:gap-5">
-                            <img class="rounded-box size-7.5 sm:size-10" :src="payment.image" />
+                            <img
+                                class="rounded-box size-7.5 sm:size-10"
+                                :src="payment.image"
+                                :alt="payment.name"
+                            />
                             <div class="grow text-sm sm:text-base">
                                 <div>{{ payment.name }}</div>
                             </div>
@@ -67,28 +86,35 @@
         </div>
     </section>
 </template>
+
 <script setup>
+import { onMounted } from "vue";
 import { useBookingStore } from "@/stores/booking";
-import { PAYMENT_DATA } from "@/utils/constants/paymentData";
 
 const bookingStore = useBookingStore();
-
 const paymentStore = bookingStore.paymentStore;
+
+onMounted(() => {
+    paymentStore.fetchPaymentMethods();
+});
 
 const handleInput = () => {
     paymentStore.validatePromoCode(paymentStore.promoCode);
 };
+
 const applyPromo = async () => {
     if (!paymentStore.validatePromoCode(paymentStore.promoCode)) return;
+
     const success = await paymentStore.applyPromo(paymentStore.promoCode);
     if (success) {
         paymentStore.promoError = "";
     }
 };
 </script>
+
 <style>
 .dashed-line::after,
 .dashed-line::before {
-    background: oklch(0% 0 0/ 0.4);
+    background: oklch(0% 0 0 / 0.4);
 }
 </style>

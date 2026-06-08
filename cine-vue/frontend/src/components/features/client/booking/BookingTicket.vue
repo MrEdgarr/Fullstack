@@ -107,12 +107,19 @@ const coupleSeatsList = computed(() =>
         .join(", "),
 );
 const paymentLabel = computed(() => {
+    if (ticket.value?.payment_method_label) {
+        return ticket.value.payment_method_label;
+    }
+
     const method = ticket.value?.payment_method;
     const labels = {
         card: "Thẻ ATM / Quốc tế",
         momo: "MoMo",
         vnpay: "VNPAY",
         zalopay: "ZaloPay",
+        shopeepay: "ShopeePay",
+        applepay: "Apple Pay",
+        payoo: "Payoo",
         cash: "Tiền mặt",
     };
     return labels[method] || method || "Không xác định";

@@ -258,11 +258,28 @@ CREATE TABLE
 -- 5. Payment
 -- =========================
 CREATE TABLE
+  payment_methods (
+    payment_method_id INT NOT NULL AUTO_INCREMENT,
+    code VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    payment_method ENUM ('cash', 'card', 'momo', 'vnpay', 'zalopay', 'shopeepay', 'applepay', 'payoo') NOT NULL,
+    icon_key VARCHAR(50) DEFAULT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status ENUM ('active', 'inactive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (payment_method_id),
+    UNIQUE KEY uk_payment_methods_code (code),
+    KEY idx_payment_methods_status_sort (status, sort_order)
+  ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
   payments (
     payment_id INT NOT NULL AUTO_INCREMENT,
     booking_id INT NOT NULL,
     amount DECIMAL(12, 2) NOT NULL,
-    payment_method ENUM ('cash', 'card', 'momo', 'vnpay', 'zalopay') NOT NULL,
+    payment_method ENUM ('cash', 'card', 'momo', 'vnpay', 'zalopay', 'shopeepay', 'applepay', 'payoo') NOT NULL,
     status ENUM ('pending', 'success', 'failed') NOT NULL DEFAULT 'pending',
     transaction_id VARCHAR(100) DEFAULT NULL,
     payment_time TIMESTAMP NULL DEFAULT NULL,
@@ -322,6 +339,62 @@ CREATE TABLE
 -- =========================
 -- 7. Seed data
 -- =========================
+INSERT INTO
+  payment_methods (code, name, payment_method, icon_key, description, sort_order, status)
+VALUES
+  (
+    'atm-card',
+    'Thẻ ATM / Thẻ quốc tế',
+    'card',
+    'visa',
+    'Thanh toán bằng thẻ ATM, Visa hoặc Mastercard',
+    1,
+    'active'
+  ),
+  (
+    'shopeepay',
+    'ShopeePay',
+    'shopeepay',
+    'shopeepay',
+    'Thanh toán qua ví ShopeePay',
+    2,
+    'active'
+  ),
+  (
+    'apple-pay',
+    'Apple Pay',
+    'applepay',
+    'applepay',
+    'Thanh toán qua Apple Pay',
+    3,
+    'active'
+  ),
+  (
+    'momo',
+    'Ví MoMo',
+    'momo',
+    'momo',
+    'Thanh toán qua ví MoMo',
+    4,
+    'active'
+  ),
+  (
+    'payoo',
+    'Payoo',
+    'payoo',
+    'payoo',
+    'Thanh toán qua Payoo',
+    5,
+    'active'
+  )
+ON DUPLICATE KEY UPDATE
+  name = VALUES(name),
+  payment_method = VALUES(payment_method),
+  icon_key = VALUES(icon_key),
+  description = VALUES(description),
+  sort_order = VALUES(sort_order),
+  status = VALUES(status);
+
 INSERT INTO
   customers (full_name, email, phone, password_hash, role)
 VALUES
