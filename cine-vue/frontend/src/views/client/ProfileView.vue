@@ -4,8 +4,8 @@
             <h1 class="text-base font-bold md:text-xl">Thông tin cá nhân</h1>
         </div>
 
-        <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
-            <aside class="card bg-base-100 border-base-300 border shadow-sm">
+        <div class="grid items-start gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+            <aside class="card bg-base-100 border-base-300 h-fit self-start border">
                 <div class="card-body items-center text-center">
                     <div class="avatar">
                         <div class="h-24 w-24 rounded-full">
@@ -24,7 +24,7 @@
                 </div>
             </aside>
 
-            <div class="card bg-base-100 border-base-300 border shadow-sm">
+            <div class="card bg-base-100 border-base-300 min-w-0 self-start border">
                 <div class="card-body">
                     <div role="tablist" class="tabs tabs-lift">
                         <input
@@ -37,7 +37,10 @@
                             aria-label="Thông tin"
                         />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6">
-                            <div v-if="successMessage" class="alert alert-success mb-4 py-2 text-sm">
+                            <div
+                                v-if="successMessage"
+                                class="alert alert-success mb-4 py-2 text-sm"
+                            >
                                 {{ successMessage }}
                             </div>
                             <div v-if="errorMessage" class="alert alert-error mb-4 py-2 text-sm">
@@ -47,7 +50,7 @@
                             <form v-if="isEditing" @submit.prevent="handleSave">
                                 <fieldset :disabled="isSaving" class="grid gap-4 md:grid-cols-2">
                                     <label class="form-control">
-                                        <span class="label-text mb-1">Họ tên</span>
+                                        <span class="text-base-content/75 text-xs">Họ tên</span>
                                         <input
                                             v-model.trim="form.full_name"
                                             type="text"
@@ -58,7 +61,7 @@
                                     </label>
 
                                     <label class="form-control">
-                                        <span class="label-text mb-1">Email</span>
+                                        <span class="text-base-content/75 text-xs">Email</span>
                                         <input
                                             v-model.trim="form.email"
                                             type="email"
@@ -68,7 +71,9 @@
                                     </label>
 
                                     <label class="form-control">
-                                        <span class="label-text mb-1">Số điện thoại</span>
+                                        <span class="text-base-content/75 text-xs"
+                                            >Số điện thoại</span
+                                        >
                                         <input
                                             v-model.trim="form.phone"
                                             type="tel"
@@ -78,7 +83,7 @@
                                     </label>
 
                                     <label class="form-control">
-                                        <span class="label-text mb-1">Ngày sinh</span>
+                                        <span class="text-base-content/75 text-xs">Ngày sinh</span>
                                         <input
                                             v-model="form.date_of_birth"
                                             type="date"
@@ -87,13 +92,16 @@
                                     </label>
 
                                     <label class="form-control md:col-span-2">
-                                        <span class="label-text mb-1">Avatar URL</span>
+                                        <span class="text-base-content/75 text-xs">Ảnh đại diện</span>
                                         <input
-                                            v-model.trim="form.avatar_url"
-                                            type="url"
-                                            class="input w-full"
-                                            placeholder="https://..."
+                                            type="file"
+                                            accept="image/*"
+                                            class="file-input w-full"
+                                            @change="handleAvatarChange"
                                         />
+                                        <span class="text-base-content/60 mt-1 text-xs">
+                                            Chọn ảnh JPG, PNG hoặc WebP. Dung lượng tối đa 5MB.
+                                        </span>
                                     </label>
                                 </fieldset>
 
@@ -122,14 +130,18 @@
 
                             <template v-else>
                                 <div class="grid gap-4 md:grid-cols-2">
-                                    <ProfileInfoItem label="Họ tên" :value="displayName" />
-                                    <ProfileInfoItem label="Email" :value="user?.email" />
-                                    <ProfileInfoItem label="Số điện thoại" :value="user?.phone" />
-                                    <ProfileInfoItem
-                                        label="Ngày sinh"
-                                        :value="formattedBirthDate"
-                                    />
-                                    <ProfileInfoItem label="Vai trò" :value="roleLabel" />
+                                    <div
+                                        v-for="item in profileItems"
+                                        :key="item.label"
+                                        class="rounded-box border-base-300 border p-4"
+                                    >
+                                        <div class="text-base-content/60 text-sm">
+                                            {{ item.label }}
+                                        </div>
+                                        <div class="mt-1 font-medium">
+                                            {{ item.value || "Chưa cập nhật" }}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="mt-5 flex justify-end">
@@ -170,56 +182,112 @@
 </template>
 
 <script setup>
-import { computed, defineComponent, h, onMounted, reactive, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
-
-const DEFAULT_AVATAR = "https://ui-avatars.com/api/?name=CineMax&background=0f172a&color=ffffff";
 
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const DEFAULT_AVATAR = "https://ui-avatars.com/api/?name=CineMax&background=0f172a&color=ffffff";
+const MAX_AVATAR_SIZE = 5 * 1024 * 1024;
 
 const activeTab = ref(route.path === "/history" ? "history" : "info");
 const isEditing = ref(false);
 const isSaving = ref(false);
 const successMessage = ref("");
 const errorMessage = ref("");
+const selectedAvatarFile = ref(null);
+const selectedAvatarPreview = ref("");
 
 const form = reactive({
     full_name: "",
     email: "",
     phone: "",
-    avatar_url: "",
     date_of_birth: "",
 });
 
 const user = computed(() => authStore.user);
 const displayName = computed(() => user.value?.full_name || "Người dùng CineMax");
 const avatarUrl = computed(() => user.value?.avatar_url || DEFAULT_AVATAR);
-const previewAvatarUrl = computed(() => form.avatar_url || avatarUrl.value);
+const previewAvatarUrl = computed(() => selectedAvatarPreview.value || avatarUrl.value);
 const roleLabel = computed(() => (user.value?.role === "admin" ? "Quản trị viên" : "Khách hàng"));
 const formattedBirthDate = computed(() => formatDate(user.value?.date_of_birth));
+const profileItems = computed(() => [
+    {
+        label: "Họ tên",
+        value: displayName.value,
+    },
+    {
+        label: "Email",
+        value: user.value?.email,
+    },
+    {
+        label: "Số điện thoại",
+        value: user.value?.phone,
+    },
+    {
+        label: "Ngày sinh",
+        value: formattedBirthDate.value,
+    },
+    {
+        label: "Vai trò",
+        value: roleLabel.value,
+    },
+]);
 
 const syncFormWithUser = () => {
     form.full_name = user.value?.full_name || "";
     form.email = user.value?.email || "";
     form.phone = user.value?.phone || "";
-    form.avatar_url = user.value?.avatar_url || "";
     form.date_of_birth = toDateInputValue(user.value?.date_of_birth);
 };
 
 const startEdit = () => {
     successMessage.value = "";
     errorMessage.value = "";
+    clearSelectedAvatar();
     syncFormWithUser();
     isEditing.value = true;
 };
 
 const cancelEdit = () => {
     syncFormWithUser();
+    clearSelectedAvatar();
     isEditing.value = false;
     errorMessage.value = "";
+};
+
+const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    clearSelectedAvatar();
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+        errorMessage.value = "Vui lòng chọn đúng file hình ảnh.";
+        event.target.value = "";
+        return;
+    }
+
+    if (file.size > MAX_AVATAR_SIZE) {
+        errorMessage.value = "Ảnh đại diện không được vượt quá 5MB.";
+        event.target.value = "";
+        return;
+    }
+
+    errorMessage.value = "";
+    selectedAvatarFile.value = file;
+    selectedAvatarPreview.value = URL.createObjectURL(file);
+};
+
+const clearSelectedAvatar = () => {
+    if (selectedAvatarPreview.value) {
+        URL.revokeObjectURL(selectedAvatarPreview.value);
+    }
+
+    selectedAvatarFile.value = null;
+    selectedAvatarPreview.value = "";
 };
 
 const handleSave = async () => {
@@ -228,14 +296,17 @@ const handleSave = async () => {
     errorMessage.value = "";
 
     try {
-        await authStore.updateProfile({
-            full_name: form.full_name,
-            email: form.email,
-            phone: form.phone || null,
-            avatar_url: form.avatar_url || null,
-            date_of_birth: form.date_of_birth || null,
-        });
+        await authStore.updateProfile(
+            {
+                full_name: form.full_name,
+                email: form.email,
+                phone: form.phone || null,
+                date_of_birth: form.date_of_birth || null,
+            },
+            selectedAvatarFile.value,
+        );
 
+        clearSelectedAvatar();
         isEditing.value = false;
         successMessage.value = "Cập nhật thông tin thành công.";
     } catch (error) {
@@ -259,6 +330,10 @@ const getProfileErrorMessage = (error) => {
 
     if (message === "Validation error") {
         return "Thông tin chưa hợp lệ. Vui lòng kiểm tra lại.";
+    }
+
+    if (message === "Avatar must be an image") {
+        return "Vui lòng chọn đúng file hình ảnh.";
     }
 
     return message || "Không thể cập nhật thông tin. Vui lòng thử lại.";
@@ -308,23 +383,5 @@ onMounted(async () => {
     }
 });
 
-const ProfileInfoItem = defineComponent({
-    props: {
-        label: {
-            type: String,
-            required: true,
-        },
-        value: {
-            type: [String, Number],
-            default: "",
-        },
-    },
-    setup(props) {
-        return () =>
-            h("div", { class: "rounded-box border-base-300 border p-4" }, [
-                h("div", { class: "text-base-content/60 text-sm" }, props.label),
-                h("div", { class: "mt-1 font-medium" }, props.value || "Chưa cập nhật"),
-            ]);
-    },
-});
+onBeforeUnmount(clearSelectedAvatar);
 </script>

@@ -12,7 +12,11 @@ exports.getMe = async (req, res, next) => {
 
 exports.updateMe = async (req, res, next) => {
   try {
-    const data = await customersService.updateCurrentProfile(req.user.customer_id, req.body);
+    const data = await customersService.updateCurrentProfile(
+      req.user.customer_id,
+      req.body,
+      req.file,
+    );
     return res.json({
       success: true,
       message: "Profile updated successfully",

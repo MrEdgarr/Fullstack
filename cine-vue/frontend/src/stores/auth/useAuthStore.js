@@ -93,8 +93,26 @@ export const useAuthStore = defineStore("auth", () => {
         return res.data.data;
     };
 
-    const updateProfile = async (profileData) => {
-        const res = await api.put("/customers/me", profileData, {
+    const updateProfile = async (profileData, avatarFile = null) => {
+        if (!avatarFile) {
+            const res = await api.put("/customers/me", profileData, {
+                skipServerLoading: true,
+            });
+
+            setUser(res.data.data);
+            return res.data.data;
+        }
+
+        const formData = new FormData();
+        Object.entries(profileData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                formData.append(key, value);
+            }
+        });
+
+        formData.append("avatar", avatarFile);
+
+        const res = await api.put("/customers/me", formData, {
             skipServerLoading: true,
         });
 

@@ -1,4 +1,5 @@
 const customersRepository = require("./customers.repository");
+const { uploadToCloudinary } = require("../../shared/middleware/upload-cloudinary");
 const AppError = require("../../shared/utils/app-error");
 
 const pickPublicCustomer = (customer) => ({
@@ -23,7 +24,7 @@ exports.getCurrentProfile = async (customerId) => {
   return pickPublicCustomer(customer);
 };
 
-exports.updateCurrentProfile = async (customerId, payload) => {
+exports.updateCurrentProfile = async (customerId, payload, file = null) => {
   const [rows] = await customersRepository.getPublicById(customerId);
   const currentCustomer = rows[0];
 
@@ -44,10 +45,27 @@ exports.updateCurrentProfile = async (customerId, payload) => {
 
   await assertUniqueEmail(customerId, nextProfile.email);
 
+  if (file) {
+    nextProfile.avatar_url = await uploadAvatar(file);
+  }
+
   await customersRepository.updateProfile(customerId, nextProfile);
 
   return exports.getCurrentProfile(customerId);
 };
+
+async function uploadAvatar(file) {
+  if (!file) {
+    throw new AppError("Avatar file is required", 400);
+  }
+
+  if (!file.mimetype?.startsWith("image/")) {
+    throw new AppError("Avatar must be an image", 400);
+  }
+
+  const uploadedAvatar = await uploadToCloudinary(file, "avatars");
+  return uploadedAvatar.secure_url;
+}
 
 async function assertUniqueEmail(customerId, email) {
   const [rows] = await customersRepository.getByEmail(email);
