@@ -1,4 +1,5 @@
 const showtimesRepository = require("./showtimes.repository");
+const showtimesService = require("./showtimes.service");
 const showtimeSeatsService = require("./showtime-seats.service");
 const showtimeSeatsRepository = require("./showtime-seats.repository");
 
@@ -15,6 +16,24 @@ exports.getByMovie = async (req, res, next) => {
   try {
     const [rows] = await showtimesRepository.getByMovie(req.params.movieId);
     res.json({ success: true, data: rows });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getMovieScheduleTree = async (req, res, next) => {
+  try {
+    const data = await showtimesService.getMovieScheduleTree(req.params.movieId, req.query);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getScheduleTree = async (req, res, next) => {
+  try {
+    const data = await showtimesService.getScheduleTree(req.query);
+    res.json({ success: true, data });
   } catch (error) {
     next(error);
   }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useServerConnectionStore } from "@/stores/app/useServerConnectionStore";
+import { AUTH_UNAUTHORIZED_EVENT } from "@/utils/constants/auth";
 
 const SERVER_LOADING_FLAG = "__trackServerConnection";
 const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 60000;
@@ -8,6 +9,11 @@ const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || "/api/v1",
     timeout: API_TIMEOUT_MS,
 });
+
+const clearPersistedAuth = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+};
 
 const finishTrackedRequest = (config) => {
     if (!config?.[SERVER_LOADING_FLAG]) return;
@@ -45,9 +51,10 @@ api.interceptors.response.use(
         finishTrackedRequest(error.config);
 
         if (error.response?.status === 401) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "/";
+            clearPersistedAuth();
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent(AUTH_UNAUTHORIZED_EVENT));
+            }
         }
         return Promise.reject(error);
     },

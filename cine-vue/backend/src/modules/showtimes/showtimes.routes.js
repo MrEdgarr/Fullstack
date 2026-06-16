@@ -12,6 +12,8 @@ const router = express.Router();
 const adminOnly = requireRole(["admin"]);
 
 router.get("/", showtimesController.getAll);
+router.get("/schedule/tree", showtimesController.getScheduleTree);
+router.get("/movie/:movieId/tree", showtimesController.getMovieScheduleTree);
 router.get("/movie/:movieId", showtimesController.getByMovie);
 router.get("/:id/seats", showtimesController.getSeats);
 router.use(authMiddleware);

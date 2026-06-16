@@ -1,8 +1,31 @@
 const customersRepository = require("./customers.repository");
+const customersService = require("./customers.service");
+
+exports.getMe = async (req, res, next) => {
+  try {
+    const data = await customersService.getCurrentProfile(req.user.customer_id);
+    return res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateMe = async (req, res, next) => {
+  try {
+    const data = await customersService.updateCurrentProfile(req.user.customer_id, req.body);
+    return res.json({
+      success: true,
+      message: "Profile updated successfully",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.getById = async (req, res, next) => {
   try {
-    const [rows] = await customersRepository.getById(req.params.id);
+    const [rows] = await customersRepository.getPublicById(req.params.id);
 
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: "Customer not found" });

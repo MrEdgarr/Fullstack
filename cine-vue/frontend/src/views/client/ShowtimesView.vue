@@ -120,21 +120,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/_services/api";
 import { useBookingStore } from "@/stores/booking";
-import {
-    createAvailableCinemaOptions,
-    createCityOptions,
-    createMovieOptions,
-    filterShowtimes,
-    formatDuration,
-    getTodayDate,
-    groupShowtimesByMovie,
-    isShowtimePast,
-    normalizeMovieShowtime,
-} from "@/utils/helpers/showtime";
+import { formatDuration, getTodayDate, isShowtimePast } from "@/utils/helpers/showtime";
 
 const router = useRouter();
 const bookingStore = useBookingStore();
@@ -143,20 +133,20 @@ const selectedDate = ref(getTodayDate());
 const selectedCinemaId = ref("");
 const selectedMovieId = ref("");
 const selectedLocationId = ref("");
-const showtimes = ref([]);
+const schedule = ref(createEmptySchedule());
 const isLoading = ref(false);
 const error = ref("");
 
-const movieOptions = computed(() => createMovieOptions(showtimes.value));
-const cityOptions = computed(() => createCityOptions(showtimes.value));
+const movieOptions = computed(() => schedule.value.movieOptions);
+const cityOptions = computed(() => schedule.value.cityOptions);
+const filteredCinemas = computed(() => schedule.value.cinemaOptions);
+const filteredMovies = computed(() => schedule.value.movies);
 
-const filteredCinemas = computed(() =>
-    createAvailableCinemaOptions(showtimes.value, {
-        selectedDate: selectedDate.value,
-        selectedCityId: selectedLocationId.value,
-        selectedMovieId: selectedMovieId.value,
-    }),
-);
+let latestRequestId = 0;
+
+watch([selectedLocationId, selectedMovieId], () => {
+    selectedCinemaId.value = "";
+});
 
 watch(filteredCinemas, (newCinemas) => {
     if (
@@ -167,35 +157,65 @@ watch(filteredCinemas, (newCinemas) => {
     }
 });
 
-const matchingShowtimes = computed(() =>
-    filterShowtimes(showtimes.value, {
-        selectedDate: selectedDate.value,
-        selectedCinemaId: selectedCinemaId.value,
-        selectedMovieId: selectedMovieId.value,
-        selectedCityId: selectedLocationId.value,
-    }),
-);
+watch([selectedDate, selectedMovieId, selectedLocationId, selectedCinemaId], fetchScheduleTree, {
+    immediate: true,
+});
 
-const filteredMovies = computed(() => groupShowtimesByMovie(matchingShowtimes.value));
-
-const fetchShowtimes = async () => {
+async function fetchScheduleTree() {
+    const requestId = ++latestRequestId;
     isLoading.value = true;
     error.value = "";
 
     try {
-        const res = await api.get("/showtimes");
-        showtimes.value = (res.data.data || []).map((row) => normalizeMovieShowtime(row));
+        const res = await api.get("/showtimes/schedule/tree", {
+            params: buildScheduleParams(),
+        });
+
+        if (requestId !== latestRequestId) return;
+
+        schedule.value = normalizeScheduleResponse(res.data.data);
     } catch (err) {
+        if (requestId !== latestRequestId) return;
+
         error.value = err.response?.data?.message || "Không thể tải lịch chiếu";
-        showtimes.value = [];
+        schedule.value = createEmptySchedule();
     } finally {
-        isLoading.value = false;
+        if (requestId === latestRequestId) {
+            isLoading.value = false;
+        }
     }
-};
+}
+
+function buildScheduleParams() {
+    return {
+        date: selectedDate.value,
+        movie_id: selectedMovieId.value || undefined,
+        city_id: selectedLocationId.value || undefined,
+        cinema_id: selectedCinemaId.value || undefined,
+    };
+}
+
+function normalizeScheduleResponse(data = {}) {
+    return {
+        movieOptions: data.movieOptions || [],
+        cityOptions: data.cityOptions || [],
+        cinemaOptions: data.cinemaOptions || [],
+        movies: data.movies || [],
+    };
+}
+
+function createEmptySchedule() {
+    return {
+        movieOptions: [],
+        cityOptions: [],
+        cinemaOptions: [],
+        movies: [],
+    };
+}
 
 const isTimePast = isShowtimePast;
 
-const selectShowtime = (movie, group, timeItem) => {
+function selectShowtime(movie, group, timeItem) {
     if (isTimePast(group.date, timeItem.time)) return;
 
     bookingStore.setSelectedShowtime({
@@ -214,9 +234,7 @@ const selectShowtime = (movie, group, timeItem) => {
     bookingStore.paymentStore.resetPayment();
     bookingStore.stepStore.setStep(1);
     router.push("/booking");
-};
-
-onMounted(fetchShowtimes);
+}
 </script>
 
 <style scoped>

@@ -65,14 +65,13 @@
                                         <div class="text-xs">{{ authStore.user.email }}</div>
                                     </div>
                                 </li>
-                                <li>
-                                    <a href="">Thông tn cá nhân</a>
+                                <li v-for="(value, index) in PROFILE_NAVIGATION" :key="index">
+                                    <RouterLink :to="value.path" tabindex="-1">
+                                        {{ value.name }}
+                                    </RouterLink>
                                 </li>
                                 <li>
-                                    <a href="">Lịch sử</a>
-                                </li>
-                                <li>
-                                    <a href="" @click="authStore.logout">Đăng xuất</a>
+                                    <a href="" @click.prevent="authStore.logout">Đăng xuất</a>
                                 </li>
                             </ul>
                         </div>
@@ -156,6 +155,16 @@ const MAIN_NAVIGATION = ref([
     {
         name: "Tin tức",
         path: "/blog",
+    },
+]);
+const PROFILE_NAVIGATION = ref([
+    {
+        name: "Thông tin cá nhân",
+        path: "/profile",
+    },
+    {
+        name: "Lịch sử",
+        path: "/history",
     },
 ]);
 </script>

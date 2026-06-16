@@ -54,6 +54,87 @@ exports.getByMovie = (movie_id) =>
     [movie_id],
   );
 
+exports.getMovieScheduleRows = (movieId, { date, cityId, cinemaId } = {}) => {
+  const conditions = ["s.status = 'scheduled'", "s.movie_id = ?"];
+  const params = [movieId];
+
+  if (date) {
+    conditions.push("DATE(s.start_time) = ?");
+    params.push(date);
+  }
+
+  if (cityId) {
+    conditions.push("c.city_id = ?");
+    params.push(cityId);
+  }
+
+  if (cinemaId) {
+    conditions.push("c.cinema_id = ?");
+    params.push(cinemaId);
+  }
+
+  return db.execute(
+    `
+    ${SHOWTIME_SELECT}
+    WHERE ${conditions.join(" AND ")}
+    ORDER BY b.brand_name, c.cinema_name, r.room_name, s.start_time
+    `,
+    params,
+  );
+};
+
+exports.getMovieScheduleOptionRows = (movieId) =>
+  db.execute(
+    `
+    ${SHOWTIME_SELECT}
+    WHERE s.status = 'scheduled'
+      AND s.movie_id = ?
+    ORDER BY c.city_id, c.cinema_name, s.start_time
+    `,
+    [movieId],
+  );
+
+exports.getScheduleRows = ({ date, cityId, cinemaId, movieId } = {}) => {
+  const conditions = ["s.status = 'scheduled'"];
+  const params = [];
+
+  if (date) {
+    conditions.push("DATE(s.start_time) = ?");
+    params.push(date);
+  }
+
+  if (cityId) {
+    conditions.push("c.city_id = ?");
+    params.push(cityId);
+  }
+
+  if (cinemaId) {
+    conditions.push("c.cinema_id = ?");
+    params.push(cinemaId);
+  }
+
+  if (movieId) {
+    conditions.push("s.movie_id = ?");
+    params.push(movieId);
+  }
+
+  return db.execute(
+    `
+    ${SHOWTIME_SELECT}
+    WHERE ${conditions.join(" AND ")}
+    ORDER BY m.title, c.cinema_name, r.room_name, s.start_time
+    `,
+    params,
+  );
+};
+
+exports.getScheduleOptionRows = () =>
+  db.execute(`
+    ${SHOWTIME_SELECT}
+    WHERE s.status = 'scheduled'
+    ORDER BY s.start_time, m.title, c.cinema_name
+  `);
+
 exports.create = (
   movie_id,
   room_id,

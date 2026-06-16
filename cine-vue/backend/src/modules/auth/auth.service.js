@@ -55,7 +55,10 @@ exports.login = async ({ email, password }) => {
       customer_id: customer.customer_id,
       full_name: customer.full_name,
       email: customer.email,
+      phone: customer.phone,
       avatar_url: customer.avatar_url,
+      date_of_birth: customer.date_of_birth,
+      role: customer.role,
     },
   };
 };

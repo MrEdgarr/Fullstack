@@ -123,81 +123,100 @@ import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "@/_services/api";
 import { useBookingStore } from "@/stores/booking";
-import { useMovieStore } from "@/stores/movie/useMovieStore";
 import { extractIdFromSlug } from "@/utils/helpers/slug";
-import {
-    createCinemaOptions,
-    createCityOptions,
-    getTodayDate,
-    groupShowtimesByCinemaBrand,
-    normalizeMovieShowtime,
-} from "@/utils/helpers/showtime";
+import { getTodayDate } from "@/utils/helpers/showtime";
 
 const route = useRoute();
 const router = useRouter();
 const bookingStore = useBookingStore();
-const movieStore = useMovieStore();
 
 const selectedDate = ref(getTodayDate());
 const selectedCityId = ref("");
 const selectedCinemaId = ref("");
-const showtimes = ref([]);
+const schedule = ref(createEmptySchedule());
 const isLoading = ref(false);
 const error = ref("");
 
 const movieId = computed(() => extractIdFromSlug(route.params.slug));
-const currentMovie = computed(() => movieStore.currentMovie || {});
+const cityOptions = computed(() => schedule.value.cityOptions);
+const cinemaOptions = computed(() => schedule.value.cinemaOptions);
+const cinemaBrands = computed(() => schedule.value.cinemaBrands);
 
-const filteredShowtimes = computed(() =>
-    showtimes.value.filter((showtime) => {
-        const matchDate = showtime.date === selectedDate.value;
-        const matchCity = selectedCityId.value
-            ? showtime.cityId === Number(selectedCityId.value)
-            : true;
-        const matchCinema = selectedCinemaId.value
-            ? showtime.cinema.id === Number(selectedCinemaId.value)
-            : true;
+let latestRequestId = 0;
 
-        return matchDate && matchCity && matchCinema;
-    }),
-);
-
-const cityOptions = computed(() => createCityOptions(showtimes.value));
-const cinemaOptions = computed(() => createCinemaOptions(showtimes.value, selectedCityId.value));
-const cinemaBrands = computed(() => groupShowtimesByCinemaBrand(filteredShowtimes.value));
+watch(selectedCityId, () => {
+    selectedCinemaId.value = "";
+});
 
 watch(cinemaOptions, (newCinemas) => {
     if (
         selectedCinemaId.value &&
-        !newCinemas.some((cinema) => cinema.id === Number(selectedCinemaId.value))
+        !newCinemas.some((cinema) => Number(cinema.id) === Number(selectedCinemaId.value))
     ) {
         selectedCinemaId.value = "";
     }
 });
 
-const fetchShowtimesByMovie = async () => {
+watch([movieId, selectedDate, selectedCityId, selectedCinemaId], fetchMovieScheduleTree, {
+    immediate: true,
+});
+
+async function fetchMovieScheduleTree() {
     if (!movieId.value) {
-        showtimes.value = [];
+        schedule.value = createEmptySchedule();
         return;
     }
 
+    const requestId = ++latestRequestId;
     isLoading.value = true;
     error.value = "";
 
     try {
-        const res = await api.get(`/showtimes/movie/${movieId.value}`);
-        showtimes.value = (res.data.data || []).map((row) =>
-            normalizeMovieShowtime(row, currentMovie.value),
-        );
-    } catch (err) {
-        error.value = err.response?.data?.message || "Không thể tải lịch chiếu cho phim này";
-        showtimes.value = [];
-    } finally {
-        isLoading.value = false;
-    }
-};
+        const res = await api.get(`/showtimes/movie/${movieId.value}/tree`, {
+            params: buildScheduleParams(),
+        });
 
-const selectShowtime = (showtime) => {
+        if (requestId !== latestRequestId) return;
+
+        schedule.value = normalizeScheduleResponse(res.data.data);
+    } catch (err) {
+        if (requestId !== latestRequestId) return;
+
+        error.value =
+            err.response?.data?.message || "Không thể tải lịch chiếu cho phim này";
+        schedule.value = createEmptySchedule();
+    } finally {
+        if (requestId === latestRequestId) {
+            isLoading.value = false;
+        }
+    }
+}
+
+function buildScheduleParams() {
+    return {
+        date: selectedDate.value,
+        city_id: selectedCityId.value || undefined,
+        cinema_id: selectedCinemaId.value || undefined,
+    };
+}
+
+function normalizeScheduleResponse(data = {}) {
+    return {
+        cityOptions: data.cityOptions || [],
+        cinemaOptions: data.cinemaOptions || [],
+        cinemaBrands: data.cinemaBrands || [],
+    };
+}
+
+function createEmptySchedule() {
+    return {
+        cityOptions: [],
+        cinemaOptions: [],
+        cinemaBrands: [],
+    };
+}
+
+function selectShowtime(showtime) {
     bookingStore.setSelectedShowtime({
         showtime_id: showtime.showtime_id,
         movie: showtime.movie,
@@ -219,7 +238,5 @@ const selectShowtime = (showtime) => {
     bookingStore.stepStore.setStep(1);
 
     router.push("/booking");
-};
-
-watch(movieId, fetchShowtimesByMovie, { immediate: true });
+}
 </script>

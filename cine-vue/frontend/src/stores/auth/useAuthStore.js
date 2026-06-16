@@ -1,15 +1,20 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "@/_services/api";
+import { AUTH_UNAUTHORIZED_EVENT } from "@/utils/constants/auth";
+
+const getSavedToken = () => localStorage.getItem("token");
+const getSavedUser = () => localStorage.getItem("user");
+let isUnauthorizedListenerRegistered = false;
 
 export const useAuthStore = defineStore("auth", () => {
-    const token = ref(localStorage.getItem("token") || null);
+    const token = ref(getSavedToken());
     const user = ref(null);
     const isLoading = ref(false);
     const isModalOpen = ref(false);
     const currentTab = ref("login");
+    const redirectAfterLogin = ref(null);
 
-    // const userItems = computed(() => JSON.parse(localStorage.getItem("user")) || user.value);
     const isLoggedIn = computed(() => !!token.value);
     const isAdmin = computed(() => user.value?.role === "admin");
 
@@ -22,6 +27,16 @@ export const useAuthStore = defineStore("auth", () => {
         isModalOpen.value = false;
     };
 
+    const setLoginRedirect = (path) => {
+        redirectAfterLogin.value = path || null;
+    };
+
+    const consumeLoginRedirect = () => {
+        const path = redirectAfterLogin.value;
+        redirectAfterLogin.value = null;
+        return path;
+    };
+
     const setToken = (newToken) => {
         token.value = newToken;
         localStorage.setItem("token", newToken);
@@ -29,7 +44,6 @@ export const useAuthStore = defineStore("auth", () => {
 
     const setUser = (userData) => {
         user.value = userData;
-        // Lưu thông tin user vào localStorage để tự động load khi reload trang
         localStorage.setItem("user", JSON.stringify(userData));
     };
 
@@ -40,7 +54,6 @@ export const useAuthStore = defineStore("auth", () => {
         localStorage.removeItem("user");
     };
 
-    // Đăng nhập
     const login = async (credentials) => {
         isLoading.value = true;
         try {
@@ -50,8 +63,6 @@ export const useAuthStore = defineStore("auth", () => {
 
             setToken(res.data.token);
             setUser(res.data.customer);
-            console.log(res.data);
-
             closeModal();
 
             return res.data;
@@ -60,7 +71,6 @@ export const useAuthStore = defineStore("auth", () => {
         }
     };
 
-    // Đăng ký
     const register = async (userData) => {
         isLoading.value = true;
         try {
@@ -74,28 +84,57 @@ export const useAuthStore = defineStore("auth", () => {
         }
     };
 
+    const fetchProfile = async () => {
+        const res = await api.get("/customers/me", {
+            skipServerLoading: true,
+        });
+
+        setUser(res.data.data);
+        return res.data.data;
+    };
+
+    const updateProfile = async (profileData) => {
+        const res = await api.put("/customers/me", profileData, {
+            skipServerLoading: true,
+        });
+
+        setUser(res.data.data);
+        return res.data.data;
+    };
+
     const logout = () => {
         clearAuth();
     };
 
-    // Kiểm tra và load thông tin khi reload trang
     const checkAuth = () => {
-        const savedToken = localStorage.getItem("token");
-        const savedUser = localStorage.getItem("user");
+        const savedToken = getSavedToken();
+        const savedUser = getSavedUser();
 
-        if (savedToken) {
-            token.value = savedToken;
+        if (!savedToken) {
+            clearAuth();
+            return false;
         }
 
-        if (savedUser) {
-            try {
-                user.value = JSON.parse(savedUser);
-            } catch (e) {
-                console.log(e);
-                clearAuth();
-            }
+        token.value = savedToken;
+
+        if (!savedUser) {
+            return true;
+        }
+
+        try {
+            user.value = JSON.parse(savedUser);
+            return true;
+        } catch (error) {
+            console.error("[Auth] Invalid saved user data:", error);
+            clearAuth();
+            return false;
         }
     };
+
+    if (typeof window !== "undefined" && !isUnauthorizedListenerRegistered) {
+        window.addEventListener(AUTH_UNAUTHORIZED_EVENT, clearAuth);
+        isUnauthorizedListenerRegistered = true;
+    }
 
     onMounted(() => {
         checkAuth();
@@ -107,14 +146,19 @@ export const useAuthStore = defineStore("auth", () => {
         isLoading,
         isModalOpen,
         currentTab,
+        redirectAfterLogin,
         isLoggedIn,
         isAdmin,
-        // userItems,
         openModal,
         closeModal,
+        setLoginRedirect,
+        consumeLoginRedirect,
         login,
         register,
+        fetchProfile,
+        updateProfile,
         logout,
+        clearAuth,
         checkAuth,
     };
 });

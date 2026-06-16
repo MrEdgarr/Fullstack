@@ -5,6 +5,7 @@ export const routes = [
         children: [
             {
                 path: "/",
+                name: "home",
                 component: () => import("@/views/client/HomeView.vue"),
                 meta: {
                     title: "Cinemax",
@@ -99,6 +100,16 @@ export const routes = [
                 },
                 // Alias routes
                 alias: ["/ve-chung-toi"],
+            },
+            {
+                path: "/profile",
+                component: () => import("@/views/client/ProfileView.vue"),
+                name: "profile",
+                meta: {
+                    title: "Cinemax",
+                    requiresAuth: true,
+                },
+                alias: ["/thong-tin-ca-nhan", "/history"],
             },
         ],
     },

@@ -142,12 +142,21 @@
 
 <script setup>
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+
 const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
 const formData = reactive({
     email: "admin@example.com",
     password: "123",
 });
+
+const getSafeRedirectPath = (path) => {
+    if (typeof path !== "string") return null;
+    if (!path.startsWith("/") || path.startsWith("//")) return null;
+    return path;
+};
 
 const handleLogin = async () => {
     try {
@@ -155,11 +164,21 @@ const handleLogin = async () => {
             email: formData.email,
             password: formData.password,
         });
+
+        const redirectPath = getSafeRedirectPath(
+            authStore.consumeLoginRedirect() || route.query.redirect,
+        );
+
+        if (redirectPath && redirectPath !== route.fullPath) {
+            await router.replace(redirectPath);
+        }
+
         resetForm();
     } catch (err) {
         alert(err.response?.data?.message || "Đăng nhập thất bại");
     }
 };
+
 const resetForm = () => {
     formData.email = "";
     formData.password = "";
