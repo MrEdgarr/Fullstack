@@ -1,6 +1,5 @@
 <template>
     <div class="space-y-4">
-        {{ bookings }}
         <!-- Skeleton Loading -->
         <div v-if="isLoading" class="space-y-4">
             <div
@@ -128,7 +127,7 @@ const fetchBookings = async () => {
         if (!authStore.user?.customer_id) return;
         isLoading.value = true;
         const res = await api.get(`/bookings/customer/${authStore.user.customer_id}`);
-        console.log(res);
+        console.log(res.data);
 
         bookings.value = res.data?.data || [];
     } catch (error) {

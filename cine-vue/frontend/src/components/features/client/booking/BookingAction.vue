@@ -82,10 +82,7 @@
                 </div>
             </div>
 
-            <div
-                v-if="voucherPrice > 0"
-                class="border-base-content/25 border-t border-dashed pt-2"
-            >
+            <div v-if="voucherPrice > 0" class="border-base-content/25 border-t border-dashed pt-2">
                 <div class="flex items-center justify-between pb-2 text-xs font-medium md:text-sm">
                     <span>Thành tiền tạm tính</span>
                     <span class="text-base-content">{{ formatCurrency(finalPrice) }}</span>
@@ -98,11 +95,7 @@
 
             <div v-if="stepStore.isLastStep" class="mt-2">
                 <label class="flex cursor-pointer text-sm">
-                    <input
-                        v-model="isAgreed"
-                        type="checkbox"
-                        class="checkbox checkbox-sm"
-                    />
+                    <input v-model="isAgreed" type="checkbox" class="checkbox checkbox-sm" />
                     <div class="ml-2.5">
                         <p>
                             Tôi xác nhận các thông tin đã chính xác và đồng ý với các

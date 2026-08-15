@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <dialog class="modal" :class="{ 'modal-open': paymentStore.isTicketInfo }">
         <div class="modal-box">
             <div class="font-semibold">Đặt vé thành công</div>
@@ -73,16 +73,20 @@
 
             <div class="modal-action">
                 <button class="btn btn-ghost" @click="goHome">Trang chủ</button>
-                <button class="btn btn-primary" @click="paymentStore.closeTicketModal">Đóng</button>
+                <button class="btn btn-primary" @click="handleBuyMore">
+                    Mua thêm
+                </button>
             </div>
         </div>
     </dialog>
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useBookingStore } from "@/stores/booking";
 import { formatCurrency } from "@/utils/helpers/currency";
+import { createMovieSlug } from "@/utils/helpers/slug";
 
 const router = useRouter();
 const bookingStore = useBookingStore();
@@ -90,8 +94,8 @@ const paymentStore = bookingStore.paymentStore;
 
 const ticket = computed(() => paymentStore.lastTicket);
 const bookingCode = computed(() => `BK${ticket.value?.booking?.booking_id || ""}`);
-const qrUrl = computed(() =>
-    `https://quickchart.io/qr?text=${encodeURIComponent(bookingCode.value)}&size=100`,
+const qrUrl = computed(
+    () => `https://quickchart.io/qr?text=${encodeURIComponent(bookingCode.value)}&size=100`,
 );
 
 const singleSeatsList = computed(() =>
@@ -135,6 +139,22 @@ const goHome = async () => {
     paymentStore.closeTicketModal();
     await bookingStore.resetAll();
     router.push("/");
+};
+
+const handleBuyMore = async () => {
+    const movie = ticket.value?.showtime?.movie;
+    paymentStore.closeTicketModal();
+    await bookingStore.resetAll();
+
+    if (movie) {
+        const slug = createMovieSlug(movie);
+        if (slug) {
+            router.push({ name: "movie", params: { slug } });
+            return;
+        }
+    }
+
+    router.push("/showtimes");
 };
 </script>
 
