@@ -7,9 +7,7 @@
             aria-live="polite"
             aria-busy="true"
         >
-            <div
-                class="bg-base-100 border-base-300/70 flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border p-7 text-center shadow-xl"
-            >
+            <div class="flex max-w-sm flex-col items-center gap-3 text-center">
                 <span
                     class="loading loading-infinity loading-xl text-primary"
                     aria-hidden="true"

@@ -1,7 +1,8 @@
-import { computed, ref } from "vue";
+import { computed, onScopeDispose, ref } from "vue";
 import { defineStore } from "pinia";
 
 const DISPLAY_DELAY_MS = 100;
+const MAX_LOADING_MS = 61000;
 const DEFAULT_MESSAGE = "Đang tải dữ liệu...";
 const FIRST_CONNECTION_HINT = "Lần kết nối đầu tiên có thể mất thêm vài giây.";
 const FIRST_CONNECTION_HINT_KEY = "cine-vue:first-connection-hint-shown";
@@ -12,6 +13,7 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
     const message = ref(DEFAULT_MESSAGE);
     const subMessage = ref("");
     let displayTimer = null;
+    let safetyTimer = null;
 
     const isConnecting = computed(() => pendingRequests.value > 0);
 
@@ -20,6 +22,13 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
 
         clearTimeout(displayTimer);
         displayTimer = null;
+    };
+
+    const clearSafetyTimer = () => {
+        if (!safetyTimer) return;
+
+        clearTimeout(safetyTimer);
+        safetyTimer = null;
     };
 
     const resetLoadingContent = () => {
@@ -49,6 +58,7 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
 
     const hideImmediately = () => {
         clearDisplayTimer();
+        clearSafetyTimer();
         isVisible.value = false;
         resetLoadingContent();
     };
@@ -62,6 +72,17 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
         resetLoadingContent();
 
         const shouldShowHint = shouldShowFirstConnectionHint();
+
+        // Safety timeout: auto-hide after the API timeout window to prevent infinite loading
+        clearSafetyTimer();
+        safetyTimer = setTimeout(() => {
+            safetyTimer = null;
+            if (isConnecting.value) {
+                console.warn("[ServerConnection] Safety timeout reached, forcing hide");
+                pendingRequests.value = 0;
+                hideImmediately();
+            }
+        }, MAX_LOADING_MS);
 
         displayTimer = setTimeout(() => {
             displayTimer = null;
@@ -81,11 +102,17 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
 
         if (isConnecting.value) return;
 
+        clearSafetyTimer();
         hideImmediately();
     };
 
+    onScopeDispose(() => {
+        clearDisplayTimer();
+        clearSafetyTimer();
+    });
+
     return {
-        pendingRequests,
+        pendingRequests: computed(() => pendingRequests.value),
         isConnecting,
         isVisible,
         message,

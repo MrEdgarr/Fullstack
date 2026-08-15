@@ -236,7 +236,9 @@ const handlePay = async () => {
             bookingPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
         }
 
-        const bookingRes = await api.post("/bookings", bookingPayload);
+        const bookingRes = await api.post("/bookings", bookingPayload, {
+            skipServerLoading: true,
+        });
         const booking = bookingRes.data.data;
         createdBookingId = booking.booking_id;
         await paymentStore.fetchPaymentMethods();
@@ -244,16 +246,24 @@ const handlePay = async () => {
         const selectedPaymentMethod = paymentStore.paymentMethod;
         const paymentMethod = selectedPaymentMethod?.payment_method || "card";
 
-        const paymentRes = await api.post("/payments", {
-            booking_id: booking.booking_id,
-            amount: Number(booking.final_amount),
-            payment_method: paymentMethod,
-            transaction_id: `demo-${booking.booking_id}-${Date.now()}`,
-        });
+        const paymentRes = await api.post(
+            "/payments",
+            {
+                booking_id: booking.booking_id,
+                amount: Number(booking.final_amount),
+                payment_method: paymentMethod,
+                transaction_id: `demo-${booking.booking_id}-${Date.now()}`,
+            },
+            { skipServerLoading: true },
+        );
         const payment = paymentRes.data.data;
 
         paymentStatusRequestStarted = true;
-        await api.put(`/payments/${payment.payment_id}/status`, { status: "success" });
+        await api.put(
+            `/payments/${payment.payment_id}/status`,
+            { status: "success" },
+            { skipServerLoading: true },
+        );
 
         paymentStore.setLastTicket({
             booking,
@@ -268,7 +278,9 @@ const handlePay = async () => {
         await seatStore.fetchSeats(showtimeId.value);
     } catch (err) {
         if (createdBookingId && !paymentStatusRequestStarted) {
-            await api.delete(`/bookings/${createdBookingId}`).catch(() => {});
+            await api
+                .delete(`/bookings/${createdBookingId}`, { skipServerLoading: true })
+                .catch(() => {});
         }
 
         submitError.value = getApiErrorMessage(err);

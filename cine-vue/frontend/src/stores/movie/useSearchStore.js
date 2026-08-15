@@ -27,7 +27,7 @@ export const useSearchStore = defineStore("search", () => {
         });
     });
 
-    const fetchMovies = () => moviesStore.fetchAll();
+    const fetchMovies = () => moviesStore.fetchAll({ skipServerLoading: true });
 
     const openModal = () => {
         isOpen.value = true;

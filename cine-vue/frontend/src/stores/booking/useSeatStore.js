@@ -99,7 +99,9 @@ export const useSeatStore = defineStore("seat", () => {
         error.value = "";
 
         try {
-            const res = await api.get(`/showtimes/${showtimeId}/seats`);
+            const res = await api.get(`/showtimes/${showtimeId}/seats`, {
+                skipServerLoading: true,
+            });
             seats.value = (res.data.data || []).map(normalizeSeat);
             syncSelectedSeatsWithSeatMap();
             return seats.value;

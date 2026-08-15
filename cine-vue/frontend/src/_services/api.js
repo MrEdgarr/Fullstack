@@ -1,8 +1,7 @@
 import axios from "axios";
-import { useServerConnectionStore } from "@/stores/app/useServerConnectionStore";
 import { AUTH_UNAUTHORIZED_EVENT } from "@/utils/constants/auth";
+import { useServerConnectionStore } from "@/stores/app/useServerConnectionStore";
 
-const SERVER_LOADING_FLAG = "__trackServerConnection";
 const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 60000;
 
 const api = axios.create({
@@ -10,16 +9,12 @@ const api = axios.create({
     timeout: API_TIMEOUT_MS,
 });
 
+const shouldUseGlobalLoading = (config) =>
+    !config?.skipServerLoading && !config?.disableGlobalLoading;
+
 const clearPersistedAuth = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-};
-
-const finishTrackedRequest = (config) => {
-    if (!config?.[SERVER_LOADING_FLAG]) return;
-
-    config[SERVER_LOADING_FLAG] = false;
-    useServerConnectionStore().finishRequest();
 };
 
 api.interceptors.request.use(
@@ -29,26 +24,35 @@ api.interceptors.request.use(
             config.headers.Authorization = `Bearer ${token}`;
         }
 
-        if (!config.skipServerLoading) {
-            config[SERVER_LOADING_FLAG] = true;
-            useServerConnectionStore().startRequest();
+        if (shouldUseGlobalLoading(config)) {
+            const connectionStore = useServerConnectionStore();
+            connectionStore.startRequest();
         }
 
         return config;
     },
     (error) => {
-        finishTrackedRequest(error.config);
+        if (shouldUseGlobalLoading(error.config)) {
+            const connectionStore = useServerConnectionStore();
+            connectionStore.finishRequest();
+        }
         return Promise.reject(error);
     },
 );
 
 api.interceptors.response.use(
     (response) => {
-        finishTrackedRequest(response.config);
+        if (shouldUseGlobalLoading(response.config)) {
+            const connectionStore = useServerConnectionStore();
+            connectionStore.finishRequest();
+        }
         return response;
     },
     (error) => {
-        finishTrackedRequest(error.config);
+        if (shouldUseGlobalLoading(error.config)) {
+            const connectionStore = useServerConnectionStore();
+            connectionStore.finishRequest();
+        }
 
         if (error.response?.status === 401) {
             clearPersistedAuth();

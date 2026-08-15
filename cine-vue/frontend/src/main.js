@@ -1,14 +1,24 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import App from './App.vue'
-import router from './router'
+// Clear localStorage if it has been more than 24 hours since last access
+const TWENTY_FOUR_HOURS = 5 * 60 * 1000;
+const lastAccess = localStorage.getItem("app_last_access");
+const now = Date.now();
 
-const app = createApp(App)
+if (lastAccess && now - parseInt(lastAccess, 10) > TWENTY_FOUR_HOURS) {
+    localStorage.clear();
+}
+localStorage.setItem("app_last_access", now.toString());
 
-app.use(createPinia())
-app.use(router)
+import App from "./App.vue";
+import router from "./router";
 
-app.mount('#app')
+const app = createApp(App);
+
+app.use(createPinia());
+app.use(router);
+
+app.mount("#app");

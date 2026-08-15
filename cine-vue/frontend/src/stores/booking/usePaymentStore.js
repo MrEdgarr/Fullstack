@@ -31,7 +31,7 @@ export const usePaymentStore = defineStore("payment", () => {
         methodsError.value = "";
 
         try {
-            const res = await api.get("/payments/methods");
+            const res = await api.get("/payments/methods", { skipServerLoading: true });
             const methods = (res.data.data || []).map(normalizePaymentMethod);
 
             paymentMethods.value = methods.length ? methods : PAYMENT_DATA;
@@ -84,7 +84,9 @@ export const usePaymentStore = defineStore("payment", () => {
         isApplyingPromo.value = true;
 
         try {
-            const res = await api.get(`/promotions/${upperCode}/validate`);
+            const res = await api.get(`/promotions/${upperCode}/validate`, {
+                skipServerLoading: true,
+            });
             const promo = res.data.data;
 
             promotion.value = promo;

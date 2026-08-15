@@ -45,7 +45,7 @@ export const useComboStore = defineStore("combo", () => {
         error.value = "";
 
         try {
-            const res = await api.get("/combos");
+            const res = await api.get("/combos", { skipServerLoading: true });
             combos.value = (res.data.data || [])
                 .map(normalizeCombo)
                 .filter((combo) => combo.cinema_id === Number(cinemaId));

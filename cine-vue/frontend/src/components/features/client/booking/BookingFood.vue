@@ -7,7 +7,10 @@
             <div v-else-if="comboStore.error" class="py-6 text-center text-sm text-error">
                 {{ comboStore.error }}
             </div>
-            <div v-else-if="comboStore.combos.length === 0" class="py-6 text-center text-sm text-base-content/60">
+            <div
+                v-else-if="comboStore.combos.length === 0"
+                class="py-6 text-center text-sm text-base-content/60"
+            >
                 Rạp này chưa có combo đồ ăn.
             </div>
             <table v-else class="table">

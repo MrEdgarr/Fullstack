@@ -1,7 +1,43 @@
 const db = require("../../shared/config/database");
 
 exports.getByCustomer = (customerId) =>
-  db.execute("SELECT * FROM bookings WHERE customer_id = ? ORDER BY created_at DESC", [customerId]);
+  db.execute(
+    `
+    SELECT 
+      b.booking_id,
+      b.booking_code,
+      b.status AS booking_status,
+      b.final_amount,
+      b.created_at,
+      b.expires_at,
+      s.start_time,
+      s.end_time,
+      m.title AS movie_title,
+      m.poster_url,
+      c.cinema_name,
+      r.room_name,
+      (
+        SELECT GROUP_CONCAT(CONCAT(se.row_letter, se.seat_number) SEPARATOR ', ')
+        FROM tickets t
+        JOIN seats se ON se.seat_id = t.seat_id
+        WHERE t.booking_id = b.booking_id
+      ) AS ticket_seats,
+      (
+        SELECT GROUP_CONCAT(CONCAT(se.row_letter, se.seat_number) SEPARATOR ', ')
+        FROM showtime_seats ss
+        JOIN seats se ON se.seat_id = ss.seat_id
+        WHERE ss.held_by_booking_id = b.booking_id
+      ) AS held_seats
+    FROM bookings b
+    JOIN showtimes s ON b.showtime_id = s.showtime_id
+    JOIN movies m ON s.movie_id = m.movie_id
+    JOIN screening_rooms r ON s.room_id = r.room_id
+    JOIN cinemas c ON r.cinema_id = c.cinema_id
+    WHERE b.customer_id = ?
+    ORDER BY b.created_at DESC
+    `,
+    [customerId]
+  );
 
 exports.getById = (bookingId) =>
   db.execute("SELECT * FROM bookings WHERE booking_id = ?", [bookingId]);

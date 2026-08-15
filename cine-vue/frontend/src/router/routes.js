@@ -51,7 +51,7 @@ export const routes = [
                 name: "booking",
                 meta: {
                     title: "Cinemax",
-                    requiresAuth: false,
+                    requiresAuth: true,
                     breadcrumb: "Đặt Vé",
                 },
             },
@@ -104,12 +104,24 @@ export const routes = [
             {
                 path: "/profile",
                 component: () => import("@/views/client/ProfileView.vue"),
-                name: "profile",
                 meta: {
                     title: "Cinemax",
                     requiresAuth: true,
                 },
-                alias: ["/thong-tin-ca-nhan", "/history"],
+                children: [
+                    {
+                        path: "",
+                        name: "profile",
+                        component: () =>
+                            import("@/components/features/client/profile/ProfileInfoTab.vue"),
+                    },
+                    {
+                        path: "history",
+                        name: "history",
+                        component: () =>
+                            import("@/components/features/client/profile/ProfileHistoryTab.vue"),
+                    },
+                ],
             },
         ],
     },

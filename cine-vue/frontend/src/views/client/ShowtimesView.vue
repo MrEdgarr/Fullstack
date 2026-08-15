@@ -169,6 +169,7 @@ async function fetchScheduleTree() {
     try {
         const res = await api.get("/showtimes/schedule/tree", {
             params: buildScheduleParams(),
+            skipServerLoading: true,
         });
 
         if (requestId !== latestRequestId) return;

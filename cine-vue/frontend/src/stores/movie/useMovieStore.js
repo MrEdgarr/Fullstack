@@ -41,6 +41,7 @@ export const useMoviesStore = defineStore("movies", () => {
         if (typeof options === "boolean") return { force: options };
         return {
             force: false,
+            skipServerLoading: false,
             ...options,
         };
     };
@@ -62,7 +63,7 @@ export const useMoviesStore = defineStore("movies", () => {
 
     // Actions
     const fetchNowShowing = async (options = {}) => {
-        const { force } = normalizeFetchOptions(options);
+        const { force, skipServerLoading } = normalizeFetchOptions(options);
 
         if (!force && hasFetchedNowShowing.value) {
             return nowShowing.value;
@@ -74,7 +75,7 @@ export const useMoviesStore = defineStore("movies", () => {
             errors.value.nowShowing = null;
 
             try {
-                const res = await api.get("/movies/now-showing");
+                const res = await api.get("/movies/now-showing", { skipServerLoading });
                 nowShowing.value = res.data.data || [];
                 hasFetchedNowShowing.value = true;
                 return nowShowing.value;
@@ -90,7 +91,7 @@ export const useMoviesStore = defineStore("movies", () => {
     };
 
     const fetchUpcoming = async (options = {}) => {
-        const { force } = normalizeFetchOptions(options);
+        const { force, skipServerLoading } = normalizeFetchOptions(options);
 
         if (!force && hasFetchedUpcoming.value) {
             return upcoming.value;
@@ -102,7 +103,7 @@ export const useMoviesStore = defineStore("movies", () => {
             errors.value.upcoming = null;
 
             try {
-                const res = await api.get("/movies/upcoming");
+                const res = await api.get("/movies/upcoming", { skipServerLoading });
                 upcoming.value = res.data.data || [];
                 hasFetchedUpcoming.value = true;
                 return upcoming.value;
@@ -118,7 +119,7 @@ export const useMoviesStore = defineStore("movies", () => {
     };
 
     const fetchHomeMovies = async (options = {}) => {
-        const { force } = normalizeFetchOptions(options);
+        const { force, skipServerLoading } = normalizeFetchOptions(options);
 
         if (!force && isHomeLoaded.value) {
             return {
@@ -132,8 +133,8 @@ export const useMoviesStore = defineStore("movies", () => {
         error.value = null;
 
         homeMoviesRequest = Promise.allSettled([
-            fetchNowShowing({ force }),
-            fetchUpcoming({ force }),
+            fetchNowShowing({ force, skipServerLoading }),
+            fetchUpcoming({ force, skipServerLoading }),
         ])
             .then(() => ({
                 nowShowing: nowShowing.value,
@@ -148,7 +149,7 @@ export const useMoviesStore = defineStore("movies", () => {
 
     // Fetch tất cả khi cần (cho Admin hoặc trang tổng hợp)
     const fetchAll = async (options = {}) => {
-        const { force } = normalizeFetchOptions(options);
+        const { force, skipServerLoading } = normalizeFetchOptions(options);
 
         if (!force && hasFetchedAllMovies.value) {
             return allMovies.value;
@@ -160,7 +161,7 @@ export const useMoviesStore = defineStore("movies", () => {
             errors.value.allMovies = null;
 
             try {
-                const res = await api.get("/movies");
+                const res = await api.get("/movies", { skipServerLoading });
                 allMovies.value = res.data.data || [];
                 hasFetchedAllMovies.value = true;
                 return allMovies.value;
@@ -175,12 +176,14 @@ export const useMoviesStore = defineStore("movies", () => {
         return allMoviesRequest;
     };
 
-    const fetchMovieById = async (id) => {
+    const fetchMovieById = async (id, options = {}) => {
+        const { skipServerLoading } = normalizeFetchOptions(options);
+
         return runWithLoading(async () => {
             errors.value.currentMovie = null;
 
             try {
-                const res = await api.get(`/movies/${id}`);
+                const res = await api.get(`/movies/${id}`, { skipServerLoading });
                 currentMovie.value = res.data.data;
                 return currentMovie.value;
             } catch (err) {

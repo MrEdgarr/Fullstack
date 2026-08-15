@@ -174,6 +174,7 @@ async function fetchMovieScheduleTree() {
     try {
         const res = await api.get(`/showtimes/movie/${movieId.value}/tree`, {
             params: buildScheduleParams(),
+            skipServerLoading: true,
         });
 
         if (requestId !== latestRequestId) return;

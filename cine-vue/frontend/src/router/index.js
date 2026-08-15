@@ -25,7 +25,7 @@ const router = createRouter({
 
 const routeRequiresAuth = (route) => route.matched.some((record) => record.meta.requiresAuth);
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
     const authStore = useAuthStore();
 
     authStore.checkAuth();
@@ -40,12 +40,15 @@ router.beforeEach((to) => {
 
     authStore.setLoginRedirect(to.fullPath);
     authStore.openModal("login");
-
-    return {
-        name: "home",
-        query: { redirect: to.fullPath },
-        replace: true,
-    };
+    // Nếu tải trang trực tiếp (gõ URL), đẩy về trang chủ để không bị trắng trang
+    if (!from.name) {
+        return {
+            name: "home",
+            replace: true,
+        };
+    }
+    // Nếu click link từ trong app, chặn chuyển trang (giữ nguyên luồng/URL hiện tại)
+    return false;
 });
 
 router.afterEach((to) => {

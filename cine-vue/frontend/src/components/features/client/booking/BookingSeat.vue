@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="card bg-base-100 border border-base-300 card-sm">
         <div
             ref="viewportRef"
@@ -85,7 +85,7 @@
                     </svg>
                 </button>
                 <button
-                    @click="resetView"
+                    @click="fitToViewport"
                     class="btn btn-circle btn-sm bg-base-100 shadow-lg border-base-300 text-xs font-bold"
                 >
                     R
@@ -128,7 +128,6 @@ const {
     transform,
     isDragging,
     ZOOM_CONFIG,
-    resetView,
     updateZoom,
     startDrag,
     onDrag,

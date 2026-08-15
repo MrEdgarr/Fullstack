@@ -49,12 +49,12 @@
                                 <span>Dang ky</span>
                             </button>
                         </div>
-                        <div v-else class="dropdown dropdown-bottom dropdown-end">
-                            <div role="button" tabindex="-1" class="btn btn-circle btn-sm">
+                        <div v-else ref="profileDropdownRef" class="dropdown dropdown-bottom dropdown-end">
+                            <div role="button" tabindex="0" ref="profileDropdownButtonRef" class="btn btn-circle btn-sm">
                                 <img :src="authStore.user.avatar_url" class="rounded-full" />
                             </div>
                             <ul
-                                tabindex="-1"
+                                tabindex="0"
                                 class="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                             >
                                 <li class="border-b border-base-content/25 pb-2 mb-2">
@@ -66,32 +66,32 @@
                                     </div>
                                 </li>
                                 <li v-for="(value, index) in PROFILE_NAVIGATION" :key="index">
-                                    <RouterLink :to="value.path" tabindex="-1">
+                                    <RouterLink :to="value.path" @click="closeProfileDropdown">
                                         {{ value.name }}
                                     </RouterLink>
                                 </li>
                                 <li>
-                                    <a href="" @click.prevent="authStore.logout">Đăng xuất</a>
+                                    <a href="" @click.prevent="handleLogout">Đăng xuất</a>
                                 </li>
                             </ul>
                         </div>
                         <div ref="mobileDropdownRef" class="dropdown dropdown-bottom dropdown-end">
                             <div
                                 ref="mobileDropdownButtonRef"
-                                tabindex="-1"
+                                tabindex="0"
                                 role="button"
                                 class="lg:hidden btn btn-link btn-sm"
                             >
                                 <BaseIcon name="bars" size="20" />
                             </div>
                             <ul
-                                tabindex="-1"
+                                tabindex="0"
                                 class="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                             >
                                 <li v-if="!authStore.user">
                                     <button
                                         class="btn btn-outline btn-sm hover:btn-primary mb-5"
-                                        @click="authStore.openModal('login')"
+                                        @click="authStore.openModal('login'); closeMobileDropdown()"
                                     >
                                         Đăng nhập
                                     </button>
@@ -99,7 +99,6 @@
                                 <li v-for="value in MAIN_NAVIGATION" :key="value.name">
                                     <RouterLink
                                         :to="value.path"
-                                        tabindex="-1"
                                         @click="closeMobileDropdown"
                                     >
                                         {{ value.name }}
@@ -115,29 +114,44 @@
 </template>
 <script setup>
 import { nextTick, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useSearchStore } from "@/stores/movie/useSearchStore";
 
+const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const searchStore = useSearchStore();
+
 const mobileDropdownRef = ref(null);
 const mobileDropdownButtonRef = ref(null);
+const profileDropdownRef = ref(null);
+const profileDropdownButtonRef = ref(null);
 
 const closeMobileDropdown = () => {
     nextTick(() => {
         const activeElement = document.activeElement;
-
         if (mobileDropdownRef.value?.contains(activeElement)) {
             activeElement?.blur();
         }
-
         mobileDropdownButtonRef.value?.blur();
     });
 };
 
-watch(() => route.fullPath, closeMobileDropdown);
+const closeProfileDropdown = () => {
+    nextTick(() => {
+        const activeElement = document.activeElement;
+        if (profileDropdownRef.value?.contains(activeElement)) {
+            activeElement?.blur();
+        }
+        profileDropdownButtonRef.value?.blur();
+    });
+};
+
+watch(() => route.fullPath, () => {
+    closeMobileDropdown();
+    closeProfileDropdown();
+});
 
 const MAIN_NAVIGATION = ref([
     {
@@ -164,8 +178,13 @@ const PROFILE_NAVIGATION = ref([
     },
     {
         name: "Lịch sử",
-        path: "/history",
+        path: "/profile/history",
     },
 ]);
+
+const handleLogout = async () => {
+    authStore.logout();
+    await router.replace("/");
+};
 </script>
 <style lang=""></style>
