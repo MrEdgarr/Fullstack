@@ -12,16 +12,28 @@
             @touchmove="onDrag"
             @touchend="endDrag"
         >
-            <div v-if="!showtimeId" class="flex h-full items-center justify-center text-sm text-base-content/60">
+            <div
+                v-if="!showtimeId"
+                class="flex h-full items-center justify-center text-sm text-base-content/60"
+            >
                 Vui lòng chọn suất chiếu trước khi chọn ghế.
             </div>
-            <div v-else-if="seatStore.isLoading" class="flex h-full items-center justify-center text-sm text-base-content/60">
+            <div
+                v-else-if="seatStore.isLoading"
+                class="flex h-full items-center justify-center text-sm text-base-content/60"
+            >
                 Đang tải sơ đồ ghế...
             </div>
-            <div v-else-if="seatStore.error" class="flex h-full items-center justify-center text-sm text-error">
+            <div
+                v-else-if="seatStore.error"
+                class="flex h-full items-center justify-center text-sm text-error"
+            >
                 {{ seatStore.error }}
             </div>
-            <div v-else-if="seatStore.seats.length === 0" class="flex h-full items-center justify-center text-sm text-base-content/60">
+            <div
+                v-else-if="seatStore.seats.length === 0"
+                class="flex h-full items-center justify-center text-sm text-base-content/60"
+            >
                 Chưa có dữ liệu ghế cho suất chiếu này.
             </div>
             <div
@@ -72,17 +84,13 @@
                     @click="updateZoom(transform.scale + ZOOM_CONFIG.STEP)"
                     class="btn btn-circle btn-sm bg-base-100 shadow-lg border-base-300"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+                    <BaseIcon name="plus" />
                 </button>
                 <button
                     @click="updateZoom(transform.scale - ZOOM_CONFIG.STEP)"
                     class="btn btn-circle btn-sm bg-base-100 shadow-lg border-base-300"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                    </svg>
+                    <BaseIcon name="minus" />
                 </button>
                 <button
                     @click="fitToViewport"
@@ -94,23 +102,33 @@
         </div>
         <div class="py-5 flex flex-wrap items-center justify-center gap-5">
             <div class="flex items-center gap-1">
-                <div class="bg-disabled flex aspect-square size-5 items-center justify-center rounded-sm"></div>
+                <div
+                    class="bg-disabled flex aspect-square size-5 items-center justify-center rounded-sm"
+                ></div>
                 <div class="text-xs md:text-sm">Ghế đã bán/đang giữ</div>
             </div>
             <div class="flex items-center gap-1">
-                <div class="bg-info flex aspect-square size-5 items-center justify-center rounded-sm"></div>
+                <div
+                    class="bg-info flex aspect-square size-5 items-center justify-center rounded-sm"
+                ></div>
                 <div class="text-xs md:text-sm">Ghế đang chọn</div>
             </div>
             <div class="flex items-center gap-1">
-                <div class="flex bg-base-300 aspect-square size-5 items-center justify-center rounded-sm"></div>
+                <div
+                    class="flex bg-base-300 aspect-square size-5 items-center justify-center rounded-sm"
+                ></div>
                 <div class="text-xs md:text-sm">Ghế thường</div>
             </div>
             <div class="flex items-center gap-1">
-                <div class="bg-warning flex aspect-square size-5 items-center justify-center rounded-sm"></div>
+                <div
+                    class="bg-warning flex aspect-square size-5 items-center justify-center rounded-sm"
+                ></div>
                 <div class="text-xs md:text-sm">Ghế VIP</div>
             </div>
             <div class="flex items-center gap-1">
-                <div class="bg-error flex aspect-square size-5 items-center justify-center rounded-sm"></div>
+                <div
+                    class="bg-error flex aspect-square size-5 items-center justify-center rounded-sm"
+                ></div>
                 <div class="text-xs md:text-sm">Ghế đôi</div>
             </div>
         </div>

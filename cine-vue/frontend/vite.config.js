@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => ({
             defaultImport: "component",
             svgoConfig: {
                 plugins: [
-                    // Quan trọng: Xóa fill/stroke cứng trong file SVG để CSS có thể override màu
+                    // Xóa fill/stroke cứng trong file SVG để CSS có thể override màu
                     {
                         name: "preset-default",
                         params: {

@@ -5,7 +5,7 @@ const AppError = require("../../shared/utils/app-error");
 
 const SALT_ROUNDS = 10;
 
-exports.register = async ({ full_name, email, phone, password, avatar_url, date_of_birth }) => {
+exports.register = async ({ full_name, email, phone, password, avatar_url = null, date_of_birth = null }) => {
   const [existingCustomers] = await customersRepository.getByEmail(email);
 
   if (existingCustomers.length > 0) {

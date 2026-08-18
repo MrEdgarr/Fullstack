@@ -3,7 +3,9 @@
         <div class="hero p-5 mb-5 font-bold text-xl uppercase tracking-widest">Lịch Chiếu Phim</div>
 
         <div class="grid grid-cols-12 gap-2.5">
-            <div class="card bg-base-100 border border-base-300 card-sm order-2 col-span-12 md:order-0 md:col-span-4">
+            <div
+                class="card bg-base-100 border border-base-300 card-sm order-2 col-span-12 md:order-0 md:col-span-4"
+            >
                 <div class="card-body">
                     <div class="flex items-center justify-between pb-2 text-sm md:text-base">
                         <span>1. Phim</span>
@@ -24,7 +26,10 @@
                         <span>2. Vị trí</span>
                         <BaseIcon name="calendar" />
                     </div>
-                    <select v-model="selectedLocationId" class="select md:select-md select-sm w-full">
+                    <select
+                        v-model="selectedLocationId"
+                        class="select md:select-md select-sm w-full"
+                    >
                         <option value="">Toàn quốc</option>
                         <option v-for="city in cityOptions" :key="city.id" :value="city.id">
                             {{ city.name }}
@@ -41,7 +46,11 @@
                     </div>
                     <select v-model="selectedCinemaId" class="select md:select-md select-sm w-full">
                         <option value="">Tất cả rạp</option>
-                        <option v-for="cinema in filteredCinemas" :key="cinema.id" :value="cinema.id">
+                        <option
+                            v-for="cinema in filteredCinemas"
+                            :key="cinema.id"
+                            :value="cinema.id"
+                        >
                             {{ cinema.name }}
                         </option>
                     </select>
@@ -69,16 +78,24 @@
             >
                 <div class="col-span-4 md:col-span-2 relative">
                     <div class="aspect-2/3 w-full overflow-hidden">
-                        <img :src="item.movie.poster" alt="Movie" class="h-full w-full object-cover" />
+                        <img
+                            :src="item.movie.poster"
+                            alt="Movie"
+                            class="h-full w-full object-cover"
+                        />
                     </div>
                 </div>
 
                 <div class="col-span-8 md:col-span-10 card-body p-2 md:p-4 gap-0">
                     <h2 class="text-xl font-bold mb-1">{{ item.movie.title }}</h2>
-                    <div class="flex flex-wrap items-center gap-1.5 text-sm text-base-content/60 mb-1">
+                    <div
+                        class="flex flex-wrap items-center gap-1.5 text-sm text-base-content/60 mb-1"
+                    >
                         <span class="opacity-70">{{ item.movie.genre }}</span>
                         <span>·</span>
-                        <span class="font-medium text-base-content/80">{{ item.showtimes[0].ageRestriction }}</span>
+                        <span class="font-medium text-base-content/80">{{
+                            item.showtimes[0].ageRestriction
+                        }}</span>
                         <span>·</span>
                         <span>{{ formatDuration(item.movie.durationMinutes) }}</span>
                     </div>
@@ -96,20 +113,26 @@
                             <span class="text-sm text-base-content/50"> · {{ st.room }}</span>
                         </div>
 
-                        <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 gap-2">
+                        <div class="flex flex-wrap gap-2">
                             <button
                                 v-for="timeItem in st.times"
                                 :key="timeItem.id"
                                 @click="selectShowtime(item.movie, st, timeItem)"
                                 :disabled="isTimePast(st.date, timeItem.time)"
-                                class="flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all duration-200"
+                                class="btn btn-outline transition-all duration-200"
                                 :class="[
                                     isTimePast(st.date, timeItem.time)
                                         ? 'bg-base-200/50 border-transparent text-base-content/30 cursor-not-allowed'
-                                        : 'bg-white border-base-300 hover:border-primary hover:bg-base-100 text-base-content',
+                                        : 'btn-primary',
                                 ]"
                             >
                                 <span class="text-sm font-bold">{{ timeItem.time }}</span>
+                            </button>
+                            <button
+                                class="btn btn-outline transition-all duration-200 btn-primary btn-xs md:btn-sm lg:btn-md"
+                                v-for="v in 40"
+                            >
+                                2.10
                             </button>
                         </div>
                     </div>

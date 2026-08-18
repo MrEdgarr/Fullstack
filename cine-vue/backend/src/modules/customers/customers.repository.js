@@ -21,16 +21,19 @@ exports.getPublicById = (id) =>
   db.execute(`${PUBLIC_CUSTOMER_SELECT} WHERE customer_id = ?`, [id]);
 
 exports.create = (full_name, email, phone, password_hash, avatar_url, date_of_birth) => {
-  if (avatar_url) {
+  const safeDob = date_of_birth === undefined ? null : date_of_birth;
+  const safeAvatar = avatar_url === undefined ? null : avatar_url;
+
+  if (safeAvatar) {
     return db.execute(
       "INSERT INTO customers (full_name, email, phone, password_hash, avatar_url, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)",
-      [full_name, email, phone, password_hash, avatar_url, date_of_birth],
+      [full_name, email, phone, password_hash, safeAvatar, safeDob],
     );
   }
 
   return db.execute(
     "INSERT INTO customers (full_name, email, phone, password_hash, date_of_birth) VALUES (?, ?, ?, ?, ?)",
-    [full_name, email, phone, password_hash, date_of_birth],
+    [full_name, email, phone, password_hash, safeDob],
   );
 };
 exports.update = (id, full_name, email, phone, avatar_url, date_of_birth) =>

@@ -9,15 +9,18 @@
         >
             <div class="flex max-w-sm flex-col items-center gap-3 text-center">
                 <span
-                    class="loading loading-infinity loading-xl text-primary"
+                    class="loading loading-infinity loading-xl text-primary disa"
                     aria-hidden="true"
                 ></span>
 
                 <div class="space-y-1">
-                    <p class="text-base font-semibold">
+                    <p class="text-lg font-semibold">
                         {{ serverConnectionStore.message }}
                     </p>
-                    <p v-if="serverConnectionStore.subMessage" class="text-base-content/60 text-sm">
+                    <p
+                        v-if="serverConnectionStore.subMessage"
+                        class="text-base-content/60 text-base"
+                    >
                         {{ serverConnectionStore.subMessage }}
                     </p>
                 </div>

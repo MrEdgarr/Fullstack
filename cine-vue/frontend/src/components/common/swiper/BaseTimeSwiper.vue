@@ -81,10 +81,14 @@ const days = computed(() => {
     for (let i = 0; i < 7; i++) {
         const d = new Date();
         d.setDate(now.getDate() + i);
+        
+        // Cần bù múi giờ để toISOString() trả về đúng ngày local
+        const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+        
         result.push({
             day: d.getDate(),
             weekday: i === 0 ? "Hôm nay" : weekdays[d.getDay()],
-            date: d.toISOString().split("T")[0],
+            date: localDate.toISOString().split("T")[0],
         });
     }
     return result;

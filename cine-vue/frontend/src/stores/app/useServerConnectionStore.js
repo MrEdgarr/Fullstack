@@ -52,7 +52,7 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
         try {
             sessionStorage.setItem(FIRST_CONNECTION_HINT_KEY, "true");
         } catch {
-            // Ignore storage errors. Loading should still work normally.
+            // Bỏ qua các lỗi lưu trữ. Quá trình tải vẫn sẽ hoạt động bình thường.
         }
     };
 
@@ -73,7 +73,7 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
 
         const shouldShowHint = shouldShowFirstConnectionHint();
 
-        // Safety timeout: auto-hide after the API timeout window to prevent infinite loading
+        // Thời gian chờ an toàn: tự động ẩn sau khoảng thời gian chờ của API để tránh tình trạng tải vô hạn
         clearSafetyTimer();
         safetyTimer = setTimeout(() => {
             safetyTimer = null;

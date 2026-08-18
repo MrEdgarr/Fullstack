@@ -47,8 +47,11 @@
     <BookingTicket v-if="paymentStore.isTicketInfo" />
 </template>
 <script setup>
-import { onBeforeRouteLeave } from "vue-router";
+import { onMounted } from "vue";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { useBookingStore } from "@/stores/booking";
+
+const router = useRouter();
 const bookingStore = useBookingStore();
 const stepStore = bookingStore.stepStore;
 const paymentStore = bookingStore.paymentStore;
@@ -56,7 +59,16 @@ const paymentStore = bookingStore.paymentStore;
 const handleTimeUp = async () => {
     alert("Hết thời gian chọn ghế.");
     await bookingStore.resetAll();
+    router.replace("/");
 };
+
+onMounted(() => {
+    // Nếu người dùng copy link /booking sang tab ẩn danh/máy khác, data localStorage sẽ trống
+    if (!bookingStore.selectedShowtime) {
+        alert("Phiên đặt vé đã hết hạn hoặc không tồn tại. Vui lòng chọn lại suất chiếu.");
+        router.replace("/showtimes");
+    }
+});
 
 onBeforeRouteLeave(async () => {
     await bookingStore.resetAll();

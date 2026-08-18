@@ -104,7 +104,13 @@
                                     v-for="slot in format.slots"
                                     :key="slot.id"
                                     type="button"
-                                    class="btn btn-outline btn-primary btn-xs md:btn-sm"
+                                    class="btn btn-xs md:btn-sm transition-all duration-200"
+                                    :class="[
+                                        isTimePast(selectedDate, slot.time)
+                                            ? 'btn-outline border-transparent bg-base-200/50 text-base-content/30 cursor-not-allowed'
+                                            : 'btn-outline btn-primary',
+                                    ]"
+                                    :disabled="isTimePast(selectedDate, slot.time)"
                                     @click="selectShowtime(slot)"
                                 >
                                     {{ slot.time }}
@@ -124,7 +130,7 @@ import { useRoute, useRouter } from "vue-router";
 import api from "@/_services/api";
 import { useBookingStore } from "@/stores/booking";
 import { extractIdFromSlug } from "@/utils/helpers/slug";
-import { getTodayDate } from "@/utils/helpers/showtime";
+import { getTodayDate, isShowtimePast } from "@/utils/helpers/showtime";
 
 const route = useRoute();
 const router = useRouter();
@@ -217,7 +223,11 @@ function createEmptySchedule() {
     };
 }
 
+const isTimePast = isShowtimePast;
+
 function selectShowtime(showtime) {
+    if (isTimePast(selectedDate.value, showtime.time)) return;
+
     bookingStore.setSelectedShowtime({
         showtime_id: showtime.showtime_id,
         movie: showtime.movie,

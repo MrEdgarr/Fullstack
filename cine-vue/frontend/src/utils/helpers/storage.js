@@ -83,9 +83,8 @@ export const loadBookingData = () => load(KEYS.BOOKING);
 export const clearBookingData = () => remove(KEYS.BOOKING);
 
 // ==================== COUNTDOWN ====================
-
 export const saveCountdownExpiry = (expiryTimestamp) => {
-    return save(KEYS.COUNTDOWN, expiryTimestamp);
+    return save(KEYS.COUNTDOWN, expiryTimestamp, DEFAULT_EXPIRY.COUNTDOWN);
 };
 
 export const loadCountdownExpiry = () => load(KEYS.COUNTDOWN);

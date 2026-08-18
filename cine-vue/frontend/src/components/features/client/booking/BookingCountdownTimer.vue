@@ -18,10 +18,13 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from "vue";
+import { saveCountdownExpiry, loadCountdownExpiry, clearCountdown } from "@/utils/helpers/storage";
+
 const props = defineProps({
     initialMinutes: { type: Number, default: 5 }, // Mặc định là 5 phút
     autoRestart: { type: Boolean, default: true },
-    storageKey: { type: String, default: "countdown_expiry" },
+    storageKey: { type: String, default: "countdown_expiry" }, // Prop này hiện tại được giữ lại để tương thích, nhưng storage thực tế sẽ dùng key cấu hình trong storage.js
 });
 
 const emit = defineEmits(["time-up"]);
@@ -49,28 +52,28 @@ const startTimer = () => {
             // Hết giờ → Reset và chạy lại ngay
             timeLeft.value = props.initialMinutes * 60;
             updateDisplay();
-            emit("time-up"); // Vẫn thông báo mỗi khi hết 5 phút
+            emit("time-up"); // Vẫn thông báo mỗi khi hết
         }
     }, 1000);
 };
 
-// Load thời gian từ localStorage hoặc khởi tạo mới
+// Load thời gian từ localStorage qua storage.js
 const initCountdown = () => {
-    const savedExpiry = localStorage.getItem(props.storageKey);
+    const savedExpiry = loadCountdownExpiry();
 
     if (savedExpiry) {
         const remaining = Math.floor((parseInt(savedExpiry) - Date.now()) / 1000);
         if (remaining > 0) {
             timeLeft.value = remaining;
         } else {
-            localStorage.removeItem(props.storageKey);
+            clearCountdown();
             timeLeft.value = props.initialMinutes * 60;
         }
     } else {
         // Lần đầu khởi tạo
         timeLeft.value = props.initialMinutes * 60;
         const expiryTime = Date.now() + props.initialMinutes * 60 * 1000;
-        localStorage.setItem(props.storageKey, expiryTime.toString());
+        saveCountdownExpiry(expiryTime.toString());
     }
 
     updateDisplay();
@@ -88,7 +91,7 @@ const stop = () => {
     if (timer) clearInterval(timer);
     timer = null;
     isPaused.value = true;
-    localStorage.removeItem(props.storageKey);
+    clearCountdown();
 };
 
 defineExpose({ pause, resume, stop });
