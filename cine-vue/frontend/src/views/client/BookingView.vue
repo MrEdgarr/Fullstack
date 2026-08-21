@@ -50,23 +50,37 @@
 import { onMounted } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { useBookingStore } from "@/stores/booking";
+import { useDialogStore } from "@/stores/app/useDialogStore";
 
 const router = useRouter();
 const bookingStore = useBookingStore();
+const dialogStore = useDialogStore();
 const stepStore = bookingStore.stepStore;
 const paymentStore = bookingStore.paymentStore;
 
 const handleTimeUp = async () => {
-    alert("Hết thời gian chọn ghế.");
-    await bookingStore.resetAll();
-    router.replace("/");
+    dialogStore.alert({
+        title: "Hết giờ",
+        message: "Hết thời gian chọn ghế. Phiên giao dịch đã bị hủy.",
+        confirmText: "Về trang chủ",
+        onConfirm: async () => {
+            await bookingStore.resetAll();
+            router.replace("/");
+        }
+    });
 };
 
 onMounted(() => {
     // Nếu người dùng copy link /booking sang tab ẩn danh/máy khác, data localStorage sẽ trống
     if (!bookingStore.selectedShowtime) {
-        alert("Phiên đặt vé đã hết hạn hoặc không tồn tại. Vui lòng chọn lại suất chiếu.");
-        router.replace("/showtimes");
+        dialogStore.alert({
+            title: "Lỗi kết nối",
+            message: "Phiên đặt vé đã hết hạn hoặc không tồn tại. Vui lòng chọn lại suất chiếu.",
+            confirmText: "Về lịch chiếu",
+            onConfirm: () => {
+                router.replace("/showtimes");
+            }
+        });
     }
 });
 

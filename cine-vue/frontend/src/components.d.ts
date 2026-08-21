@@ -24,6 +24,8 @@ declare module 'vue' {
     BookingTicket: typeof import('./components/features/client/booking/BookingTicket.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']
+    GlobalDialog: typeof import('./components/layout/modal/GlobalDialog.vue')['default']
+    GlobalToast: typeof import('./components/layout/toast/GlobalToast.vue')['default']
     HomeBanner: typeof import('./components/features/client/home/HomeBanner.vue')['default']
     HomeBlog: typeof import('./components/features/client/home/HomeBlog.vue')['default']
     HomeComingSoon: typeof import('./components/features/client/home/HomeComingSoon.vue')['default']

@@ -9,7 +9,7 @@ exports.register = async ({ full_name, email, phone, password, avatar_url = null
   const [existingCustomers] = await customersRepository.getByEmail(email);
 
   if (existingCustomers.length > 0) {
-    throw new AppError("Email already exists", 400);
+    throw new AppError("Email này đã được đăng ký", 400);
   }
 
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
@@ -28,13 +28,13 @@ exports.login = async ({ email, password }) => {
   const customer = rows[0];
 
   if (!customer) {
-    throw new AppError("Invalid email or password", 401);
+    throw new AppError("Email hoặc mật khẩu không chính xác", 401);
   }
 
   const passwordMatches = await bcrypt.compare(password, customer.password_hash);
 
   if (!passwordMatches) {
-    throw new AppError("Invalid email or password", 401);
+    throw new AppError("Email hoặc mật khẩu không chính xác", 401);
   }
 
   const token = jwt.sign(

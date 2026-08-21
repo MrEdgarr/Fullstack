@@ -20,6 +20,10 @@
             <!-- Form -->
             <form @submit.prevent="handleRegister">
                 <fieldset class="fieldset" :disabled="authStore.isLoading">
+                    <!-- Error Message -->
+                    <div v-if="errorMessage" class="text-center text-error">
+                        <span class="text-sm">{{ errorMessage }}</span>
+                    </div>
                     <!-- Full Name -->
                     <div class="form-control">
                         <div class="label">
@@ -147,9 +151,13 @@
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed, ref } from "vue";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useToastStore } from "@/stores/app/useToastStore";
+
 const authStore = useAuthStore();
+const toastStore = useToastStore();
+const errorMessage = ref("");
 
 const formData = reactive({
     fullName: "",
@@ -190,6 +198,8 @@ const handleRegister = async () => {
         return;
     }
 
+    errorMessage.value = "";
+
     try {
         await authStore.register({
             full_name: formData.fullName,
@@ -205,10 +215,10 @@ const handleRegister = async () => {
         formData.confirmPassword = "";
         formData.agreeToTerms = false;
 
-        alert("Đăng ký thành công!");
+        toastStore.success("Đăng ký thành công!");
     } catch (error) {
         console.error("Register error:", error);
-        alert(error.response?.data?.message || "Đăng ký thất bại!");
+        errorMessage.value = error.response?.data?.message || "Đăng ký thất bại!";
     }
 };
 </script>

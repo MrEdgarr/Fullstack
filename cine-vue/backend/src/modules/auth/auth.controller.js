@@ -5,7 +5,7 @@ exports.register = async (req, res, next) => {
     await authService.register(req.body);
     res.status(201).json({
       success: true,
-      message: "Customer registered successfully",
+      message: "Đăng ký tài khoản thành công",
     });
   } catch (error) {
     next(error);
@@ -17,7 +17,7 @@ exports.login = async (req, res, next) => {
     const result = await authService.login(req.body);
     res.json({
       success: true,
-      message: "Login successful",
+      message: "Đăng nhập thành công",
       ...result,
     });
   } catch (error) {

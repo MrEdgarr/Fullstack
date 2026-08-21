@@ -6,7 +6,7 @@
     >
         <div class="modal-box">
             <!-- Header -->
-            <div class="mb-6 flex items-center justify-between">
+            <div class="mb-5 flex items-center justify-between">
                 <h3 class="text-2xl font-bold">Đăng nhập</h3>
                 <button
                     class="btn btn-sm btn-circle btn-ghost"
@@ -21,6 +21,10 @@
             <!-- Form -->
             <form @submit.prevent="handleLogin">
                 <fieldset class="fieldset" :disabled="authStore.isLoading">
+                    <!-- Error Message -->
+                    <div v-if="errorMessage" class="text-center text-error">
+                        <span class="text-sm">{{ errorMessage }}</span>
+                    </div>
                     <!-- Email -->
                     <div class="form-control">
                         <div class="label">
@@ -87,9 +91,13 @@
 </template>
 
 <script setup>
+import { reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useToastStore } from "@/stores/app/useToastStore";
 
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 const router = useRouter();
 const route = useRoute();
 
@@ -98,6 +106,8 @@ const formData = reactive({
     password: "123",
 });
 
+const errorMessage = ref("");
+
 const getSafeRedirectPath = (path) => {
     if (typeof path !== "string") return null;
     if (!path.startsWith("/") || path.startsWith("//")) return null;
@@ -105,6 +115,7 @@ const getSafeRedirectPath = (path) => {
 };
 
 const handleLogin = async () => {
+    errorMessage.value = "";
     try {
         await authStore.login({
             email: formData.email,
@@ -115,13 +126,15 @@ const handleLogin = async () => {
             authStore.consumeLoginRedirect() || route.query.redirect,
         );
 
+        toastStore.success("Đăng nhập thành công!");
+
         if (redirectPath && redirectPath !== route.fullPath) {
             await router.replace(redirectPath);
         }
 
         resetForm();
     } catch (err) {
-        alert(err.response?.data?.message || "Đăng nhập thất bại");
+        errorMessage.value = err.response?.data?.message || "Đăng nhập thất bại";
     }
 };
 

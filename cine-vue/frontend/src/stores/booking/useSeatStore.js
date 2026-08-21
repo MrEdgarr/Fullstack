@@ -1,5 +1,6 @@
-﻿import api from "@/_services/api";
+import api from "@/_services/api";
 import { saveBookingData, loadBookingData } from "@/utils/helpers/storage";
+import { useToastStore } from "@/stores/app/useToastStore";
 
 const MAX_SEATS = 10;
 
@@ -138,7 +139,8 @@ export const useSeatStore = defineStore("seat", () => {
             }
 
             if (remaining < 1) {
-                alert("Bạn chỉ được chọn tối đa 10 ghế.");
+                const toastStore = useToastStore();
+                toastStore.warning("Bạn chỉ được chọn tối đa 10 ghế.");
                 return;
             }
 
@@ -161,7 +163,8 @@ export const useSeatStore = defineStore("seat", () => {
         }
 
         if (remaining < 2) {
-            alert("Ghế đôi cần 2 chỗ trống. Bạn chỉ được chọn tối đa 10 ghế.");
+            const toastStore = useToastStore();
+            toastStore.warning("Ghế đôi cần 2 chỗ trống. Bạn chỉ được chọn tối đa 10 ghế.");
             return;
         }
 
