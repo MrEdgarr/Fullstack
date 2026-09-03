@@ -176,6 +176,37 @@ export const useSeatStore = defineStore("seat", () => {
         selectedSeats.value = [];
     };
 
+    let pollingTimer = null;
+
+    const fetchSeatsSilently = async (showtimeId) => {
+        if (!showtimeId) return [];
+        try {
+            const res = await api.get(`/showtimes/${showtimeId}/seats`, {
+                skipServerLoading: true,
+            });
+            seats.value = (res.data.data || []).map(normalizeSeat);
+            syncSelectedSeatsWithSeatMap();
+            return seats.value;
+        } catch (err) {
+            return [];
+        }
+    };
+
+    const startPolling = (showtimeId, intervalMs = 6000) => {
+        stopPolling();
+        if (!showtimeId) return;
+        pollingTimer = setInterval(() => {
+            fetchSeatsSilently(showtimeId);
+        }, intervalMs);
+    };
+
+    const stopPolling = () => {
+        if (pollingTimer) {
+            clearInterval(pollingTimer);
+            pollingTimer = null;
+        }
+    };
+
     watch(
         selectedSeats,
         (newSeats) => {
@@ -199,6 +230,9 @@ export const useSeatStore = defineStore("seat", () => {
         singleTotalPrice,
         coupleTotalPrice,
         fetchSeats,
+        fetchSeatsSilently,
+        startPolling,
+        stopPolling,
         isSeatSelected,
         toggleSeat,
         resetSeats,

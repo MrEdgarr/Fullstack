@@ -136,6 +136,7 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from "vue";
 import { useBookingStore } from "@/stores/booking";
 import { useSeatStore } from "@/stores/booking/useSeatStore";
 import { useSeatMap } from "@/composables/useSeatMap";
@@ -184,20 +185,28 @@ const loadSeats = async (id) => {
 watch(
     showtimeId,
     async (newId, oldId) => {
-        if (newId !== oldId) seatStore.resetSeats();
-        if (newId) await loadSeats(newId);
+        if (newId !== oldId) {
+            seatStore.resetSeats();
+        }
+        if (newId) {
+            await loadSeats(newId);
+            seatStore.startPolling(newId, 6000);
+        } else {
+            seatStore.stopPolling();
+        }
     },
     { immediate: true },
 );
 
-watch(
-    seatsByRow,
-    async () => {
-        await nextTick();
-        fitToViewport();
-    },
-    { deep: true },
-);
+onMounted(() => {
+    if (showtimeId.value) {
+        seatStore.startPolling(showtimeId.value, 6000);
+    }
+});
+
+onUnmounted(() => {
+    seatStore.stopPolling();
+});
 
 const isSelected = (seat) => seatStore.isSeatSelected(seat.id);
 </script>

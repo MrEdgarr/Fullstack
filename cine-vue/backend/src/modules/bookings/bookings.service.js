@@ -199,6 +199,92 @@ exports.delete = async (currentUser, bookingId) => {
   }
 };
 
+exports.updateDetails = async (currentUser, bookingId, payload) => {
+  const connection = await db.getConnection();
+
+  try {
+    const { food_combos: foodCombos = [], promotion_code: promotionCode } = payload;
+    await connection.beginTransaction();
+
+    const [bookings] = await bookingsRepository.getByIdForUpdate(connection, bookingId);
+    const booking = bookings[0];
+
+    if (!booking) {
+      throw new AppError("Booking not found", 404);
+    }
+
+    assertCanAccessBooking(currentUser, booking);
+
+    if (booking.status !== "pending") {
+      throw new AppError("Cannot update details for non-pending booking", 400);
+    }
+
+    if (booking.expires_at && new Date(booking.expires_at) <= new Date()) {
+      throw new AppError("Booking hold has expired", 410);
+    }
+
+    const [heldSeats] = await bookingsRepository.getSeatsForBooking(connection, bookingId);
+    if (heldSeats.length === 0) {
+      throw new AppError("No active held seats for this booking", 400);
+    }
+
+    const ticketSubtotal = heldSeats.reduce((sum, seat) => sum + Number(seat.price), 0);
+
+    const [showtimeRows] = await bookingsRepository.getShowtimeCinema(connection, booking.showtime_id);
+    const showtime = showtimeRows[0];
+    if (!showtime) {
+      throw new AppError("Showtime not found", 404);
+    }
+
+    const { comboRows, comboSubtotal } = await getComboSummary(connection, foodCombos, showtime);
+    const subtotalAmount = ticketSubtotal + comboSubtotal;
+    const { promotion, discountAmount } = await getPromotionSummary(
+      connection,
+      promotionCode,
+      subtotalAmount,
+    );
+    const finalAmount = Math.max(subtotalAmount - discountAmount, 0);
+
+    await bookingsRepository.deleteFoodCombos(connection, bookingId);
+
+    if (foodCombos.length > 0) {
+      const comboPriceMap = new Map(
+        comboRows.map((combo) => [combo.food_combo_id, Number(combo.price)]),
+      );
+      const comboValues = foodCombos.map((item) => {
+        const unitPrice = comboPriceMap.get(item.food_combo_id);
+        return [bookingId, item.food_combo_id, item.quantity, unitPrice, unitPrice * item.quantity];
+      });
+
+      await bookingsRepository.createFoodComboLines(connection, comboValues);
+    }
+
+    await bookingsRepository.updateBookingDetails(
+      connection,
+      bookingId,
+      promotion?.promotion_id || null,
+      subtotalAmount,
+      discountAmount,
+      finalAmount,
+    );
+
+    await connection.commit();
+
+    return {
+      booking_id: Number(bookingId),
+      subtotal_amount: subtotalAmount,
+      discount_amount: discountAmount,
+      final_amount: finalAmount,
+      expires_at: booking.expires_at,
+    };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 exports.confirmBooking = confirmBooking;
 
 async function getComboSummary(connection, foodCombos, showtime) {

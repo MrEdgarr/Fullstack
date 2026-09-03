@@ -1,12 +1,14 @@
+import api from "@/_services/api";
 import { useSeatStore } from "./useSeatStore";
 import { useComboStore } from "./useComboStore";
 import { usePaymentStore } from "./usePaymentStore";
 import { useStepStore } from "./useStepStore";
-import { loadBookingData, saveBookingData, clearBookingData } from "@/utils/helpers/storage";
+import { loadBookingData, saveBookingData, clearBookingData, clearCountdown } from "@/utils/helpers/storage";
 
 export const useBookingStore = defineStore("booking", () => {
     // ==================== STATE ======================
     const selectedShowtime = ref(loadBookingData()?.showtime || null);
+    const activeBooking = ref(loadBookingData()?.activeBooking || null);
     const seatStore = useSeatStore();
     const comboStore = useComboStore();
     const paymentStore = usePaymentStore();
@@ -39,7 +41,25 @@ export const useBookingStore = defineStore("booking", () => {
         selectedShowtime.value = showtime;
     };
 
+    const setActiveBooking = (booking) => {
+        activeBooking.value = booking;
+    };
+
+    const releaseCurrentBooking = async () => {
+        const bookingId = activeBooking.value?.booking_id || activeBooking.value?.id;
+        if (bookingId) {
+            try {
+                await api.delete(`/bookings/${bookingId}`, { skipServerLoading: true });
+            } catch (err) {
+                console.error("Failed to release booking:", err);
+            }
+        }
+        activeBooking.value = null;
+        clearCountdown();
+    };
+
     const resetAll = async () => {
+        await releaseCurrentBooking();
         selectedShowtime.value = null;
         seatStore.resetSeats();
         comboStore.resetCombos();
@@ -47,13 +67,15 @@ export const useBookingStore = defineStore("booking", () => {
         stepStore.setStep(1);
         await nextTick();
         clearBookingData();
+        clearCountdown();
     };
 
     watch(
-        selectedShowtime,
-        (newShowtime) => {
+        [selectedShowtime, activeBooking],
+        ([newShowtime, newBooking]) => {
             const current = loadBookingData() || {};
             current.showtime = newShowtime;
+            current.activeBooking = newBooking;
             saveBookingData(current);
         },
         { deep: true },
@@ -71,6 +93,10 @@ export const useBookingStore = defineStore("booking", () => {
 
         selectedShowtime,
         setSelectedShowtime,
+
+        activeBooking,
+        setActiveBooking,
+        releaseCurrentBooking,
 
         resetAll,
     };

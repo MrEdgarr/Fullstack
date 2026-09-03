@@ -260,3 +260,37 @@ exports.cancelPendingBookings = (connection, bookingIds) =>
     `,
     [bookingIds],
   );
+
+exports.deleteFoodCombos = (connection, bookingId) =>
+  connection.query("DELETE FROM booking_food_combos WHERE booking_id = ?", [bookingId]);
+
+exports.updateBookingDetails = (
+  connection,
+  bookingId,
+  promotionId,
+  subtotalAmount,
+  discountAmount,
+  finalAmount,
+) =>
+  connection.query(
+    `
+    UPDATE bookings
+    SET promotion_id = ?,
+        subtotal_amount = ?,
+        discount_amount = ?,
+        final_amount = ?
+    WHERE booking_id = ?
+    `,
+    [promotionId, subtotalAmount, discountAmount, finalAmount, bookingId],
+  );
+
+exports.getSeatsForBooking = (connection, bookingId) =>
+  connection.query(
+    `
+    SELECT showtime_seat_id, price
+    FROM showtime_seats
+    WHERE held_by_booking_id = ?
+      AND status = 'held'
+    `,
+    [bookingId],
+  );

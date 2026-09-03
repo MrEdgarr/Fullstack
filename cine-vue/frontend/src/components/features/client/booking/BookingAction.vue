@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="card bg-base-100 border border-base-300 card-sm">
         <div class="card-body">
             <div
@@ -141,6 +141,7 @@ import api from "@/_services/api";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useBookingStore } from "@/stores/booking";
 import { formatCurrency } from "@/utils/helpers/currency";
+import { saveCountdownExpiry } from "@/utils/helpers/storage";
 
 const bookingStore = useBookingStore();
 const authStore = useAuthStore();
@@ -173,7 +174,7 @@ const promotionLabel = computed(() => {
     return formatCurrency(Number(promotion.discount_value || 0));
 });
 
-const handleNext = () => {
+const handleNext = async () => {
     submitError.value = "";
 
     if (!showtimeId.value) {
@@ -186,13 +187,95 @@ const handleNext = () => {
         return;
     }
 
+    // Bước 1 -> Bước 2: Khóa ghế ngay vào CSDL MySQL
+    if (stepStore.currentStep === 1) {
+        if (!authStore.isLoggedIn) {
+            submitError.value = "Bạn cần đăng nhập để giữ ghế và tiếp tục.";
+            authStore.openModal("login");
+            return;
+        }
+
+        isSubmitting.value = true;
+        try {
+            const selectedSeatIds = seatStore.selectedSeats.map((seat) => Number(seat.showtimeSeatId));
+            const bookingPayload = {
+                showtime_id: showtimeId.value,
+                showtime_seat_ids: selectedSeatIds,
+                food_combos: [],
+            };
+
+            const bookingRes = await api.post("/bookings", bookingPayload, {
+                skipServerLoading: true,
+            });
+            const booking = bookingRes.data.data;
+            bookingStore.setActiveBooking(booking);
+
+            // Đồng bộ thời gian giữ ghế thực tế từ server
+            if (booking.expires_at) {
+                const expiryTimestamp = new Date(booking.expires_at).getTime();
+                saveCountdownExpiry(expiryTimestamp.toString());
+            }
+
+            stepStore.nextStep();
+        } catch (err) {
+            submitError.value = getApiErrorMessage(err);
+            if (err.response?.status === 409) {
+                seatStore.resetSeats();
+                if (showtimeId.value) await seatStore.fetchSeats(showtimeId.value);
+            }
+        } finally {
+            isSubmitting.value = false;
+        }
+        return;
+    }
+
+    // Bước 2 -> Bước 3: Cập nhật combo và voucher vào booking đã giữ
+    if (stepStore.currentStep === 2) {
+        isSubmitting.value = true;
+        try {
+            const bookingId = bookingStore.activeBooking?.booking_id || bookingStore.activeBooking?.id;
+            if (bookingId) {
+                const foodCombos = comboStore.singleCombosList.map((combo) => ({
+                    food_combo_id: Number(combo.food_combo_id || combo.id),
+                    quantity: Number(combo.qty),
+                }));
+
+                const detailsPayload = {
+                    food_combos: foodCombos,
+                };
+
+                if (paymentStore.promoCode?.trim()) {
+                    detailsPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
+                }
+
+                const res = await api.put(`/bookings/${bookingId}/details`, detailsPayload, {
+                    skipServerLoading: true,
+                });
+                bookingStore.setActiveBooking(res.data.data);
+            }
+            stepStore.nextStep();
+        } catch (err) {
+            submitError.value = getApiErrorMessage(err);
+        } finally {
+            isSubmitting.value = false;
+        }
+        return;
+    }
+
     stepStore.nextStep();
 };
 
-const handleBack = () => {
+const handleBack = async () => {
     if (stepStore.currentStep > 1) {
-        if (stepStore.currentStep === 2) comboStore.resetCombos();
-        if (stepStore.currentStep === 3) paymentStore.resetPayment();
+        if (stepStore.currentStep === 2) {
+            // Quay lại bước 1 từ bước 2: nhả ghế đang giữ trong database để người dùng chọn lại
+            await bookingStore.releaseCurrentBooking();
+            comboStore.resetCombos();
+            if (showtimeId.value) await seatStore.fetchSeats(showtimeId.value);
+        }
+        if (stepStore.currentStep === 3) {
+            paymentStore.resetPayment();
+        }
         submitError.value = "";
         stepStore.prevStep();
     }
@@ -209,33 +292,35 @@ const handlePay = async () => {
 
     isSubmitting.value = true;
     submitError.value = "";
-    let createdBookingId = null;
     let paymentStatusRequestStarted = false;
 
     try {
-        const selectedSeatIds = seatStore.selectedSeats.map((seat) => Number(seat.showtimeSeatId));
-        const foodCombos = comboStore.singleCombosList.map((combo) => ({
-            food_combo_id: Number(combo.food_combo_id || combo.id),
-            quantity: Number(combo.qty),
-        }));
+        let booking = bookingStore.activeBooking;
+        if (!booking) {
+            const selectedSeatIds = seatStore.selectedSeats.map((seat) => Number(seat.showtimeSeatId));
+            const foodCombos = comboStore.singleCombosList.map((combo) => ({
+                food_combo_id: Number(combo.food_combo_id || combo.id),
+                quantity: Number(combo.qty),
+            }));
 
-        const bookingPayload = {
-            showtime_id: showtimeId.value,
-            showtime_seat_ids: selectedSeatIds,
-            food_combos: foodCombos,
-        };
+            const bookingPayload = {
+                showtime_id: showtimeId.value,
+                showtime_seat_ids: selectedSeatIds,
+                food_combos: foodCombos,
+            };
 
-        if (paymentStore.promoCode?.trim()) {
-            bookingPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
+            if (paymentStore.promoCode?.trim()) {
+                bookingPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
+            }
+
+            const bookingRes = await api.post("/bookings", bookingPayload, {
+                skipServerLoading: true,
+            });
+            booking = bookingRes.data.data;
+            bookingStore.setActiveBooking(booking);
         }
 
-        const bookingRes = await api.post("/bookings", bookingPayload, {
-            skipServerLoading: true,
-        });
-        const booking = bookingRes.data.data;
-        createdBookingId = booking.booking_id;
         await paymentStore.fetchPaymentMethods();
-
         const selectedPaymentMethod = paymentStore.paymentMethod;
         const paymentMethod = selectedPaymentMethod?.payment_method || "card";
 
@@ -268,17 +353,13 @@ const handlePay = async () => {
             combos: [...comboStore.singleCombosList],
         });
         paymentStore.openTicketModal();
+        bookingStore.setActiveBooking(null);
         await seatStore.fetchSeats(showtimeId.value);
     } catch (err) {
-        if (createdBookingId && !paymentStatusRequestStarted) {
-            await api
-                .delete(`/bookings/${createdBookingId}`, { skipServerLoading: true })
-                .catch(() => {});
-        }
-
         submitError.value = getApiErrorMessage(err);
 
-        if (err.response?.status === 409) {
+        if (err.response?.status === 409 || err.response?.status === 410) {
+            bookingStore.setActiveBooking(null);
             seatStore.resetSeats();
             stepStore.setStep(1);
             if (showtimeId.value) await seatStore.fetchSeats(showtimeId.value);

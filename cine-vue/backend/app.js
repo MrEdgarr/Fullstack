@@ -8,6 +8,15 @@ require("dotenv").config({ quiet: true });
 
 const indexRouter = require("./src/routes");
 const errorHandler = require("./src/shared/middleware/error-handler");
+const { expireStaleHolds } = require("./src/modules/bookings/booking-maintenance.service");
+
+// Định kỳ quét dọn ghế quá hạn giữ chỗ mỗi 60 giây
+const holdCleanupTimer = setInterval(() => {
+  expireStaleHolds().catch((err) => {
+    console.error("Background hold cleanup error:", err.message);
+  });
+}, 60 * 1000);
+if (holdCleanupTimer.unref) holdCleanupTimer.unref();
 
 const app = express();
 const allowedOrigins = (process.env.FRONTEND_URLS ||

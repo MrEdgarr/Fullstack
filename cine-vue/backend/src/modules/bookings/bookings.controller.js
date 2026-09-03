@@ -36,6 +36,19 @@ exports.updateStatus = async (req, res, next) => {
   }
 };
 
+exports.updateDetails = async (req, res, next) => {
+  try {
+    const data = await bookingsService.updateDetails(req.user, req.params.id, req.body);
+    res.json({
+      success: true,
+      message: "Booking details updated successfully",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.delete = async (req, res, next) => {
   try {
     await bookingsService.delete(req.user, req.params.id);
