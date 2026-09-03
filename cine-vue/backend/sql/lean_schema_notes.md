@@ -1,12 +1,6 @@
 # Giới thiệu database
 
-File schema chính:
-
-```text
-lean_ticketing_schema.mysql.sql
-```
-
-Đây là database tinh gọn cho một hệ thống đặt vé xem phim có hỗ trợ:
+Đây là database cho một hệ thống đặt vé xem phim có hỗ trợ:
 
 - nhiều thương hiệu rạp
 - nhiều cụm rạp và phòng chiếu
@@ -325,8 +319,6 @@ Việc lưu `unit_price` và `line_total` tại đây giúp dữ liệu booking 
 ---
 
 # Kết luận
-
-Schema này phù hợp cho một hệ thống đặt vé xem phim có quy mô vừa, cần:
 
 - cấu trúc rõ ràng
 - không dư bảng

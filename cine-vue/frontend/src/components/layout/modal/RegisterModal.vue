@@ -35,8 +35,12 @@
                             name="fullname"
                             placeholder="Nguyễn Văn A"
                             class="input w-full"
+                            :class="{ 'input-error': nameError }"
                             required
                         />
+                        <div v-if="nameError" class="label">
+                            <span class="label-text-alt text-error">{{ nameError }}</span>
+                        </div>
                     </div>
                     <!-- Email -->
                     <div class="form-control">
@@ -48,8 +52,12 @@
                             type="email"
                             placeholder="email@example.com"
                             class="input input-bordered w-full"
+                            :class="{ 'input-error': emailError }"
                             required
                         />
+                        <div v-if="emailError" class="label">
+                            <span class="label-text-alt text-error">{{ emailError }}</span>
+                        </div>
                     </div>
                     <!-- Phone -->
                     <div class="form-control">
@@ -61,9 +69,12 @@
                             type="tel"
                             placeholder="0901234567"
                             class="input input-bordered w-full"
-                            pattern="[0-9]{10,11}"
+                            :class="{ 'input-error': phoneError }"
                             required
                         />
+                        <div v-if="phoneError" class="label">
+                            <span class="label-text-alt text-error">{{ phoneError }}</span>
+                        </div>
                     </div>
                     <!-- Password -->
                     <div class="form-control">
@@ -154,6 +165,7 @@
 import { reactive, computed, ref } from "vue";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useToastStore } from "@/stores/app/useToastStore";
+import { REGEX } from "@/utils/constants/regex";
 
 const authStore = useAuthStore();
 const toastStore = useToastStore();
@@ -168,8 +180,29 @@ const formData = reactive({
     agreeToTerms: false,
 });
 
+const nameError = computed(() => {
+    if (formData.fullName && !REGEX.FULL_NAME.test(formData.fullName)) {
+        return "Họ tên không được chứa số hoặc ký tự đặc biệt";
+    }
+    return "";
+});
+
+const emailError = computed(() => {
+    if (formData.email && !REGEX.EMAIL.test(formData.email)) {
+        return "Định dạng email không hợp lệ";
+    }
+    return "";
+});
+
+const phoneError = computed(() => {
+    if (formData.phone && !REGEX.PHONE_VN.test(formData.phone)) {
+        return "Số điện thoại không hợp lệ (Ví dụ: 0901234567)";
+    }
+    return "";
+});
+
 const passwordError = computed(() => {
-    if (formData.password && formData.password.length < 8) {
+    if (formData.password && !REGEX.PASSWORD_MIN_8.test(formData.password)) {
         return "Mật khẩu phải có ít nhất 8 ký tự";
     }
     return "";
@@ -184,10 +217,10 @@ const confirmPasswordError = computed(() => {
 
 const isFormValid = computed(() => {
     return (
-        formData.fullName &&
-        formData.email &&
-        /^[0-9]{10,11}$/.test(formData.phone) &&
-        formData.password.length >= 8 &&
+        REGEX.FULL_NAME.test(formData.fullName) &&
+        REGEX.EMAIL.test(formData.email) &&
+        REGEX.PHONE_VN.test(formData.phone) &&
+        REGEX.PASSWORD_MIN_8.test(formData.password) &&
         formData.password === formData.confirmPassword &&
         formData.agreeToTerms
     );
