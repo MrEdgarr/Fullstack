@@ -128,12 +128,6 @@
                             >
                                 <span class="text-sm font-bold">{{ timeItem.time }}</span>
                             </button>
-                            <button
-                                class="btn btn-outline transition-all duration-200 btn-primary btn-xs md:btn-sm lg:btn-md"
-                                v-for="v in 40"
-                            >
-                                2.10
-                            </button>
                         </div>
                     </div>
                 </div>

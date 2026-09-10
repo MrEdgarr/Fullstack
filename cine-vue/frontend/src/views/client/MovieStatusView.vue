@@ -9,7 +9,7 @@
             class="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5"
         >
             <RouterLink
-                v-for="movie in movies"
+                v-for="movie in paginatedMovies"
                 :key="movie.movie_id ?? movie.id"
                 :to="movie.detailRoute"
                 class="group block"
@@ -36,6 +36,16 @@
             </RouterLink>
         </div>
 
+        <base-pagination
+            v-if="movies.length"
+            v-model="currentPage"
+            :total-pages="totalPages"
+            :total-items="totalItems"
+            :start-index="startIndex"
+            :end-index="endIndex"
+            @change="setPage"
+        />
+
         <div v-else-if="!moviesStore.isLoading" class="py-10 text-center text-base-content/60">
             Chưa có phim trong danh mục này.
         </div>
@@ -46,6 +56,7 @@
 import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useMoviesStore } from "@/stores/movie/useMovieStore";
+import { usePagination } from "@/composables/usePagination";
 import { createMovieSlug } from "@/utils/helpers/slug";
 
 const route = useRoute();
@@ -72,9 +83,21 @@ const movies = computed(() =>
     withMovieRoutes(isComingSoon.value ? moviesStore.sortedUpcoming : moviesStore.topRatedNowShowing),
 );
 
+// 10 phim / trang (2 hàng x 5 cột)
+const {
+    currentPage,
+    totalPages,
+    totalItems,
+    paginatedItems: paginatedMovies,
+    startIndex,
+    endIndex,
+    setPage,
+} = usePagination(movies, { pageSize: 10, syncWithUrl: true });
+
 watch(
     isComingSoon,
     () => {
+        setPage(1);
         if (isComingSoon.value) {
             moviesStore.fetchUpcoming();
             return;

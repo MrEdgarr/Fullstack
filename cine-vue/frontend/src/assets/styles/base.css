@@ -9,6 +9,9 @@
     --gradient-1: linear-gradient(to right, rgba(20, 30, 48, 1) 0%, rgba(36, 59, 85, 1) 100%);
 }
 @layer base {
+    html {
+        scroll-behavior: smooth;
+    }
     body {
         background: color-mix(in oklch, var(--color-base-200) 50%, transparent);
     }

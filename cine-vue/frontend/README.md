@@ -1,6 +1,8 @@
 # CINE-VUE FRONT-END: HỆ THỐNG ĐẶT VÉ XEM PHIM TRỰC TUYẾN THẾ HỆ MỚI
 > *Một nền tảng web đặt vé xem phim hiện đại, tối ưu trải nghiệm thị giác và quy trình tương tác người dùng, được xây dựng trên nền tảng Vue 3 & Modern Web Stack.*
 
+* **Trải nghiệm trực tiếp dự án (Live Demo):** [https://fullstack-gamma-indol.vercel.app/](https://fullstack-gamma-indol.vercel.app/)
+
 ---
 
 ## 1. TỔNG QUAN DỰ ÁN (EXECUTIVE SUMMARY)
@@ -146,6 +148,9 @@ yarn dev
 ```bash
 yarn build
 ```
+
+### Triển khai trực tuyến (Live Deployment)
+* **Đường dẫn truy cập trực tiếp:** [https://fullstack-gamma-indol.vercel.app/](https://fullstack-gamma-indol.vercel.app/)
 
 ---
 

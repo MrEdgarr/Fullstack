@@ -32,10 +32,13 @@
         <!-- Booking List -->
         <div v-else>
             <div
-                v-for="booking in bookings"
+                v-for="booking in paginatedBookings"
                 :key="booking.booking_id"
-                class="card bg-base-100 border-base-300 flex flex-col md:flex-row gap-4 border p-4 shadow-sm transition-all mb-4"
-                :class="{ 'opacity-60 grayscale': isExpiredOrFinished(booking) }"
+                class="card bg-base-100 border-base-300 flex flex-col md:flex-row gap-4 border p-4 shadow-sm transition-all mb-4 relative"
+                :class="{
+                    'opacity-50 grayscale pointer-events-none cursor-not-allowed select-none bg-base-200/50 border-dashed': isExpiredOrFinished(booking),
+                }"
+                :aria-disabled="isExpiredOrFinished(booking)"
             >
                 <figure class="w-full md:w-24 shrink-0 rounded overflow-hidden h-32 md:h-auto">
                     <img
@@ -47,11 +50,19 @@
 
                 <div class="flex-1 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-start justify-between">
-                            <h3 class="font-bold text-lg leading-tight mb-1">
-                                {{ booking.movie_title }}
-                            </h3>
-                            <div class="badge ml-2 shrink-0" :class="getStatusBadgeClass(booking)">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <h3
+                                    class="font-bold text-lg leading-tight mb-1"
+                                    :class="{ 'line-through text-base-content/60': isMovieEnded(booking) }"
+                                >
+                                    {{ booking.movie_title }}
+                                </h3>
+                                <div v-if="isMovieEnded(booking)" class="text-xs text-error font-medium mb-1">
+                                    Đã hết thời gian chiếu
+                                </div>
+                            </div>
+                            <div class="badge shrink-0" :class="getStatusBadgeClass(booking)">
                                 {{ getStatusText(booking) }}
                             </div>
                         </div>
@@ -86,6 +97,16 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Phân trang lịch sử đặt vé -->
+            <base-pagination
+                v-model="currentPage"
+                :total-pages="totalPages"
+                :total-items="totalItems"
+                :start-index="startIndex"
+                :end-index="endIndex"
+                @change="setPage"
+            />
         </div>
     </div>
 </template>
@@ -94,11 +115,23 @@
 import { ref, onMounted, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { usePagination } from "@/composables/usePagination";
 import api from "@/_services/api";
 
 const authStore = useAuthStore();
 const bookings = ref([]);
 const isLoading = ref(true);
+
+// 5 vé / trang
+const {
+    currentPage,
+    totalPages,
+    totalItems,
+    paginatedItems: paginatedBookings,
+    startIndex,
+    endIndex,
+    setPage,
+} = usePagination(bookings, { pageSize: 5, syncWithUrl: true, queryKey: "history_page" });
 
 const fetchBookings = async () => {
     try {
@@ -130,26 +163,46 @@ watch(
     },
 );
 
+const parseDate = (dateStr) => {
+    if (!dateStr) return null;
+    if (dateStr instanceof Date) return dateStr;
+    const cleanStr = typeof dateStr === "string" ? dateStr.replace(" ", "T") : dateStr;
+    const parsed = new Date(cleanStr);
+    return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const isMovieEnded = (booking) => {
+    const now = new Date();
+    const endTime = parseDate(booking.end_time);
+    if (endTime) {
+        return endTime < now;
+    }
+    const startTime = parseDate(booking.start_time);
+    if (startTime) {
+        // Nếu không có end_time cụ thể, mặc định kết thúc sau 120 phút kể từ giờ bắt đầu
+        return new Date(startTime.getTime() + 120 * 60 * 1000) < now;
+    }
+    return false;
+};
+
 const isExpiredOrFinished = (booking) => {
     if (booking.booking_status === "cancelled") return true;
-    if (booking.end_time && new Date(booking.end_time) < new Date()) return true;
-    if (
-        booking.booking_status === "pending" &&
-        booking.expires_at &&
-        new Date(booking.expires_at) < new Date()
-    )
-        return true;
+    if (isMovieEnded(booking)) return true;
+    if (booking.booking_status === "pending") {
+        const expiresAt = parseDate(booking.expires_at);
+        if (expiresAt && expiresAt < new Date()) return true;
+    }
     return false;
 };
 
 const getStatusText = (booking) => {
     if (booking.booking_status === "cancelled") return "Đã huỷ";
     if (booking.booking_status === "pending") {
-        if (booking.expires_at && new Date(booking.expires_at) < new Date())
-            return "Hết hạn thanh toán";
+        const expiresAt = parseDate(booking.expires_at);
+        if (expiresAt && expiresAt < new Date()) return "Hết hạn thanh toán";
         return "Chờ thanh toán";
     }
-    if (booking.end_time && new Date(booking.end_time) < new Date()) return "Đã chiếu";
+    if (isMovieEnded(booking)) return "Đã hết giờ chiếu";
     if (booking.booking_status === "confirmed" || booking.booking_status === "completed")
         return "Đã thanh toán";
     return booking.booking_status;
@@ -158,10 +211,11 @@ const getStatusText = (booking) => {
 const getStatusBadgeClass = (booking) => {
     if (booking.booking_status === "cancelled") return "badge-error";
     if (booking.booking_status === "pending") {
-        if (booking.expires_at && new Date(booking.expires_at) < new Date()) return "badge-error";
+        const expiresAt = parseDate(booking.expires_at);
+        if (expiresAt && expiresAt < new Date()) return "badge-error";
         return "badge-warning";
     }
-    if (booking.end_time && new Date(booking.end_time) < new Date()) return "badge-ghost";
+    if (isMovieEnded(booking)) return "badge-ghost opacity-80";
     if (booking.booking_status === "confirmed" || booking.booking_status === "completed")
         return "badge-success";
     return "badge-neutral";
