@@ -21,13 +21,7 @@ exports.getByCustomer = (customerId) =>
         FROM tickets t
         JOIN seats se ON se.seat_id = t.seat_id
         WHERE t.booking_id = b.booking_id
-      ) AS ticket_seats,
-      (
-        SELECT GROUP_CONCAT(CONCAT(se.row_letter, se.seat_number) SEPARATOR ', ')
-        FROM showtime_seats ss
-        JOIN seats se ON se.seat_id = ss.seat_id
-        WHERE ss.held_by_booking_id = b.booking_id
-      ) AS held_seats
+      ) AS ticket_seats
     FROM bookings b
     JOIN showtimes s ON b.showtime_id = s.showtime_id
     JOIN movies m ON s.movie_id = m.movie_id
@@ -36,7 +30,7 @@ exports.getByCustomer = (customerId) =>
     WHERE b.customer_id = ?
     ORDER BY b.created_at DESC
     `,
-    [customerId]
+    [customerId],
   );
 
 exports.getById = (bookingId) =>
@@ -45,28 +39,14 @@ exports.getById = (bookingId) =>
 exports.getSelectedSeatsForUpdate = (connection, showtimeId, seatIds) =>
   connection.query(
     `
-    SELECT showtime_seat_id, price, status, held_until
+    SELECT showtime_seat_id, seat_id, price, status
     FROM showtime_seats
     WHERE showtime_id = ?
       AND showtime_seat_id IN (?)
+    ORDER BY showtime_seat_id ASC
     FOR UPDATE
     `,
     [showtimeId, seatIds],
-  );
-
-exports.releaseExpiredSelectedSeats = (connection, showtimeId, seatIds, now) =>
-  connection.query(
-    `
-    UPDATE showtime_seats
-    SET status = 'available',
-        held_by_booking_id = NULL,
-        held_until = NULL
-    WHERE showtime_id = ?
-      AND showtime_seat_id IN (?)
-      AND status = 'held'
-      AND held_until <= ?
-    `,
-    [showtimeId, seatIds, now],
   );
 
 exports.getShowtimeCinema = (connection, showtimeId) =>
@@ -114,7 +94,7 @@ exports.create = (
   subtotalAmount,
   discountAmount,
   finalAmount,
-  expiresAt,
+  expiresAt = null,
 ) =>
   connection.query(
     `
@@ -140,17 +120,41 @@ exports.create = (
     ],
   );
 
-exports.holdSeats = (connection, bookingId, expiresAt, showtimeId, seatIds) =>
+exports.createTicketsForSeats = (connection, bookingId, seatIds) =>
+  connection.query(
+    `
+    INSERT INTO tickets (booking_id, showtime_seat_id, seat_id, actual_price)
+    SELECT ?, showtime_seat_id, seat_id, price
+    FROM showtime_seats
+    WHERE showtime_seat_id IN (?)
+    ORDER BY showtime_seat_id ASC
+    `,
+    [bookingId, seatIds],
+  );
+
+exports.markSeatsBooked = (connection, seatIds) =>
   connection.query(
     `
     UPDATE showtime_seats
-    SET status = 'held',
-        held_by_booking_id = ?,
-        held_until = ?
-    WHERE showtime_id = ?
-      AND showtime_seat_id IN (?)
+    SET status = 'booked',
+        held_by_booking_id = NULL,
+        held_until = NULL
+    WHERE showtime_seat_id IN (?)
     `,
-    [bookingId, expiresAt, showtimeId, seatIds],
+    [seatIds],
+  );
+
+exports.releaseSeatsByBooking = (connection, bookingId) =>
+  connection.query(
+    `
+    UPDATE showtime_seats ss
+    JOIN tickets t ON t.showtime_seat_id = ss.showtime_seat_id
+    SET ss.status = 'available',
+        ss.held_by_booking_id = NULL,
+        ss.held_until = NULL
+    WHERE t.booking_id = ?
+    `,
+    [bookingId],
   );
 
 exports.createFoodComboLines = (connection, comboValues) =>
@@ -171,95 +175,11 @@ exports.createFoodComboLines = (connection, comboValues) =>
 exports.getByIdForUpdate = (connection, bookingId) =>
   connection.query("SELECT * FROM bookings WHERE booking_id = ? FOR UPDATE", [bookingId]);
 
-exports.getActiveHeldSeatsForBooking = (connection, bookingId) =>
-  connection.query(
-    `
-    SELECT showtime_seat_id
-    FROM showtime_seats
-    WHERE held_by_booking_id = ?
-      AND status = 'held'
-      AND held_until > NOW()
-    FOR UPDATE
-    `,
-    [bookingId],
-  );
-
-exports.createTicketsFromHeldSeats = (connection, bookingId) =>
-  connection.query(
-    `
-    INSERT INTO tickets (booking_id, showtime_seat_id, seat_id, actual_price)
-    SELECT ?, showtime_seat_id, seat_id, price
-    FROM showtime_seats
-    WHERE held_by_booking_id = ?
-      AND status = 'held'
-    `,
-    [bookingId, bookingId],
-  );
-
-exports.markHeldSeatsBooked = (connection, bookingId) =>
-  connection.query(
-    `
-    UPDATE showtime_seats
-    SET status = 'booked',
-        held_until = NULL
-    WHERE held_by_booking_id = ?
-    `,
-    [bookingId],
-  );
-
-exports.releaseHeldSeats = (connection, bookingId) =>
-  connection.query(
-    `
-    UPDATE showtime_seats
-    SET status = 'available',
-        held_by_booking_id = NULL,
-        held_until = NULL
-    WHERE held_by_booking_id = ?
-      AND status = 'held'
-    `,
-    [bookingId],
-  );
-
 exports.updateStatus = (connection, bookingId, status) =>
   connection.query("UPDATE bookings SET status = ? WHERE booking_id = ?", [status, bookingId]);
 
 exports.delete = (connection, bookingId) =>
   connection.query("DELETE FROM bookings WHERE booking_id = ?", [bookingId]);
-
-exports.getExpiredHeldBookingIds = (connection) =>
-  connection.query(
-    `
-    SELECT DISTINCT held_by_booking_id AS booking_id
-    FROM showtime_seats
-    WHERE status = 'held'
-      AND held_until <= NOW()
-      AND held_by_booking_id IS NOT NULL
-    FOR UPDATE
-    `,
-  );
-
-exports.releaseExpiredHeldSeats = (connection) =>
-  connection.query(
-    `
-    UPDATE showtime_seats
-    SET status = 'available',
-        held_by_booking_id = NULL,
-        held_until = NULL
-    WHERE status = 'held'
-      AND held_until <= NOW()
-    `,
-  );
-
-exports.cancelPendingBookings = (connection, bookingIds) =>
-  connection.query(
-    `
-    UPDATE bookings
-    SET status = 'cancelled'
-    WHERE booking_id IN (?)
-      AND status = 'pending'
-    `,
-    [bookingIds],
-  );
 
 exports.deleteFoodCombos = (connection, bookingId) =>
   connection.query("DELETE FROM booking_food_combos WHERE booking_id = ?", [bookingId]);
@@ -287,10 +207,9 @@ exports.updateBookingDetails = (
 exports.getSeatsForBooking = (connection, bookingId) =>
   connection.query(
     `
-    SELECT showtime_seat_id, price
-    FROM showtime_seats
-    WHERE held_by_booking_id = ?
-      AND status = 'held'
+    SELECT showtime_seat_id, actual_price AS price
+    FROM tickets
+    WHERE booking_id = ?
     `,
     [bookingId],
   );

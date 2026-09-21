@@ -8,11 +8,11 @@
 ## 1. TỔNG QUAN DỰ ÁN (EXECUTIVE SUMMARY)
 
 ### Tầm nhìn & Vấn đề giải quyết
-Trong thời đại số hóa ngành giải trí, người dùng đòi hỏi một nền tảng mua vé xem phim không chỉ nhanh chóng mà còn phải đem lại cảm xúc điện ảnh ngay từ giây đầu tiên truy cập. Nhiều nền tảng hiện nay gặp phải các hạn chế: giao diện phân mảnh, quy trình giữ ghế thiếu trực quan, xử lý lỗi kém thân thiện (dùng alert mặc định làm đứt quãng trải nghiệm), và mất trạng thái giao dịch khi tải lại trang.
+Trong thời đại số hóa ngành giải trí, người dùng đòi hỏi một nền tảng mua vé xem phim không chỉ nhanh chóng mà còn phải đem lại cảm xúc điện ảnh ngay từ giây đầu tiên truy cập. Nhiều nền tảng hiện nay gặp phải các hạn chế: rào cản đăng nhập ép buộc quá sớm làm tăng tỷ lệ thoát trang, xử lý lỗi kém thân thiện (dùng alert mặc định làm đứt quãng trải nghiệm), và mất trạng thái giỏ hàng khi tải lại trang.
 
 **Cine-Vue** ra đời nhằm định hình lại trải nghiệm đặt vé xem phim:
 * **Minimalist Aesthetics (DaisyUI Lofi Theme):** Giao diện theo trường phái tối giản (Minimalism), đường nét tinh gọn, độ tương phản cao, giúp người dùng tập trung tuyệt đối vào nội dung phim và thao tác đặt vé nhanh chóng.
-* **Seamless Flow:** Quy trình giữ ghế - chọn combo - xác nhận vé liền mạch, chống thất lạc dữ liệu (persistence state).
+* **Seamless Flow (Phương án 2 - Đăng nhập tại bước Thanh toán):** Khách hàng vãng lai được tự do khám phá lịch chiếu, chọn ghế và chọn combo bắp nước mà không bị chặn lại bởi màn hình đăng nhập. Đăng nhập chỉ xuất hiện ở bước thanh toán cuối cùng, bảo toàn 100% giỏ hàng.
 * **Robust Feedback:** Hệ thống thông báo đa tầng (Toast Notification & Confirmation Modal) thay thế hoàn toàn các popup native gián đoạn của trình duyệt.
 
 ---
@@ -49,38 +49,44 @@ Dự án áp dụng các tiêu chuẩn phát triển phần mềm hiện đại 
 ### 3.3. Sơ đồ chọn ghế ma trận tương tác (Interactive Seat Map)
 * **Đa dạng loại ghế:** Xử lý linh hoạt ma trận ghế Thường (Single), ghế VIP và **Ghế đôi (Couple Seat)**.
 * **Thuật toán ghép cặp ghế đôi:** Tự động phát hiện và chọn/hủy đồng bộ theo cặp liền kề hợp lệ, không cho phép chọn lẻ một nửa ghế đôi.
-* **Ràng buộc an toàn:** Giới hạn tối đa 10 ghế/lần đặt nhằm ngăn chặn tình trạng đầu cơ vé.
+* **Ràng buộc an toàn:** Giới hạn tối đa 10 ghế/lần đặt nhằm ngăn chặn tình trạng mua gom vé.
+* **Trạng thái trực quan:** Phân biệt rõ ràng giữa ghế trống (Available), ghế đang chọn (Selected) và ghế đã bán (Booked).
 
-### 3.4. Hệ thống Giữ chỗ & Chống gián đoạn (Session Resilience)
-* **Bảo toàn dữ liệu (Storage Persistence):** Sử dụng cơ chế lưu trữ localStorage có định thời (`storage.js`), người dùng vô tình bấm F5 vẫn giữ nguyên trạng thái ghế đang chọn.
+### 3.4. Quản lý Phiên đặt vé & Chống gián đoạn (Session Resilience)
+* **Bảo toàn dữ liệu (Storage Persistence):** Sử dụng cơ chế lưu trữ localStorage có định thời (`storage.js`), người dùng vô tình bấm F5 vẫn giữ nguyên trạng thái ghế và combo đang chọn.
 * **Điều hướng bảo vệ (Stale Guard):** Nếu người dùng copy link đặt vé sang tab ẩn danh hoặc máy khác mà không có dữ liệu phiên, hệ thống sẽ tự động kích hoạt Modal thông báo và chuyển hướng an toàn về trang chọn suất chiếu.
-* **Bộ đếm thời gian giữ ghế:** Đếm ngược thời gian thanh toán thời gian thực; tự động hủy phiên và giải phóng ghế khi hết giờ.
+* **Bộ đếm thời gian chọn ghế (Session Countdown Timer):** Đếm ngược thời gian phiên chọn ghế thời gian thực; tự động nhắc nhở và làm mới phiên khi hết giờ.
 
 ### 3.5. Hệ thống Thông báo Đa tầng (Multi-tier Notification System)
 * **Tầng 1 - Global Toast (Thông báo nổi):** 
   * Dành cho các phản hồi tức thì: *"Đăng nhập thành công"*, *"Đã lưu giỏ hàng"*, *"Chọn tối đa 10 ghế"*.
   * Neo tại góc trên bên phải, tự động biến mất sau 3 giây với hiệu ứng trượt Slide mượt mà.
 * **Tầng 2 - Global Dialog Modal (Hộp thoại xác nhận):** 
-  * Dành cho các tình huống mang tính chất quyết định: *"Hết thời gian giữ ghế"*, *"Phiên giao dịch không hợp lệ"*.
+  * Dành cho các tình huống mang tính chất quyết định: *"Đã hết thời gian chọn ghế"*, *"Phiên giao dịch không hợp lệ"*, *"Rất tiếc ghế đã có người đặt trước"*.
   * Khóa màn hình, bắt buộc người dùng tương tác nút "Đồng ý" để thực thi hành động điều hướng.
 
 ---
 
 ## 4. HÀNH TRÌNH NGƯỜI DÙNG (USER JOURNEY FLOW)
 
+*Quy trình đặt vé tuân thủ **Phương án 2 (Đăng nhập ở bước Thanh toán)**, giúp tối đa hóa trải nghiệm mua vé và tỷ lệ chuyển đổi:*
+
 ```mermaid
 flowchart TD
     A[Trang Chủ / Danh Sách Phim] -->|Xem chi tiết| B[Trang Thông Tin Phim]
     B -->|Chọn Phim & Cụm Rạp| C[Trang Lịch Chiếu & Suất Chiếu]
-    C -->|Chọn Giờ Chiếu Hợp Lệ| D{Đã Đăng Nhập?}
-    D -- Chưa --> E[Bật Modal Đăng Nhập / Đăng Ký]
-    E -->|Đăng nhập thành công| F[Màn Hình Chọn Ghế]
-    D -- Rồi --> F
-    F -->|Chọn Ghế Thường/VIP/Đôi| G[Kiểm Tra Ràng Buộc & Giữ Chỗ]
-    G -->|Tối đa 10 ghế / Ghép cặp hợp lệ| H[Cộng Dồn Giá Vé & Cập Nhật Store]
-    H -->|Hết thời gian đếm ngược| I[Global Dialog: Báo Hết Hạn & Reset]
-    H -->|Tiếp tục đặt vé| K[Chọn Combo Bắp Nước & Thanh Toán]
-    K -->|Thanh toán thành công| L[Hiển Thị Vé Điện Tử & Mã QR]
+    C -->|Chọn Giờ Chiếu Hợp Lệ| D[Bước 1: Chọn Ghế Thường/VIP/Đôi]
+    D -->|Khách vãng lai tự do chọn ghế| E[Cộng Dồn Giá Vé & Lưu Pinia]
+    E -->|Bấm Tiếp tục| F[Bước 2: Chọn Combo Bắp Nước]
+    F -->|Thêm bắp nước tùy chọn| G[Cập Nhật Tổng Tiền Giỏ Hàng]
+    G -->|Bấm Tiếp tục sang Bước 3| H{Đã Đăng Nhập?}
+    H -- Chưa --> I[Mở Modal Đăng Nhập / Đăng Ký]
+    I -->|Đăng nhập thành công| J[Bước 3: Xem Lại Đơn, Áp Voucher & Chọn Thanh Toán]
+    H -- Đã đăng nhập --> J
+    J -->|Bấm Thanh toán| K[Khởi Tạo Giao Dịch & Xác Nhận Thanh Toán]
+    K -->|Thanh toán thành công| L[Hiển Thị Vé Điện Tử & Mã QR Thành Công]
+    K -->|Xung đột: Ghế đã có người mua trước| M[Báo Lỗi 409 & Đưa Về Bước 1 Chọn Lại]
+    J -->|Hết thời gian chọn ghế| N[Global Dialog: Báo Hết Hạn & Reset]
 ```
 
 ---
@@ -92,20 +98,20 @@ frontend/src/
 ├── _services/            # Tầng HTTP: Khởi tạo Axios client, cấu hình interceptors
 ├── assets/               # Tài nguyên: CSS tokens, hình ảnh thương hiệu, icon hệ thống
 ├── components/           
-│   ├── common/           # Khối tái sử dụng cao (BaseIcon, BaseLoading, Swiper wrappers)
-│   ├── features/client/  # Khối nghiệp vụ rạp chiếu (MovieTicket, SeatGrid, Card...)
-│   └── layout/           # Bố cục giao diện (Header, Footer, GlobalToast, GlobalDialog)
-├── composables/          # Hook logic trừu tượng (useSeatMap.js...)
+│   ├── common/           # Khối tái sử dụng cao (BaseIcon, BaseLoading, BasePagination, Swiper wrappers)
+│   ├── features/client/  # Khối nghiệp vụ rạp chiếu (MovieTicket, SeatGrid, BookingAction, ProfileTabs...)
+│   └── layout/           # Bố cục giao diện (Header, Footer, GlobalToast, GlobalDialog, Login/Register Modal)
+├── composables/          # Hook logic trừu tượng (useSeatMap.js, usePagination.js...)
 ├── layouts/              # Master layouts phân cấp trang (ClientLayout.vue)
 ├── router/               # Định tuyến SPA, cấu hình Guards kiểm soát quyền truy cập
 ├── stores/               # Quản lý State phân tầng theo nghiệp vụ:
 │   ├── app/              # ToastStore, DialogStore, ServerConnectionStore
 │   ├── auth/             # AuthStore (JWT Token, User Profile, Session)
-│   └── booking/          # BookingStore, SeatStore, PaymentStore
+│   └── booking/          # BookingStore, SeatStore, ComboStore, PaymentStore, StepStore
 ├── utils/                
 │   ├── constants/        # Hằng số toàn cục (regex.js, paymentData.js, Banner.js)
-│   └── helpers/          # Hàm tiện ích (storage.js lưu dữ liệu có TTL, formatters)
-├── views/client/         # Các View tương ứng từng trang đích trên URL
+│   └── helpers/          # Hàm tiện ích (storage.js lưu dữ liệu có TTL, formatters, currency)
+├── views/client/         # Các View tương ứng từng trang đích trên URL (Home, Movie, Showtimes, Booking, Profile...)
 ├── App.vue               # Root View: Neo giữ Global Toast, Global Dialog & Loading Screen
 └── main.js               # Điểm khởi động: Đăng ký Pinia, Router và Plugins
 ```
@@ -118,10 +124,10 @@ frontend/src/
    * Mọi mã kiểm tra biểu thức chính quy (Email, SĐT, Tên) được tập trung tại `utils/constants/regex.js`.
    * Mọi logic gọi thông báo được thu gọn thành 1 dòng code: `toastStore.success(...)` hoặc `dialogStore.alert(...)`.
 2. **Component Độc lập & Khép kín:** 
-   * Tên component tuân theo chuẩn **Multi-word PascalCase** (`RegisterModal.vue`, `BaseTimeSwiper.vue`).
+   * Tên component tuân theo chuẩn **Multi-word PascalCase** (`RegisterModal.vue`, `BaseTimeSwiper.vue`, `BookingSeat.vue`).
    * Phân tách mạch lạc giữa component trình bày (Presentational Component) và component vùng chứa logic (Container Component).
 3. **Quản lý Bộ nhớ & Tránh Memory Leak:** 
-   * Mọi bộ hẹn giờ (`setTimeout`, `setInterval`) trong các store hoặc countdown đều được dọn dẹp khi unmount hoặc khi hoàn thành tiến trình.
+   * Mọi bộ hẹn giờ (`setTimeout`, `setInterval`, Polling) trong các store hoặc countdown đều được dọn dẹp khi unmount (`stopPolling()`, `clearCountdown()`).
 
 ---
 
@@ -155,8 +161,8 @@ yarn build
 ---
 
 ## 8. ĐỊNH HƯỚNG PHÁT TRIỂN (FUTURE ROADMAP)
-* [ ] Tích hợp WebSocket (Socket.io) để đồng bộ trạng thái ghế theo thời gian thực giữa nhiều người dùng cùng lúc.
-* [ ] Mở rộng cổng thanh toán quét mã QR (VNPAY, MoMo, ZaloPay Sandbox).
+* [ ] Tích hợp WebSocket (Socket.io) để cập nhật ghế đã bán theo thời gian thực giữa nhiều phiên duyệt cùng lúc.
+* [ ] Mở rộng cổng thanh toán quét mã QR trực tiếp (VNPAY, MoMo, ZaloPay Sandbox).
 * [ ] Ứng dụng PWA (Progressive Web App) cho phép lưu vé và xem offline trên thiết bị di động.
 
 ---

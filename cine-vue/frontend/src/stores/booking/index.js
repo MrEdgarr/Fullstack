@@ -45,21 +45,13 @@ export const useBookingStore = defineStore("booking", () => {
         activeBooking.value = booking;
     };
 
-    const releaseCurrentBooking = async () => {
-        const bookingId = activeBooking.value?.booking_id || activeBooking.value?.id;
-        if (bookingId) {
-            try {
-                await api.delete(`/bookings/${bookingId}`, { skipServerLoading: true });
-            } catch (err) {
-                console.error("Failed to release booking:", err);
-            }
-        }
+    const releaseCurrentBooking = () => {
         activeBooking.value = null;
         clearCountdown();
     };
 
     const resetAll = async () => {
-        await releaseCurrentBooking();
+        releaseCurrentBooking();
         selectedShowtime.value = null;
         seatStore.resetSeats();
         comboStore.resetCombos();

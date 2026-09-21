@@ -6,12 +6,12 @@
 ## 1. TỔNG QUAN HỆ THỐNG (EXECUTIVE SUMMARY)
 
 ### Mục tiêu thiết kế
-Trong bài toán thương mại điện tử ngành rạp chiếu phim, hệ thống Backend đóng vai trò then chốt trong việc bảo đảm tính toàn vẹn dữ liệu, kiểm soát tranh chấp tài nguyên (Concurrency / Race Condition khi nhiều người cùng chọn một ghế), và bảo mật thông tin khách hàng cũng như giao dịch thanh toán.
+Trong bài toán thương mại điện tử ngành rạp chiếu phim, hệ thống Backend đóng vai trò then chốt trong việc bảo đảm tính toàn vẹn dữ liệu, kiểm soát tranh chấp tài nguyên (Concurrency / Race Condition khi nhiều người cùng đặt một ghế), và bảo mật thông tin khách hàng cũng như giao dịch thanh toán.
 
 **Cine-Vue Backend** được thiết kế đáp ứng các tiêu chuẩn:
-* **High Availability & Low Latency:** Tối ưu hóa truy vấn cơ sở dữ liệu qua MySQL Connection Pool và Prepared Statements.
+* **High Availability & Low Latency:** Tối ưu hóa truy vấn cơ sở dữ liệu qua MySQL Connection Pool và Prepared Statements. Khi lấy sơ đồ ghế, API thực hiện truy vấn đọc thuần túy (pure read), loại bỏ hoàn toàn các transaction khóa bảng không cần thiết.
 * **Module-Based Architecture:** Phân tách hệ thống thành các module nghiệp vụ độc lập, giúp việc bảo trì, kiểm thử và mở rộng quy mô (Scale-up) đạt hiệu quả tối đa.
-* **Robust Concurrency Control:** Cơ chế giữ chỗ tạm thời (Seat Holding) có thời gian hết hạn (`held_until`) đi kèm worker dọn dẹp nền tự động.
+* **Atomic Seat Booking & Concurrency Control:** Cơ chế kiểm tra và khóa hàng nguyên tử (Atomic Row-level Locking với `SELECT ... FOR UPDATE` sắp xếp ID tăng dần), bảo đảm tính toàn vẹn giao dịch và loại trừ hoàn toàn nguy cơ tranh chấp khóa chéo (Deadlock).
 * **Zero-Crash Strategy:** Cơ chế xử lý ngoại lệ tập trung (Centralized Global Error Handling) ngăn chặn tình trạng sập server ngoài ý muốn và chuẩn hóa định dạng JSON phản hồi.
 
 ---
@@ -76,10 +76,10 @@ Hệ thống được chia thành 14 module chức năng chính:
 1. **`auth`:** Đăng ký tài khoản, đăng nhập, mã hóa mật khẩu, cấp phát JWT token mang theo role (`admin` / `customer`).
 2. **`customers`:** Quản lý thông tin hồ sơ người dùng (họ tên, email, số điện thoại, ngày sinh, ảnh đại diện).
 3. **`movies`:** Quản lý thông tin phim (tên, đạo diễn, diễn viên, thời lượng, trailer, phân loại độ tuổi, trạng thái đang chiếu/sắp chiếu).
-4. **`showtimes`:** Quản lý lịch chiếu theo ngày, phòng chiếu và cụm rạp; cung cấp dữ liệu lịch chiếu realtime cho frontend.
+4. **`showtimes`:** Quản lý lịch chiếu theo ngày, phòng chiếu và cụm rạp; cung cấp dữ liệu lịch chiếu và sơ đồ ghế cho frontend.
 5. **`rooms`:** Quản lý danh sách phòng chiếu thuộc từng rạp (phòng Standard, IMAX, 3D).
 6. **`seats`:** Quản lý sơ đồ ghế vật lý của từng phòng chiếu; định nghĩa loại ghế (ghế Thường, VIP, Đôi) và tọa độ hàng/cột.
-7. **`bookings`:** Quản lý phiên đặt vé, liên kết người dùng với suất chiếu và danh sách ghế đã chọn.
+7. **`bookings`:** Quản lý đơn đặt vé, liên kết người dùng với suất chiếu và danh sách vé đã chọn.
 8. **`tickets`:** Quản lý vé xem phim thực tế được xuất sau khi thanh toán, tạo mã vé điện tử.
 9. **`combos`:** Quản lý danh mục bắp nước, combo đồ ăn kèm bán kèm theo đơn vé.
 10. **`promotions`:** Quản lý mã giảm giá, voucher khuyến mãi, thời hạn áp dụng và điều kiện chiết khấu.
@@ -90,22 +90,30 @@ Hệ thống được chia thành 14 module chức năng chính:
 
 ---
 
-## 5. CƠ CHẾ QUẢN LÝ GHẾ VÀ GIỮ CHỖ (SEAT HOLDING ENGINE)
+## 5. CƠ CHẾ ĐẶT GHẾ NGUYÊN TỬ VÀ KIỂM SOÁT ĐỒNG THỜI (ATOMIC SEAT RESERVATION)
 
 ### Vấn đề giải quyết
-Khi hai khách hàng cùng truy cập một suất chiếu và cùng bấm chọn ghế A1 tại cùng một thời điểm, hệ thống cần bảo đảm chỉ có một người được giữ ghế và người còn lại phải nhận thông báo ghế không khả dụng.
+Khi hai khách hàng cùng truy cập một suất chiếu và bấm đặt cùng một ghế tại cùng một thời điểm, hệ thống cần bảo đảm tính toàn vẹn tuyệt đối: chỉ một người đặt thành công và người còn lại nhận thông báo ghế không khả dụng mà **không gây nghẽn hay khóa chéo CSDL (Deadlock)**.
 
-### Quy trình kiểm soát trạng thái ghế:
-1. **Khởi tạo:** Mọi ghế trong suất chiếu mặc định ở trạng thái `available`.
-2. **Giữ ghế (Hold):** Khi người dùng chọn ghế, trạng thái chuyển thành `held`, đồng thời gán mốc thời gian hết hạn (`held_until = NOW() + 5 phút`).
-3. **Thanh toán thành công:** Ghế chuyển sang trạng thái `booked` vĩnh viễn và tạo bản ghi trong bảng `tickets`.
-4. **Hết thời gian giữ chỗ (Auto-Release Worker):** Script nền `scripts/expire-held-seats.js` quét định kỳ qua câu lệnh tối ưu:
-```sql
-UPDATE showtime_seats 
-SET status = 'available', held_until = NULL 
-WHERE status = 'held' AND held_until <= NOW();
-```
-Điều này bảo đảm ghế không bao giờ bị khóa chết nếu người dùng đột ngột đóng trình duyệt hoặc hủy thanh toán.
+### Nguyên tắc vận hành:
+1. **Trạng thái ghế rõ ràng:** Mọi ghế trong bảng `showtime_seats` chỉ gồm 2 trạng thái: `available` (ghế trống) và `booked` (đã bán). Không sử dụng trạng thái giữ ghế lửng lơ (`held`) giúp CSDL luôn sạch sẽ và giải phóng hoàn toàn gánh nặng phải chạy cronjob quét dọn định kỳ.
+2. **Sắp xếp thứ tự khóa (Deterministic Lock Ordering):** Khi client gửi danh sách ID ghế lên, hệ thống tự động chuẩn hóa và sắp xếp tăng dần:
+   ```javascript
+   const showtimeSeatIds = [...rawSeatIds].map(Number).sort((a, b) => a - b);
+   ```
+   Kết hợp với câu truy vấn có `ORDER BY`:
+   ```sql
+   SELECT showtime_seat_id, seat_id, price, status
+   FROM showtime_seats
+   WHERE showtime_id = ? AND showtime_seat_id IN (?)
+   ORDER BY showtime_seat_id ASC
+   FOR UPDATE;
+   ```
+   Việc này đảm bảo mọi transaction luôn xin khóa hàng theo cùng một chiều, **triệt tiêu 100% hiện tượng Cycle Deadlock (ABBA Deadlock)**.
+3. **Thao tác nguyên tử (Atomic Ticket Creation):**
+   * Nếu tất cả các ghế đều `status === 'available'`: Hệ thống tạo đơn hàng trong `bookings`, lập tức phát hành vé trong bảng `tickets`, và cập nhật trạng thái các ghế sang `booked`.
+   * Nếu bất kỳ ghế nào đã bị người khác mua trước: Transaction tự động Rollback và trả về mã lỗi `409 Conflict` (*"One or more seats are unavailable"*). Client sẽ nhận được thông báo rõ ràng để chọn lại ghế mới.
+4. **Hủy đơn an toàn:** Nếu đơn hàng bị hủy (`status = 'cancelled'`), hệ thống dựa trên quan hệ giữa `tickets` và `showtime_seats` để chuyển trạng thái các ghế đó trở lại `available`.
 
 ---
 
@@ -118,27 +126,36 @@ sequenceDiagram
     participant Auth as Auth Middleware
     participant BookingCtrl as Bookings Controller
     participant BookingSvc as Bookings Service
-    participant SeatRepo as Seats Repository
+    participant BookingRepo as Bookings Repository
+    participant PaymentCtrl as Payments Controller
     participant DB as MySQL Database
 
-    Client->>BookingCtrl: POST /api/v1/bookings/hold (Danh sách ghế, showtimeId)
+    Client->>BookingCtrl: POST /api/v1/bookings (showtime_id, showtime_seat_ids, food_combos, promotion_code)
     BookingCtrl->>Auth: Xác thực Token JWT
     Auth-->>BookingCtrl: Token hợp lệ (customerId)
-    BookingCtrl->>BookingSvc: holdSeats(customerId, showtimeId, seatIds)
+    BookingCtrl->>BookingSvc: create(customerId, payload)
     
-    BookingSvc->>SeatRepo: getSeatStatus(showtimeId, seatIds)
-    SeatRepo->>DB: SELECT status, held_until FROM showtime_seats...
-    DB-->>SeatRepo: Trả về trạng thái hiện tại
+    BookingSvc->>DB: Bắt đầu Transaction (beginTransaction)
+    BookingSvc->>BookingRepo: getSelectedSeatsForUpdate (Sắp xếp seat_ids tăng dần)
+    BookingRepo->>DB: SELECT ... FOR UPDATE (ORDER BY showtime_seat_id ASC)
+    DB-->>BookingRepo: Trả về trạng thái các ghế
     
-    alt Ghế đã có người giữ hoặc đã bán
-        BookingSvc-->>BookingCtrl: Ném lỗi AppError("Ghế đã có người đặt", 409)
-        BookingCtrl-->>Client: 409 Conflict (Kèm mã ghế bị trùng)
-    else Ghế hoàn toàn trống
-        BookingSvc->>SeatRepo: updateHeldStatus(seatIds, heldUntil)
-        SeatRepo->>DB: UPDATE showtime_seats SET status = 'held'...
-        DB-->>SeatRepo: Cập nhật thành công
-        BookingSvc-->>BookingCtrl: Xác nhận giữ chỗ thành công
-        BookingCtrl-->>Client: 200 OK (Bắt đầu đếm ngược 5 phút)
+    alt Có ít nhất một ghế đã bị bán (status = 'booked')
+        BookingSvc->>DB: Rollback Transaction
+        BookingSvc-->>BookingCtrl: Ném lỗi AppError("One or more seats are unavailable", 409)
+        BookingCtrl-->>Client: 409 Conflict (Ghế đã có người đặt trước)
+    else Toàn bộ ghế đều khả dụng (status = 'available')
+        BookingSvc->>BookingRepo: Tạo đơn đặt vé (bookings)
+        BookingSvc->>BookingRepo: Tạo bản ghi vé (tickets)
+        BookingSvc->>BookingRepo: Đánh dấu ghế đã bán (status = 'booked')
+        BookingSvc->>BookingRepo: Tạo dòng bắp nước (booking_food_combos)
+        BookingSvc->>DB: Commit Transaction
+        BookingSvc-->>BookingCtrl: Trả về thông tin booking thành công
+        BookingCtrl-->>Client: 201 Created (booking_id, final_amount)
+        
+        Client->>PaymentCtrl: POST /api/v1/payments (booking_id, amount, payment_method)
+        PaymentCtrl->>DB: Ghi nhận thanh toán & xác nhận đơn vé
+        PaymentCtrl-->>Client: 200 OK (Thanh toán hoàn tất, xuất vé điện tử)
     end
 ```
 
@@ -150,8 +167,6 @@ sequenceDiagram
 backend/
 ├── bin/
 │   └── www                     # Entry point khởi tạo HTTP server qua http.createServer
-├── scripts/
-│   └── expire-held-seats.js     # Worker giải phóng ghế hết hạn giữ chỗ
 ├── sql/
 │   ├── lean_ticketing_schema.mysql.sql # File DDL khởi tạo toàn bộ bảng và quan hệ
 │   ├── update_showtimes.sql     # Script cập nhật và chèn dữ liệu suất chiếu mẫu
@@ -159,13 +174,13 @@ backend/
 ├── src/
 │   ├── modules/                # 14 module tính năng độc lập (Routes, Controller, Service, Repo)
 │   ├── routes/
-│   │   └── index.js            # Điểm tập hợp toàn bộ routes của các module vào tiền tố /api
+│   │   └── index.js            # Điểm tập hợp toàn bộ routes của các module vào tiền tố /api/v1
 │   └── shared/
 │       ├── config/             # Cấu hình kết nối MySQL Pool, Cloudinary SDK
 │       ├── middleware/         # Middlewares: auth, role, error-handler, validate, upload
 │       └── utils/              # Lớp AppError và helper chuẩn hóa phản hồi JSON
 ├── app.js                      # Cấu hình Express app, gắn Cors, Helmet, RateLimit, Parser
-├── package.json                # Danh mục thư viện và scripts quản thi
+├── package.json                # Danh mục thư viện và scripts quản trị
 └── .env.example                # Bản mẫu khai báo biến môi trường chuẩn
 ```
 
@@ -238,11 +253,6 @@ yarn dev
 **Chế độ chính thức (Production):**
 ```bash
 yarn start
-```
-
-**Chạy worker giải phóng ghế quá hạn:**
-```bash
-yarn expire-holds
 ```
 
 ---

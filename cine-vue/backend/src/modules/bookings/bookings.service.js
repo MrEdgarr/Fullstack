@@ -2,8 +2,6 @@ const db = require("../../shared/config/database");
 const bookingsRepository = require("./bookings.repository");
 const AppError = require("../../shared/utils/app-error");
 
-const HOLD_MINUTES = 10;
-
 exports.getByCustomer = async (currentUser, requestedCustomerId) => {
   const isOwner = currentUser.customer_id === Number(requestedCustomerId);
   const isAdmin = currentUser.role === "admin";
@@ -23,10 +21,16 @@ exports.create = async (customerId, payload) => {
   try {
     const {
       showtime_id: showtimeId,
-      showtime_seat_ids: showtimeSeatIds,
+      showtime_seat_ids: rawSeatIds = [],
       food_combos: foodCombos = [],
       promotion_code: promotionCode,
     } = payload;
+
+    const showtimeSeatIds = [...rawSeatIds].map(Number).sort((a, b) => a - b);
+
+    if (showtimeSeatIds.length === 0) {
+      throw new AppError("Vui lòng chọn ít nhất một ghế", 400);
+    }
 
     await connection.beginTransaction();
 
@@ -40,24 +44,8 @@ exports.create = async (customerId, payload) => {
       throw new AppError("Invalid seat selection", 400);
     }
 
-    const now = new Date();
-    await bookingsRepository.releaseExpiredSelectedSeats(
-      connection,
-      showtimeId,
-      showtimeSeatIds,
-      now,
-    );
-
-    const [refreshedSeatRows] = await bookingsRepository.getSelectedSeatsForUpdate(
-      connection,
-      showtimeId,
-      showtimeSeatIds,
-    );
-
-    const unavailableSeat = refreshedSeatRows.find(
-      (seat) =>
-        seat.status === "booked" ||
-        (seat.status === "held" && seat.held_until && new Date(seat.held_until) > now),
+    const unavailableSeat = seatRows.find(
+      (seat) => seat.status === "booked" || seat.status !== "available",
     );
 
     if (unavailableSeat) {
@@ -71,7 +59,7 @@ exports.create = async (customerId, payload) => {
       throw new AppError("Showtime not found", 404);
     }
 
-    const ticketSubtotal = refreshedSeatRows.reduce((sum, seat) => sum + Number(seat.price), 0);
+    const ticketSubtotal = seatRows.reduce((sum, seat) => sum + Number(seat.price), 0);
     const { comboRows, comboSubtotal } = await getComboSummary(connection, foodCombos, showtime);
     const subtotalAmount = ticketSubtotal + comboSubtotal;
     const { promotion, discountAmount } = await getPromotionSummary(
@@ -80,7 +68,6 @@ exports.create = async (customerId, payload) => {
       subtotalAmount,
     );
     const finalAmount = subtotalAmount - discountAmount;
-    const expiresAt = new Date(Date.now() + HOLD_MINUTES * 60 * 1000);
 
     const [bookingResult] = await bookingsRepository.create(
       connection,
@@ -90,21 +77,12 @@ exports.create = async (customerId, payload) => {
       subtotalAmount,
       discountAmount,
       finalAmount,
-      expiresAt,
     );
     const bookingId = bookingResult.insertId;
 
-    const [holdResult] = await bookingsRepository.holdSeats(
-      connection,
-      bookingId,
-      expiresAt,
-      showtimeId,
-      showtimeSeatIds,
-    );
-
-    if (holdResult.affectedRows !== showtimeSeatIds.length) {
-      throw new AppError("Could not hold all selected seats", 409);
-    }
+    // Tạo vé và chuyển ghế sang trạng thái đã bán (booked)
+    await bookingsRepository.createTicketsForSeats(connection, bookingId, showtimeSeatIds);
+    await bookingsRepository.markSeatsBooked(connection, showtimeSeatIds);
 
     if (foodCombos.length > 0) {
       const comboPriceMap = new Map(
@@ -125,7 +103,6 @@ exports.create = async (customerId, payload) => {
       subtotal_amount: subtotalAmount,
       discount_amount: discountAmount,
       final_amount: finalAmount,
-      expires_at: expiresAt,
     };
   } catch (error) {
     await connection.rollback();
@@ -158,10 +135,9 @@ exports.updateStatus = async (currentUser, bookingId, status) => {
         await connection.rollback();
         return { alreadyConfirmed: true };
       }
-
-      await confirmBooking(connection, bookingId, "Booking hold has expired or no held seats remain");
+      await confirmBooking(connection, bookingId, "Booking cannot be confirmed");
     } else if (status === "cancelled") {
-      await bookingsRepository.releaseHeldSeats(connection, bookingId);
+      await bookingsRepository.releaseSeatsByBooking(connection, bookingId);
     }
 
     await bookingsRepository.updateStatus(connection, bookingId, status);
@@ -188,7 +164,7 @@ exports.delete = async (currentUser, bookingId) => {
     }
 
     assertCanAccessBooking(currentUser, booking);
-    await bookingsRepository.releaseHeldSeats(connection, bookingId);
+    await bookingsRepository.releaseSeatsByBooking(connection, bookingId);
     await bookingsRepository.delete(connection, bookingId);
     await connection.commit();
   } catch (error) {
@@ -219,16 +195,12 @@ exports.updateDetails = async (currentUser, bookingId, payload) => {
       throw new AppError("Cannot update details for non-pending booking", 400);
     }
 
-    if (booking.expires_at && new Date(booking.expires_at) <= new Date()) {
-      throw new AppError("Booking hold has expired", 410);
+    const [tickets] = await bookingsRepository.getSeatsForBooking(connection, bookingId);
+    if (tickets.length === 0) {
+      throw new AppError("No tickets found for this booking", 400);
     }
 
-    const [heldSeats] = await bookingsRepository.getSeatsForBooking(connection, bookingId);
-    if (heldSeats.length === 0) {
-      throw new AppError("No active held seats for this booking", 400);
-    }
-
-    const ticketSubtotal = heldSeats.reduce((sum, seat) => sum + Number(seat.price), 0);
+    const ticketSubtotal = tickets.reduce((sum, seat) => sum + Number(seat.price), 0);
 
     const [showtimeRows] = await bookingsRepository.getShowtimeCinema(connection, booking.showtime_id);
     const showtime = showtimeRows[0];
@@ -275,7 +247,6 @@ exports.updateDetails = async (currentUser, bookingId, payload) => {
       subtotal_amount: subtotalAmount,
       discount_amount: discountAmount,
       final_amount: finalAmount,
-      expires_at: booking.expires_at,
     };
   } catch (error) {
     await connection.rollback();
@@ -347,15 +318,14 @@ async function getPromotionSummary(connection, promotionCode, subtotalAmount) {
   return { promotion, discountAmount };
 }
 
-async function confirmBooking(connection, bookingId, expiredMessage) {
-  const [heldSeats] = await bookingsRepository.getActiveHeldSeatsForBooking(connection, bookingId);
+async function confirmBooking(connection, bookingId) {
+  const [tickets] = await bookingsRepository.getSeatsForBooking(connection, bookingId);
 
-  if (heldSeats.length === 0) {
-    throw new AppError(expiredMessage, 409);
+  if (tickets.length === 0) {
+    throw new AppError("No tickets found for this booking", 404);
   }
 
-  await bookingsRepository.createTicketsFromHeldSeats(connection, bookingId);
-  await bookingsRepository.markHeldSeatsBooked(connection, bookingId);
+  await bookingsRepository.updateStatus(connection, bookingId, "confirmed");
 }
 
 function assertCanAccessBooking(currentUser, booking) {

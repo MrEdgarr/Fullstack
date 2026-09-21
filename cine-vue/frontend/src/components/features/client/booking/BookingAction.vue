@@ -141,7 +141,6 @@ import api from "@/_services/api";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useBookingStore } from "@/stores/booking";
 import { formatCurrency } from "@/utils/helpers/currency";
-import { saveCountdownExpiry } from "@/utils/helpers/storage";
 
 const bookingStore = useBookingStore();
 const authStore = useAuthStore();
@@ -174,7 +173,7 @@ const promotionLabel = computed(() => {
     return formatCurrency(Number(promotion.discount_value || 0));
 });
 
-const handleNext = async () => {
+const handleNext = () => {
     submitError.value = "";
 
     if (!showtimeId.value) {
@@ -187,91 +186,14 @@ const handleNext = async () => {
         return;
     }
 
-    // Bước 1 -> Bước 2: Khóa ghế ngay vào CSDL MySQL
-    if (stepStore.currentStep === 1) {
-        if (!authStore.isLoggedIn) {
-            submitError.value = "Bạn cần đăng nhập để giữ ghế và tiếp tục.";
-            authStore.openModal("login");
-            return;
-        }
-
-        isSubmitting.value = true;
-        try {
-            const selectedSeatIds = seatStore.selectedSeats.map((seat) => Number(seat.showtimeSeatId));
-            const bookingPayload = {
-                showtime_id: showtimeId.value,
-                showtime_seat_ids: selectedSeatIds,
-                food_combos: [],
-            };
-
-            const bookingRes = await api.post("/bookings", bookingPayload, {
-                skipServerLoading: true,
-            });
-            const booking = bookingRes.data.data;
-            bookingStore.setActiveBooking(booking);
-
-            // Đồng bộ thời gian giữ ghế thực tế từ server
-            if (booking.expires_at) {
-                const expiryTimestamp = new Date(booking.expires_at).getTime();
-                saveCountdownExpiry(expiryTimestamp.toString());
-            }
-
-            stepStore.nextStep();
-        } catch (err) {
-            submitError.value = getApiErrorMessage(err);
-            if (err.response?.status === 409) {
-                seatStore.resetSeats();
-                if (showtimeId.value) await seatStore.fetchSeats(showtimeId.value);
-            }
-        } finally {
-            isSubmitting.value = false;
-        }
-        return;
-    }
-
-    // Bước 2 -> Bước 3: Cập nhật combo và voucher vào booking đã giữ
-    if (stepStore.currentStep === 2) {
-        isSubmitting.value = true;
-        try {
-            const bookingId = bookingStore.activeBooking?.booking_id || bookingStore.activeBooking?.id;
-            if (bookingId) {
-                const foodCombos = comboStore.singleCombosList.map((combo) => ({
-                    food_combo_id: Number(combo.food_combo_id || combo.id),
-                    quantity: Number(combo.qty),
-                }));
-
-                const detailsPayload = {
-                    food_combos: foodCombos,
-                };
-
-                if (paymentStore.promoCode?.trim()) {
-                    detailsPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
-                }
-
-                const res = await api.put(`/bookings/${bookingId}/details`, detailsPayload, {
-                    skipServerLoading: true,
-                });
-                bookingStore.setActiveBooking(res.data.data);
-            }
-            stepStore.nextStep();
-        } catch (err) {
-            submitError.value = getApiErrorMessage(err);
-        } finally {
-            isSubmitting.value = false;
-        }
-        return;
-    }
-
+    // Phương án 2: Người dùng tự do sang Bước 2 (chọn combo) và Bước 3 (xem lại đơn vé) mà không bị ép đăng nhập
     stepStore.nextStep();
 };
 
-const handleBack = async () => {
+const handleBack = () => {
     if (stepStore.currentStep > 1) {
         if (stepStore.currentStep === 2) {
-            // Quay lại bước 1 từ bước 2: nhả ghế đang giữ trong database để người dùng chọn lại
-            await bookingStore.releaseCurrentBooking();
             comboStore.resetCombos();
-            if (showtimeId.value) await seatStore.fetchSeats(showtimeId.value);
         }
         if (stepStore.currentStep === 3) {
             paymentStore.resetPayment();
@@ -285,7 +207,7 @@ const handlePay = async () => {
     if (!canPay.value) return;
 
     if (!authStore.isLoggedIn) {
-        submitError.value = "Bạn cần đăng nhập trước khi thanh toán.";
+        submitError.value = "Vui lòng đăng nhập để hoàn tất đặt vé và thanh toán.";
         authStore.openModal("login");
         return;
     }
@@ -295,30 +217,28 @@ const handlePay = async () => {
     let paymentStatusRequestStarted = false;
 
     try {
-        let booking = bookingStore.activeBooking;
-        if (!booking) {
-            const selectedSeatIds = seatStore.selectedSeats.map((seat) => Number(seat.showtimeSeatId));
-            const foodCombos = comboStore.singleCombosList.map((combo) => ({
-                food_combo_id: Number(combo.food_combo_id || combo.id),
-                quantity: Number(combo.qty),
-            }));
+        const selectedSeatIds = seatStore.selectedSeats.map((seat) => Number(seat.showtimeSeatId));
+        const foodCombos = comboStore.singleCombosList.map((combo) => ({
+            food_combo_id: Number(combo.food_combo_id || combo.id),
+            quantity: Number(combo.qty),
+        }));
 
-            const bookingPayload = {
-                showtime_id: showtimeId.value,
-                showtime_seat_ids: selectedSeatIds,
-                food_combos: foodCombos,
-            };
+        const bookingPayload = {
+            showtime_id: showtimeId.value,
+            showtime_seat_ids: selectedSeatIds,
+            food_combos: foodCombos,
+        };
 
-            if (paymentStore.promoCode?.trim()) {
-                bookingPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
-            }
-
-            const bookingRes = await api.post("/bookings", bookingPayload, {
-                skipServerLoading: true,
-            });
-            booking = bookingRes.data.data;
-            bookingStore.setActiveBooking(booking);
+        if (paymentStore.promoCode?.trim()) {
+            bookingPayload.promotion_code = paymentStore.promoCode.trim().toUpperCase();
         }
+
+        // Tạo đơn đặt vé và khóa ghế trong CSDL
+        const bookingRes = await api.post("/bookings", bookingPayload, {
+            skipServerLoading: true,
+        });
+        const booking = bookingRes.data.data;
+        bookingStore.setActiveBooking(booking);
 
         await paymentStore.fetchPaymentMethods();
         const selectedPaymentMethod = paymentStore.paymentMethod;
@@ -358,7 +278,9 @@ const handlePay = async () => {
     } catch (err) {
         submitError.value = getApiErrorMessage(err);
 
+        // Nếu ghế đã bị người khác mua trong lúc chọn
         if (err.response?.status === 409 || err.response?.status === 410) {
+            submitError.value = "Rất tiếc, ghế bạn chọn vừa được người khác thanh toán. Vui lòng chọn lại ghế.";
             bookingStore.setActiveBooking(null);
             seatStore.resetSeats();
             stepStore.setStep(1);
@@ -368,6 +290,15 @@ const handlePay = async () => {
         isSubmitting.value = false;
     }
 };
+
+watch(
+    () => authStore.isLoggedIn,
+    (loggedIn) => {
+        if (loggedIn && submitError.value.includes("Vui lòng đăng nhập")) {
+            submitError.value = "";
+        }
+    },
+);
 
 const getApiErrorMessage = (err) => {
     const message = err.response?.data?.message;

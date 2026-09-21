@@ -105,7 +105,7 @@
                 <div
                     class="bg-disabled flex aspect-square size-5 items-center justify-center rounded-sm"
                 ></div>
-                <div class="text-xs md:text-sm">Ghế đã bán/đang giữ</div>
+                <div class="text-xs md:text-sm">Ghế đã bán</div>
             </div>
             <div class="flex items-center gap-1">
                 <div

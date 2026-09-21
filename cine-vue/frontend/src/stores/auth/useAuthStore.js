@@ -2,10 +2,44 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "@/_services/api";
 import { AUTH_UNAUTHORIZED_EVENT } from "@/utils/constants/auth";
+import { useToastStore } from "@/stores/app/useToastStore";
 
 const getSavedToken = () => localStorage.getItem("token");
 const getSavedUser = () => localStorage.getItem("user");
 let isUnauthorizedListenerRegistered = false;
+let autoLogoutTimer = null;
+
+const parseJwtPayload = (jwtToken) => {
+    if (!jwtToken || typeof jwtToken !== "string") return null;
+    try {
+        const parts = jwtToken.split(".");
+        if (parts.length < 2) return null;
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split("")
+                .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                .join(""),
+        );
+        return JSON.parse(jsonPayload);
+    } catch {
+        return null;
+    }
+};
+
+const isTokenExpired = (jwtToken) => {
+    const payload = parseJwtPayload(jwtToken);
+    if (!payload || !payload.exp) return false;
+    return Date.now() >= payload.exp * 1000;
+};
+
+const clearAutoLogoutTimer = () => {
+    if (autoLogoutTimer) {
+        clearTimeout(autoLogoutTimer);
+        autoLogoutTimer = null;
+    }
+};
 
 export const useAuthStore = defineStore("auth", () => {
     const token = ref(getSavedToken());
@@ -17,6 +51,28 @@ export const useAuthStore = defineStore("auth", () => {
 
     const isLoggedIn = computed(() => !!token.value);
     const isAdmin = computed(() => user.value?.role === "admin");
+
+    const scheduleAutoLogout = (jwtToken) => {
+        clearAutoLogoutTimer();
+        const payload = parseJwtPayload(jwtToken);
+        if (!payload?.exp) return;
+
+        const remainingTimeMs = payload.exp * 1000 - Date.now();
+        if (remainingTimeMs <= 0) {
+            clearAuth();
+            return;
+        }
+
+        autoLogoutTimer = setTimeout(() => {
+            clearAuth();
+            try {
+                const toastStore = useToastStore();
+                toastStore.warning("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+            } catch (err) {
+                console.warn("[Auth] Session expired");
+            }
+        }, remainingTimeMs);
+    };
 
     const openModal = (tab = "login") => {
         currentTab.value = tab;
@@ -40,6 +96,7 @@ export const useAuthStore = defineStore("auth", () => {
     const setToken = (newToken) => {
         token.value = newToken;
         localStorage.setItem("token", newToken);
+        scheduleAutoLogout(newToken);
     };
 
     const setUser = (userData) => {
@@ -48,6 +105,7 @@ export const useAuthStore = defineStore("auth", () => {
     };
 
     const clearAuth = () => {
+        clearAutoLogoutTimer();
         token.value = null;
         user.value = null;
         localStorage.removeItem("token");
@@ -128,12 +186,13 @@ export const useAuthStore = defineStore("auth", () => {
         const savedToken = getSavedToken();
         const savedUser = getSavedUser();
 
-        if (!savedToken) {
+        if (!savedToken || isTokenExpired(savedToken)) {
             clearAuth();
             return false;
         }
 
         token.value = savedToken;
+        scheduleAutoLogout(savedToken);
 
         if (!savedUser) {
             return true;

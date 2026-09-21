@@ -2,7 +2,7 @@
     <div class="card bg-base-100 border border-base-300 card-sm">
         <div class="card-body">
             <div class="flex items-center justify-center gap-2">
-                <span class="text-sm text-base-content"> Thời gian giữ ghế: </span>
+                <span class="text-sm text-base-content"> {{ label }} </span>
                 <span class="countdown font-medium text-lg text-primary">
                     <span :style="{ '--value': minutes, '--digits': 2 }" aria-live="polite">
                         {{ minutes }}
@@ -22,6 +22,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { saveCountdownExpiry, loadCountdownExpiry, clearCountdown } from "@/utils/helpers/storage";
 
 const props = defineProps({
+    label: { type: String, default: "Thời gian chọn ghế:" },
     initialMinutes: { type: Number, default: 5 }, // Mặc định là 5 phút
     autoRestart: { type: Boolean, default: true },
     storageKey: { type: String, default: "countdown_expiry" }, // Prop này hiện tại được giữ lại để tương thích, nhưng storage thực tế sẽ dùng key cấu hình trong storage.js

@@ -40,10 +40,6 @@ exports.create = async (
       throw new AppError("Booking is not payable", 409);
     }
 
-    if (booking.expires_at && new Date(booking.expires_at) <= new Date()) {
-      throw new AppError("Booking hold has expired", 409);
-    }
-
     if (Number(amount) !== Number(booking.final_amount)) {
       throw new AppError("Payment amount mismatch", 400);
     }
@@ -96,12 +92,7 @@ exports.updateStatus = async (currentUser, paymentId, status) => {
     await paymentsRepository.updateStatus(connection, paymentId, status);
 
     if (status === "success" && booking.status === "pending") {
-      await bookingsService.confirmBooking(
-        connection,
-        booking.booking_id,
-        "Booking hold expired before payment confirmation",
-      );
-      await bookingsRepository.updateStatus(connection, booking.booking_id, "confirmed");
+      await bookingsService.confirmBooking(connection, booking.booking_id);
     }
 
     await connection.commit();

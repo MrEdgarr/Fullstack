@@ -51,7 +51,7 @@ export const routes = [
                 name: "booking",
                 meta: {
                     title: "Cinemax",
-                    requiresAuth: true,
+                    requiresAuth: false,
                     breadcrumb: "Đặt Vé",
                 },
             },

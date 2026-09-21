@@ -59,10 +59,10 @@ const stepStore = bookingStore.stepStore;
 const paymentStore = bookingStore.paymentStore;
 
 const handleTimeUp = async () => {
-    await bookingStore.releaseCurrentBooking();
+    bookingStore.releaseCurrentBooking();
     dialogStore.alert({
         title: "Hết giờ",
-        message: "Hết thời gian giữ ghế. Phiên giao dịch đã bị hủy và ghế đã được giải phóng.",
+        message: "Đã hết thời gian chọn ghế. Phiên giao dịch đã kết thúc.",
         confirmText: "Về trang chủ",
         onConfirm: async () => {
             await bookingStore.resetAll();

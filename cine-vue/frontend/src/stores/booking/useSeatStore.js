@@ -7,8 +7,6 @@ const MAX_SEATS = 10;
 const normalizeSeat = (seat) => {
     const status = seat.status || "available";
     const type = seat.seat_type === "standard" ? "single" : seat.seat_type;
-    const heldUntil = seat.held_until || null;
-    const heldExpired = status === "held" && heldUntil && new Date(heldUntil) <= new Date();
 
     return {
         id: Number(seat.showtime_seat_id),
@@ -22,10 +20,9 @@ const normalizeSeat = (seat) => {
         number: Number(seat.seat_number),
         type,
         backendType: seat.seat_type,
-        status: heldExpired ? "available" : status,
-        heldUntil,
+        status,
         price: Number(seat.price || 0),
-        isAvailable: heldExpired || status === "available",
+        isAvailable: status === "available",
     };
 };
 
