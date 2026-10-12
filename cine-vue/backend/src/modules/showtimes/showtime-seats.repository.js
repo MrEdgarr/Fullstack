@@ -8,7 +8,6 @@ exports.getByShowtime = (showtimeId) =>
       ss.showtime_id,
       ss.seat_id,
       ss.status,
-      ss.held_until,
       ss.price,
       s.row_letter,
       s.seat_number,

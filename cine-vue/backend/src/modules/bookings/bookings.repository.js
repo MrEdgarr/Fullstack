@@ -136,9 +136,7 @@ exports.markSeatsBooked = (connection, seatIds) =>
   connection.query(
     `
     UPDATE showtime_seats
-    SET status = 'booked',
-        held_by_booking_id = NULL,
-        held_until = NULL
+    SET status = 'booked'
     WHERE showtime_seat_id IN (?)
     `,
     [seatIds],
@@ -149,9 +147,7 @@ exports.releaseSeatsByBooking = (connection, bookingId) =>
     `
     UPDATE showtime_seats ss
     JOIN tickets t ON t.showtime_seat_id = ss.showtime_seat_id
-    SET ss.status = 'available',
-        ss.held_by_booking_id = NULL,
-        ss.held_until = NULL
+    SET ss.status = 'available'
     WHERE t.booking_id = ?
     `,
     [bookingId],
