@@ -107,7 +107,7 @@
                                     class="btn btn-xs md:btn-sm transition-all duration-200"
                                     :class="[
                                         isTimePast(selectedDate, slot.time)
-                                            ? 'btn-outline border-transparent bg-base-200/50 text-base-content/30 cursor-not-allowed'
+                                            ? 'btn-disabled cursor-not-allowed'
                                             : 'btn-outline btn-primary',
                                     ]"
                                     :disabled="isTimePast(selectedDate, slot.time)"
@@ -189,8 +189,7 @@ async function fetchMovieScheduleTree() {
     } catch (err) {
         if (requestId !== latestRequestId) return;
 
-        error.value =
-            err.response?.data?.message || "Không thể tải lịch chiếu cho phim này";
+        error.value = err.response?.data?.message || "Không thể tải lịch chiếu cho phim này";
         schedule.value = createEmptySchedule();
     } finally {
         if (requestId === latestRequestId) {

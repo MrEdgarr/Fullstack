@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <section class="container pb-10 mt-5">
         <div class="hero p-5 mb-5 font-bold text-xl uppercase tracking-widest">Lịch Chiếu Phim</div>
 
@@ -60,13 +60,16 @@
 
         <BaseTimeSwiper v-model="selectedDate" class="my-5" />
 
-        <div v-if="isLoading" class="text-center py-10 text-base-content/50">
+        <div
+            v-if="isLoading"
+            class="card bg-base-100 border border-base-300 card-sm text-center py-20 text-base-content/50"
+        >
             Đang tải lịch chiếu...
         </div>
         <div v-else-if="error" class="text-center py-10 text-error">
-            {{ error }}
+            Có lỗi xảy ra, vui lòng tải lại trang.
         </div>
-        <div v-else-if="filteredMovies.length === 0" class="text-center py-10 text-base-content/50">
+        <div v-else-if="filteredMovies.length === 0" class="text-center py-20 text-base-content/50">
             Không có suất chiếu nào cho ngày và rạp này. Vui lòng chọn rạp hoặc ngày khác.
         </div>
 
@@ -94,40 +97,48 @@
                         <span class="opacity-70">{{ item.movie.genre }}</span>
                         <span>·</span>
                         <span class="font-medium text-base-content/80">{{
-                            item.showtimes[0].ageRestriction
+                            item.showtimes?.[0]?.ageRestriction || "Chưa phân loại"
                         }}</span>
                         <span>·</span>
                         <span>{{ formatDuration(item.movie.durationMinutes) }}</span>
                     </div>
 
                     <div
-                        v-for="st in item.showtimes"
-                        :key="st.key"
+                        v-for="cinemaGroup in item.cinemas"
+                        :key="cinemaGroup.cinema.id"
                         class="mt-2 not-last:border-b pb-5 border-b-base-content/20"
                     >
-                        <div class="mb-3">
-                            <h4 v-if="!selectedCinemaId" class="font-bold text-base">
-                                @{{ st.cinema.name }}
-                            </h4>
-                            <span class="text-primary font-medium">{{ st.format }}</span>
-                            <span class="text-sm text-base-content/50"> · {{ st.room }}</span>
-                        </div>
+                        <h4 v-if="!selectedCinemaId" class="font-bold text-base mb-3">
+                            @{{ cinemaGroup.cinema.name }}
+                        </h4>
 
-                        <div class="flex flex-wrap gap-2">
-                            <button
-                                v-for="timeItem in st.times"
-                                :key="timeItem.id"
-                                @click="selectShowtime(item.movie, st, timeItem)"
-                                :disabled="isTimePast(st.date, timeItem.time)"
-                                class="btn btn-outline transition-all duration-200"
-                                :class="[
-                                    isTimePast(st.date, timeItem.time)
-                                        ? 'bg-base-200/50 border-transparent text-base-content/30 cursor-not-allowed'
-                                        : 'btn-primary',
-                                ]"
+                        <div class="space-y-3">
+                            <div
+                                v-for="st in cinemaGroup.showtimes"
+                                :key="st.key"
                             >
-                                <span class="text-sm font-bold">{{ timeItem.time }}</span>
-                            </button>
+                                <div class="mb-2">
+                                    <span class="text-primary font-medium">{{ st.format }}</span>
+                                    <span class="text-sm text-base-content/50"> · {{ st.room }}</span>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2">
+                                    <button
+                                        v-for="timeItem in st.times"
+                                        :key="timeItem.id"
+                                        @click="selectShowtime(item.movie, st, timeItem)"
+                                        :disabled="isTimePast(st.date, timeItem.time)"
+                                        class="btn btn-outline btn-sm transition-all duration-200"
+                                        :class="[
+                                            isTimePast(st.date, timeItem.time)
+                                                ? 'btn-disabled'
+                                                : 'btn-primary',
+                                        ]"
+                                    >
+                                        <span>{{ timeItem.time }}</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,7 +168,27 @@ const error = ref("");
 const movieOptions = computed(() => schedule.value.movieOptions);
 const cityOptions = computed(() => schedule.value.cityOptions);
 const filteredCinemas = computed(() => schedule.value.cinemaOptions);
-const filteredMovies = computed(() => schedule.value.movies);
+const filteredMovies = computed(() => {
+    return (schedule.value.movies || []).map((item) => {
+        const cinemaMap = new Map();
+
+        (item.showtimes || []).forEach((st) => {
+            const cinemaId = st.cinema?.id ?? st.cinemaId;
+            if (!cinemaMap.has(cinemaId)) {
+                cinemaMap.set(cinemaId, {
+                    cinema: st.cinema,
+                    showtimes: [],
+                });
+            }
+            cinemaMap.get(cinemaId).showtimes.push(st);
+        });
+
+        return {
+            ...item,
+            cinemas: Array.from(cinemaMap.values()),
+        };
+    });
+});
 
 let latestRequestId = 0;
 

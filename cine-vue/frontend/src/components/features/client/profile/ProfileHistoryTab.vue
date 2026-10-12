@@ -36,7 +36,8 @@
                 :key="booking.booking_id"
                 class="card bg-base-100 border-base-300 flex flex-col md:flex-row gap-4 border p-4 shadow-sm transition-all mb-4 relative"
                 :class="{
-                    'opacity-50 grayscale pointer-events-none cursor-not-allowed select-none bg-base-200/50 border-dashed': isExpiredOrFinished(booking),
+                    'opacity-50 grayscale pointer-events-none cursor-not-allowed select-none bg-base-200/50 border-dashed':
+                        isExpiredOrFinished(booking),
                 }"
                 :aria-disabled="isExpiredOrFinished(booking)"
             >
@@ -54,11 +55,16 @@
                             <div>
                                 <h3
                                     class="font-bold text-lg leading-tight mb-1"
-                                    :class="{ 'line-through text-base-content/60': isMovieEnded(booking) }"
+                                    :class="{
+                                        'line-through text-base-content/60': isMovieEnded(booking),
+                                    }"
                                 >
                                     {{ booking.movie_title }}
                                 </h3>
-                                <div v-if="isMovieEnded(booking)" class="text-xs text-error font-medium mb-1">
+                                <div
+                                    v-if="isMovieEnded(booking)"
+                                    class="text-xs text-error font-medium mb-1"
+                                >
                                     Đã hết thời gian chiếu
                                 </div>
                             </div>

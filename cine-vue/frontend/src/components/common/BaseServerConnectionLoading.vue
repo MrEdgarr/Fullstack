@@ -2,14 +2,14 @@
     <Transition name="server-loading">
         <div
             v-if="serverConnectionStore.isVisible"
-            class="bg-base-100/80 fixed inset-0 z-[100] flex items-center justify-center px-5 backdrop-blur-sm"
+            class="bg-base-100/95 fixed inset-0 z-100 flex items-center justify-center px-5 backdrop-blur-sm"
             role="status"
             aria-live="polite"
             aria-busy="true"
         >
             <div class="flex max-w-sm flex-col items-center gap-3 text-center">
                 <span
-                    class="loading loading-infinity loading-xl text-primary disa"
+                    class="loading loading-infinity loading-xl text-primary"
                     aria-hidden="true"
                 ></span>
 

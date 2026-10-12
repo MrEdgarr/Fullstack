@@ -4,8 +4,6 @@ import { defineStore } from "pinia";
 const DISPLAY_DELAY_MS = 100;
 const MAX_LOADING_MS = 61000;
 const DEFAULT_MESSAGE = "Đang tải dữ liệu...";
-const FIRST_CONNECTION_HINT = "Lần kết nối đầu tiên có thể mất thêm vài giây.";
-const FIRST_CONNECTION_HINT_KEY = "cine-vue:first-connection-hint-shown";
 
 export const useServerConnectionStore = defineStore("serverConnection", () => {
     const pendingRequests = ref(0);
@@ -36,26 +34,6 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
         subMessage.value = "";
     };
 
-    const shouldShowFirstConnectionHint = () => {
-        if (typeof sessionStorage === "undefined") return true;
-
-        try {
-            return sessionStorage.getItem(FIRST_CONNECTION_HINT_KEY) !== "true";
-        } catch {
-            return true;
-        }
-    };
-
-    const markFirstConnectionHintShown = () => {
-        if (typeof sessionStorage === "undefined") return;
-
-        try {
-            sessionStorage.setItem(FIRST_CONNECTION_HINT_KEY, "true");
-        } catch {
-            // Bỏ qua các lỗi lưu trữ. Quá trình tải vẫn sẽ hoạt động bình thường.
-        }
-    };
-
     const hideImmediately = () => {
         clearDisplayTimer();
         clearSafetyTimer();
@@ -71,8 +49,6 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
         clearDisplayTimer();
         resetLoadingContent();
 
-        const shouldShowHint = shouldShowFirstConnectionHint();
-
         // Thời gian chờ an toàn: tự động ẩn sau khoảng thời gian chờ của API để tránh tình trạng tải vô hạn
         clearSafetyTimer();
         safetyTimer = setTimeout(() => {
@@ -87,11 +63,6 @@ export const useServerConnectionStore = defineStore("serverConnection", () => {
         displayTimer = setTimeout(() => {
             displayTimer = null;
             if (isConnecting.value) {
-                if (shouldShowHint) {
-                    subMessage.value = FIRST_CONNECTION_HINT;
-                    markFirstConnectionHintShown();
-                }
-
                 isVisible.value = true;
             }
         }, DISPLAY_DELAY_MS);

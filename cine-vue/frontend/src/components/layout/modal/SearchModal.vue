@@ -15,20 +15,18 @@
 
             <div class="animate-pulse list" v-if="isLoading">
                 <div class="list-row">
-                    <div class="w-12 bg-base-300 rounded-box"></div>
+                    <div class="skeleton w-12"></div>
                     <div class="flex-1 space-y-3 py-2">
-                        <div class="h-4 bg-base-300 rounded w-3/4"></div>
-                        <div class="h-2 bg-base-300 rounded w-1/2"></div>
-                        <div class="h-3 bg-base-300 rounded w-2/3"></div>
+                        <div class="skeleton h-4 w-3/4"></div>
+                        <div class="skeleton h-2 w-1/2"></div>
+                        <div class="skeleton h-3 w-2/3"></div>
                     </div>
                 </div>
             </div>
 
             <Transition name="fade" mode="out-in" v-else-if="filteredMovies.length > 0">
                 <ul class="list">
-                    <li class="p-4 pb-2 text-xs tracking-wide opacity-50">
-                        Kết quả tìm kiếm phim
-                    </li>
+                    <li class="p-4 pb-2 text-xs tracking-wide opacity-50">Kết quả tìm kiếm phim</li>
                     <li
                         class="list-row"
                         v-for="movie in filteredMovies"
@@ -75,7 +73,6 @@
     </dialog>
 </template>
 <script setup>
-
 import { useSearchStore } from "@/stores/movie/useSearchStore";
 const searchStore = useSearchStore();
 
