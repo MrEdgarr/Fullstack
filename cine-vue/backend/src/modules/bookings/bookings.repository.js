@@ -9,7 +9,7 @@ exports.getByCustomer = (customerId) =>
       b.status AS booking_status,
       b.final_amount,
       b.created_at,
-      b.expires_at,
+      NULL AS expires_at,
       s.start_time,
       s.end_time,
       m.title AS movie_title,
@@ -94,7 +94,6 @@ exports.create = (
   subtotalAmount,
   discountAmount,
   finalAmount,
-  expiresAt = null,
 ) =>
   connection.query(
     `
@@ -104,10 +103,9 @@ exports.create = (
       promotion_id,
       subtotal_amount,
       discount_amount,
-      final_amount,
-      expires_at
+      final_amount
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?)
     `,
     [
       customerId,
@@ -116,7 +114,6 @@ exports.create = (
       subtotalAmount,
       discountAmount,
       finalAmount,
-      expiresAt,
     ],
   );
 
