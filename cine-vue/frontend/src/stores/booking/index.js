@@ -1,9 +1,13 @@
-import api from "@/_services/api";
 import { useSeatStore } from "./useSeatStore";
 import { useComboStore } from "./useComboStore";
 import { usePaymentStore } from "./usePaymentStore";
 import { useStepStore } from "./useStepStore";
-import { loadBookingData, saveBookingData, clearBookingData, clearCountdown } from "@/utils/helpers/storage";
+import {
+    loadBookingData,
+    saveBookingData,
+    clearBookingData,
+    clearCountdown,
+} from "@/utils/helpers/storage";
 
 export const useBookingStore = defineStore("booking", () => {
     // ==================== STATE ======================

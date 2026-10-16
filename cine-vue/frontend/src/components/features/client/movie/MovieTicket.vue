@@ -63,18 +63,10 @@
             <input type="checkbox" />
 
             <div class="collapse-title">
-                <div class="flex gap-5">
-                    <img
-                        :src="brand.logo"
-                        :alt="brand.name"
-                        class="h-10 w-10 rounded object-contain"
-                    />
-
-                    <div>
-                        <div class="text-sm font-semibold md:text-base">{{ brand.name }}</div>
-                        <div class="text-xs text-base-content/50 md:text-sm">
-                            {{ brand.branchCount }} rạp
-                        </div>
+                <div>
+                    <div class="text-sm font-semibold md:text-base">{{ brand.name }}</div>
+                    <div class="text-xs text-base-content/50 md:text-sm">
+                        {{ brand.branchCount }} rạp
                     </div>
                 </div>
             </div>
@@ -88,7 +80,7 @@
                     <input type="checkbox" />
 
                     <div class="collapse-title">
-                        <div class="text-sm md:text-base">{{ branch.name }}</div>
+                        <div class="text-sm md:text-base font-normal">{{ branch.name }}</div>
                     </div>
 
                     <div class="collapse-content text-sm">

@@ -39,8 +39,7 @@ export const usePaymentStore = defineStore("payment", () => {
         } catch (err) {
             paymentMethods.value = PAYMENT_DATA;
             methodsError.value =
-                err.response?.data?.message ||
-                "Không thể tải phương thức thanh toán. Đang dùng dữ liệu mặc định.";
+                err.response?.data?.message || "Không thể tải phương thức thanh toán.";
             ensureSelectedMethod();
         } finally {
             isLoadingMethods.value = false;

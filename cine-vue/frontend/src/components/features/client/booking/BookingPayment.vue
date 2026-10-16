@@ -47,40 +47,45 @@
 
                     <div
                         v-if="paymentStore.isLoadingMethods"
-                        class="py-3 text-sm text-base-content/50"
+                        class="py-10 text-center text-sm text-base-content/50"
                     >
                         Đang tải phương thức thanh toán...
                     </div>
 
-                    <div v-if="paymentStore.methodsError" class="py-2 text-sm text-warning">
+                    <div v-else-if="paymentStore.methodsError" class="py-2 text-sm text-warning">
                         {{ paymentStore.methodsError }}
                     </div>
 
-                    <label
-                        v-for="payment in paymentStore.paymentMethods"
-                        :key="payment.id"
-                        class="list-row hover:bg-base-200 cursor-pointer items-center transition-colors"
-                    >
-                        <input
-                            v-model="paymentStore.selectedMethod"
-                            type="radio"
-                            name="payment-method"
-                            class="radio radio-primary radio-xs"
-                            :value="payment.id"
-                            @change="paymentStore.setPaymentMethod(payment.id)"
-                        />
-
-                        <div class="flex items-center justify-start gap-2 md:gap-5">
-                            <img
-                                class="rounded-box size-7.5 sm:size-10"
-                                :src="payment.image"
-                                :alt="payment.name"
+                    <template v-else-if="paymentStore.paymentMethods.length > 0">
+                        <label
+                            v-for="payment in paymentStore.paymentMethods"
+                            :key="payment.id"
+                            class="list-row hover:bg-base-200 cursor-pointer items-center transition-colors"
+                        >
+                            <input
+                                v-model="paymentStore.selectedMethod"
+                                type="radio"
+                                name="payment-method"
+                                class="radio radio-primary radio-xs"
+                                :value="payment.id"
+                                @change="paymentStore.setPaymentMethod(payment.id)"
                             />
-                            <div class="grow text-sm sm:text-base">
-                                <div>{{ payment.name }}</div>
+
+                            <div class="flex items-center justify-start gap-2 md:gap-5">
+                                <img
+                                    class="rounded-box size-7.5 sm:size-10"
+                                    :src="payment.image"
+                                    :alt="payment.name"
+                                />
+                                <div class="grow text-sm sm:text-base">
+                                    <div>{{ payment.name }}</div>
+                                </div>
                             </div>
-                        </div>
-                    </label>
+                        </label>
+                    </template>
+                    <div v-else class="py-10 text-center text-sm text-base-content/50">
+                        Hiện chưa có phương thức thanh toán. Vui lòng thử lại sau ít phút!
+                    </div>
                 </div>
             </div>
         </div>
