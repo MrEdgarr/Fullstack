@@ -9,6 +9,7 @@ const adminOnly = requireRole(["admin"]);
 // Tất cả API dashboard đều yêu cầu xác thực tài khoản và quyền Admin
 router.use(authMiddleware, adminOnly);
 
+router.get("/overview", dashboardController.getOverview);
 router.get("/summary", dashboardController.getSummary);
 router.get("/revenue-trend", dashboardController.getRevenueTrend);
 router.get("/top-movies", dashboardController.getTopMovies);

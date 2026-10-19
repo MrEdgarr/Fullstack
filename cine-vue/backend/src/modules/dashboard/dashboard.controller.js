@@ -50,3 +50,14 @@ exports.getRecentBookings = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getOverview = async (req, res, next) => {
+  try {
+    const period = req.query.period || "7d";
+    const data = await dashboardService.getOverview(period);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};
+

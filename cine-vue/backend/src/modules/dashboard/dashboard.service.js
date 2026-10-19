@@ -149,3 +149,25 @@ exports.getRecentBookings = async (limit = 8) => {
     final_amount: Number(booking.final_amount || 0),
   }));
 };
+
+/**
+ * 6. Tổng hợp toàn bộ dữ liệu dashboard trong 1 lần gọi (tiết kiệm kết nối và network roundtrips)
+ */
+exports.getOverview = async (period = "7d") => {
+  const [summary, revenueTrend, topMovies, distribution, recentBookings] = await Promise.all([
+    exports.getSummary(period),
+    exports.getRevenueTrend(period),
+    exports.getTopMovies(period, 5),
+    exports.getRevenueDistribution(period),
+    exports.getRecentBookings(8),
+  ]);
+
+  return {
+    summary,
+    revenueTrend,
+    topMovies,
+    distribution,
+    recentBookings,
+  };
+};
+
