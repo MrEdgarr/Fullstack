@@ -15,6 +15,7 @@ const ticketsRoutes = require("../modules/tickets/tickets.routes");
 const paymentsRoutes = require("../modules/payments/payments.routes");
 const combosRoutes = require("../modules/combos/combos.routes");
 const promotionsRoutes = require("../modules/promotions/promotions.routes");
+const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
 
 router.use("/auth", authRoutes);
 router.use("/brands", brandsRoutes);
@@ -30,5 +31,6 @@ router.use("/tickets", ticketsRoutes);
 router.use("/payments", paymentsRoutes);
 router.use("/combos", combosRoutes);
 router.use("/promotions", promotionsRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 module.exports = router;
