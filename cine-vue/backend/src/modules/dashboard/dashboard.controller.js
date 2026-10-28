@@ -44,7 +44,8 @@ exports.getRevenueDistribution = async (req, res, next) => {
 exports.getRecentBookings = async (req, res, next) => {
   try {
     const limit = req.query.limit || 8;
-    const data = await dashboardService.getRecentBookings(limit);
+    const period = req.query.period || "all";
+    const data = await dashboardService.getRecentBookings(limit, period);
     res.json({ success: true, data });
   } catch (error) {
     next(error);

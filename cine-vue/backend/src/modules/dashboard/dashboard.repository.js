@@ -13,6 +13,9 @@ function buildDateCondition(period, alias = "b") {
       return `${alias}.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)`;
     case "this_month":
       return `${alias}.created_at >= DATE_FORMAT(NOW(), '%Y-%m-01')`;
+    case "6m":
+      return `${alias}.created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)`;
+    case "1y":
     case "year":
       return `${alias}.created_at >= DATE_FORMAT(NOW(), '%Y-01-01')`;
     case "all":
@@ -34,6 +37,9 @@ function buildPreviousDateCondition(period, alias = "b") {
       return `${alias}.created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND ${alias}.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)`;
     case "this_month":
       return `${alias}.created_at >= DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-01'), INTERVAL 1 MONTH) AND ${alias}.created_at < DATE_FORMAT(NOW(), '%Y-%m-01')`;
+    case "6m":
+      return `${alias}.created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH) AND ${alias}.created_at < DATE_SUB(NOW(), INTERVAL 6 MONTH)`;
+    case "1y":
     case "year":
       return `${alias}.created_at >= DATE_SUB(DATE_FORMAT(NOW(), '%Y-01-01'), INTERVAL 1 YEAR) AND ${alias}.created_at < DATE_FORMAT(NOW(), '%Y-01-01')`;
     case "all":
@@ -204,8 +210,9 @@ exports.getRevenueDistribution = async (period) => {
 /**
  * 8. Lấy danh sách giao dịch đặt vé gần đây nhất
  */
-exports.getRecentBookings = async (limit = 8) => {
+exports.getRecentBookings = async (limit = 8, period = "all") => {
   const safeLimit = Math.max(1, Math.min(50, Number(limit) || 8));
+  const condition = buildDateCondition(period, "b");
 
   const [rows] = await db.query(
     `
@@ -233,6 +240,7 @@ exports.getRecentBookings = async (limit = 8) => {
     JOIN movies m ON m.movie_id = s.movie_id
     JOIN screening_rooms r ON r.room_id = s.room_id
     JOIN cinemas ci ON ci.cinema_id = r.cinema_id
+    WHERE ${condition}
     ORDER BY b.created_at DESC
     LIMIT ?
     `,

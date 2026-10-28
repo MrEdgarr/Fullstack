@@ -69,6 +69,9 @@ exports.getSummary = async (period = "7d") => {
       successful: Number(currentBookings.successful_bookings || 0),
       cancelled: Number(currentBookings.cancelled_bookings || 0),
       pending: Number(currentBookings.pending_bookings || 0),
+      growth_percentage: previousBookings
+        ? calculateGrowth(currentBookings.total_bookings, previousBookings.total_bookings)
+        : 0,
       success_rate:
         Number(currentBookings.total_bookings || 0) > 0
           ? Number(
@@ -84,6 +87,9 @@ exports.getSummary = async (period = "7d") => {
       rate: Number(occupancy.occupancy_rate || 0),
       tickets_sold: Number(occupancy.tickets_sold || 0),
       total_capacity: Number(occupancy.total_capacity || 0),
+      growth_percentage: previousTickets
+        ? calculateGrowth(occupancy.tickets_sold, previousTickets.total_tickets)
+        : 0,
     },
   };
 };
@@ -142,8 +148,8 @@ exports.getRevenueDistribution = async (period = "7d") => {
 /**
  * 5. Danh sách giao dịch mới nhất
  */
-exports.getRecentBookings = async (limit = 8) => {
-  const rows = await dashboardRepository.getRecentBookings(limit);
+exports.getRecentBookings = async (limit = 8, period = "all") => {
+  const rows = await dashboardRepository.getRecentBookings(limit, period);
   return rows.map((booking) => ({
     ...booking,
     final_amount: Number(booking.final_amount || 0),
@@ -159,7 +165,7 @@ exports.getOverview = async (period = "7d") => {
     exports.getRevenueTrend(period),
     exports.getTopMovies(period, 5),
     exports.getRevenueDistribution(period),
-    exports.getRecentBookings(8),
+    exports.getRecentBookings(8, period),
   ]);
 
   return {
