@@ -1,6 +1,6 @@
-const cinemasRepository = require("./cinemas.repository");
+import * as cinemasRepository from "./cinemas.repository.js";
 
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const [rows] = await cinemasRepository.getAll();
     res.json({ success: true, data: rows });
@@ -9,7 +9,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+export const getById = async (req, res, next) => {
   try {
     const [rows] = await cinemasRepository.getById(req.params.id);
 
@@ -23,7 +23,7 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const { brand_id, cinema_name, city_id, address, phone } = req.body;
     await cinemasRepository.create(brand_id, cinema_name, city_id, address, phone);
@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     const { brand_id, cinema_name, city_id, address, phone } = req.body;
     await cinemasRepository.update(req.params.id, brand_id, cinema_name, city_id, address, phone);
@@ -43,11 +43,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await cinemasRepository.delete(req.params.id);
+    await cinemasRepository.remove(req.params.id);
     res.json({ success: true, message: "Cinema deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

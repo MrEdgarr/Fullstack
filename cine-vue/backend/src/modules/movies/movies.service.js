@@ -1,9 +1,9 @@
-const cloudinary = require("../../shared/config/cloudinary");
-const { uploadToCloudinary } = require("../../shared/middleware/upload-cloudinary");
-const moviesRepository = require("./movies.repository");
-const AppError = require("../../shared/utils/app-error");
+import cloudinary from "../../shared/config/cloudinary.js";
+import { uploadToCloudinary } from "../../shared/middleware/upload-cloudinary.js";
+import * as moviesRepository from "./movies.repository.js";
+import AppError from "../../shared/utils/app-error.js";
 
-exports.create = async (payload, files) => {
+export const create = async (payload, files) => {
   const {
     title,
     title_en,
@@ -42,7 +42,7 @@ exports.create = async (payload, files) => {
   );
 };
 
-exports.update = async (movieId, payload, files) => {
+export const update = async (movieId, payload, files) => {
   const [oldMovieRows] = await moviesRepository.getById(movieId);
   const oldMovie = oldMovieRows[0];
 
@@ -95,7 +95,7 @@ exports.update = async (movieId, payload, files) => {
   );
 };
 
-exports.delete = async (movieId) => {
+export const remove = async (movieId) => {
   const [movieRows] = await moviesRepository.getById(movieId);
   const movie = movieRows[0];
 
@@ -104,8 +104,10 @@ exports.delete = async (movieId) => {
     await deleteOldImage(movie.banner_url);
   }
 
-  await moviesRepository.delete(movieId);
+  await moviesRepository.remove(movieId);
 };
+
+export { remove as delete };
 
 async function deleteOldImage(imageUrl) {
   if (!imageUrl) return;

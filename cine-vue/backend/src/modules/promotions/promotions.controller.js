@@ -1,6 +1,6 @@
-const promotionsRepository = require("./promotions.repository");
+import * as promotionsRepository from "./promotions.repository.js";
 
-exports.validate = async (req, res, next) => {
+export const validate = async (req, res, next) => {
   try {
     const code = req.params.code.trim().toUpperCase();
     const [rows] = await promotionsRepository.getActiveByCode(code);

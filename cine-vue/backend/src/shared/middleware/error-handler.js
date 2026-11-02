@@ -1,4 +1,4 @@
-const { errorResponse } = require("../utils/response");
+import { errorResponse } from "../utils/response.js";
 
 const errorHandler = (err, req, res, next) => {
   console.error(
@@ -25,4 +25,4 @@ const errorHandler = (err, req, res, next) => {
   );
 };
 
-module.exports = errorHandler;
+export default errorHandler;

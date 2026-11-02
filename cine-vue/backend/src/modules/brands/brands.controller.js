@@ -1,6 +1,6 @@
-const brandsRepository = require("./brands.repository");
+import * as brandsRepository from "./brands.repository.js";
 
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const [rows] = await brandsRepository.getAll();
     res.json({ success: true, data: rows });
@@ -9,7 +9,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+export const getById = async (req, res, next) => {
   try {
     const [rows] = await brandsRepository.getById(req.params.id);
 
@@ -23,7 +23,7 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const { brand_name, logo_url } = req.body;
     await brandsRepository.create(brand_name, logo_url);
@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     const { brand_name, logo_url } = req.body;
     await brandsRepository.update(req.params.id, brand_name, logo_url);
@@ -43,11 +43,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await brandsRepository.delete(req.params.id);
+    await brandsRepository.remove(req.params.id);
     res.json({ success: true, message: "Brand deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const bookingSchema = Joi.object({
+export const bookingSchema = Joi.object({
   showtime_id: Joi.number().integer().positive().required(),
   showtime_seat_ids: Joi.array().items(Joi.number().integer().positive()).min(1).unique().required(),
   food_combos: Joi.array()
@@ -14,11 +14,11 @@ const bookingSchema = Joi.object({
   promotion_code: Joi.string().trim().uppercase().max(50).allow("", null).optional(),
 });
 
-const bookingStatusSchema = Joi.object({
+export const bookingStatusSchema = Joi.object({
   status: Joi.string().valid("pending", "confirmed", "cancelled", "completed").required(),
 });
 
-const bookingDetailsSchema = Joi.object({
+export const bookingDetailsSchema = Joi.object({
   food_combos: Joi.array()
     .items(
       Joi.object({
@@ -29,9 +29,3 @@ const bookingDetailsSchema = Joi.object({
     .default([]),
   promotion_code: Joi.string().trim().uppercase().max(50).allow("", null).optional(),
 });
-
-module.exports = {
-  bookingSchema,
-  bookingStatusSchema,
-  bookingDetailsSchema,
-};

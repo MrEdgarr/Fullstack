@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const cinemaSchema = Joi.object({
+export const cinemaSchema = Joi.object({
   brand_id: Joi.number().integer().positive().required(),
   city_id: Joi.number().integer().positive().required(),
   cinema_name: Joi.string().trim().min(3).max(150).required(),
@@ -10,7 +10,3 @@ const cinemaSchema = Joi.object({
     .allow("", null)
     .optional(),
 });
-
-module.exports = {
-  cinemaSchema,
-};

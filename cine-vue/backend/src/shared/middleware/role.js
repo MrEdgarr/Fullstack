@@ -15,4 +15,4 @@ const requireRole = (allowedRoles) => {
   };
 };
 
-module.exports = requireRole;
+export default requireRole;

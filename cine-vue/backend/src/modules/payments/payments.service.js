@@ -1,12 +1,12 @@
-const db = require("../../shared/config/database");
-const paymentsRepository = require("./payments.repository");
-const bookingsRepository = require("../bookings/bookings.repository");
-const bookingsService = require("../bookings/bookings.service");
-const AppError = require("../../shared/utils/app-error");
+import db from "../../shared/config/database.js";
+import * as paymentsRepository from "./payments.repository.js";
+import * as bookingsRepository from "../bookings/bookings.repository.js";
+import * as bookingsService from "../bookings/bookings.service.js";
+import AppError from "../../shared/utils/app-error.js";
 
-exports.getMethods = () => paymentsRepository.getMethods();
+export const getMethods = () => paymentsRepository.getMethods();
 
-exports.getByBooking = async (currentUser, bookingId) => {
+export const getByBooking = async (currentUser, bookingId) => {
   const [bookingRows] = await bookingsRepository.getById(bookingId);
   const booking = bookingRows[0];
 
@@ -18,7 +18,7 @@ exports.getByBooking = async (currentUser, bookingId) => {
   return paymentsRepository.getByBooking(bookingId);
 };
 
-exports.create = async (
+export const create = async (
   currentUser,
   { booking_id: bookingId, amount, payment_method: paymentMethod, transaction_id: transactionId },
 ) => {
@@ -69,7 +69,7 @@ exports.create = async (
   }
 };
 
-exports.updateStatus = async (currentUser, paymentId, status) => {
+export const updateStatus = async (currentUser, paymentId, status) => {
   const connection = await db.getConnection();
 
   try {

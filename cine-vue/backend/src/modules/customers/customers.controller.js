@@ -1,7 +1,7 @@
-const customersRepository = require("./customers.repository");
-const customersService = require("./customers.service");
+import * as customersRepository from "./customers.repository.js";
+import * as customersService from "./customers.service.js";
 
-exports.getMe = async (req, res, next) => {
+export const getMe = async (req, res, next) => {
   try {
     const data = await customersService.getCurrentProfile(req.user.customer_id);
     return res.json({ success: true, data });
@@ -10,7 +10,7 @@ exports.getMe = async (req, res, next) => {
   }
 };
 
-exports.updateMe = async (req, res, next) => {
+export const updateMe = async (req, res, next) => {
   try {
     const data = await customersService.updateCurrentProfile(
       req.user.customer_id,
@@ -27,7 +27,7 @@ exports.updateMe = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+export const getById = async (req, res, next) => {
   try {
     const [rows] = await customersRepository.getPublicById(req.params.id);
 
@@ -41,7 +41,7 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     const { full_name, email, phone, avatar_url, date_of_birth } = req.body;
     await customersRepository.update(

@@ -1,21 +1,22 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
 
-const authRoutes = require("../modules/auth/auth.routes");
-const brandsRoutes = require("../modules/brands/brands.routes");
-const citiesRoutes = require("../modules/cities/cities.routes");
-const cinemasRoutes = require("../modules/cinemas/cinemas.routes");
-const roomsRoutes = require("../modules/rooms/rooms.routes");
-const seatsRoutes = require("../modules/seats/seats.routes");
-const moviesRoutes = require("../modules/movies/movies.routes");
-const showtimesRoutes = require("../modules/showtimes/showtimes.routes");
-const customersRoutes = require("../modules/customers/customers.routes");
-const bookingsRoutes = require("../modules/bookings/bookings.routes");
-const ticketsRoutes = require("../modules/tickets/tickets.routes");
-const paymentsRoutes = require("../modules/payments/payments.routes");
-const combosRoutes = require("../modules/combos/combos.routes");
-const promotionsRoutes = require("../modules/promotions/promotions.routes");
-const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
+import authRoutes from "../modules/auth/auth.routes.js";
+import brandsRoutes from "../modules/brands/brands.routes.js";
+import citiesRoutes from "../modules/cities/cities.routes.js";
+import cinemasRoutes from "../modules/cinemas/cinemas.routes.js";
+import roomsRoutes from "../modules/rooms/rooms.routes.js";
+import seatsRoutes from "../modules/seats/seats.routes.js";
+import moviesRoutes from "../modules/movies/movies.routes.js";
+import showtimesRoutes from "../modules/showtimes/showtimes.routes.js";
+import customersRoutes from "../modules/customers/customers.routes.js";
+import bookingsRoutes from "../modules/bookings/bookings.routes.js";
+import ticketsRoutes from "../modules/tickets/tickets.routes.js";
+import paymentsRoutes from "../modules/payments/payments.routes.js";
+import combosRoutes from "../modules/combos/combos.routes.js";
+import promotionsRoutes from "../modules/promotions/promotions.routes.js";
+import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
+
+const router = express.Router();
 
 router.use("/auth", authRoutes);
 router.use("/brands", brandsRoutes);
@@ -33,4 +34,4 @@ router.use("/combos", combosRoutes);
 router.use("/promotions", promotionsRoutes);
 router.use("/dashboard", dashboardRoutes);
 
-module.exports = router;
+export default router;

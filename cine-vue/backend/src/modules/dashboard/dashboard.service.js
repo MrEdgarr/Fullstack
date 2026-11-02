@@ -1,4 +1,4 @@
-const dashboardRepository = require("./dashboard.repository");
+import * as dashboardRepository from "./dashboard.repository.js";
 
 /**
  * Tính phần trăm tăng/giảm so với kỳ trước
@@ -16,7 +16,7 @@ function calculateGrowth(current, previous) {
 /**
  * 1. Tổng hợp chỉ số KPI cards
  */
-exports.getSummary = async (period = "7d") => {
+export const getSummary = async (period = "7d") => {
   const currentCondition = dashboardRepository.buildDateCondition(period, "b");
   const previousCondition = dashboardRepository.buildPreviousDateCondition(period, "b");
 
@@ -97,7 +97,7 @@ exports.getSummary = async (period = "7d") => {
 /**
  * 2. Xu hướng doanh thu theo thời gian
  */
-exports.getRevenueTrend = async (period = "7d") => {
+export const getRevenueTrend = async (period = "7d") => {
   const rows = await dashboardRepository.getRevenueTrend(period);
   return rows.map((row) => ({
     date: row.date_label,
@@ -111,7 +111,7 @@ exports.getRevenueTrend = async (period = "7d") => {
 /**
  * 3. Top phim có doanh thu cao nhất
  */
-exports.getTopMovies = async (period = "7d", limit = 5) => {
+export const getTopMovies = async (period = "7d", limit = 5) => {
   const rows = await dashboardRepository.getTopMovies(period, limit);
   return rows.map((movie) => ({
     movie_id: movie.movie_id,
@@ -127,7 +127,7 @@ exports.getTopMovies = async (period = "7d", limit = 5) => {
 /**
  * 4. Cơ cấu phân bổ nguồn thu
  */
-exports.getRevenueDistribution = async (period = "7d") => {
+export const getRevenueDistribution = async (period = "7d") => {
   const { seatTypes, cinemas } = await dashboardRepository.getRevenueDistribution(period);
 
   return {
@@ -148,7 +148,7 @@ exports.getRevenueDistribution = async (period = "7d") => {
 /**
  * 5. Danh sách giao dịch mới nhất
  */
-exports.getRecentBookings = async (limit = 8, period = "all") => {
+export const getRecentBookings = async (limit = 8, period = "all") => {
   const rows = await dashboardRepository.getRecentBookings(limit, period);
   return rows.map((booking) => ({
     ...booking,
@@ -159,13 +159,13 @@ exports.getRecentBookings = async (limit = 8, period = "all") => {
 /**
  * 6. Tổng hợp toàn bộ dữ liệu dashboard trong 1 lần gọi (tiết kiệm kết nối và network roundtrips)
  */
-exports.getOverview = async (period = "7d") => {
+export const getOverview = async (period = "7d") => {
   const [summary, revenueTrend, topMovies, distribution, recentBookings] = await Promise.all([
-    exports.getSummary(period),
-    exports.getRevenueTrend(period),
-    exports.getTopMovies(period, 5),
-    exports.getRevenueDistribution(period),
-    exports.getRecentBookings(8, period),
+    getSummary(period),
+    getRevenueTrend(period),
+    getTopMovies(period, 5),
+    getRevenueDistribution(period),
+    getRecentBookings(8, period),
   ]);
 
   return {
@@ -176,4 +176,3 @@ exports.getOverview = async (period = "7d") => {
     recentBookings,
   };
 };
-

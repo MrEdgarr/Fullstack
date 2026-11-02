@@ -1,8 +1,8 @@
-const express = require("express");
-const promotionsController = require("./promotions.controller");
+import express from "express";
+import * as promotionsController from "./promotions.controller.js";
 
 const router = express.Router();
 
 router.get("/:code/validate", promotionsController.validate);
 
-module.exports = router;
+export default router;

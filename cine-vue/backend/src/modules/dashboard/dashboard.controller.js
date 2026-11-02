@@ -1,6 +1,6 @@
-const dashboardService = require("./dashboard.service");
+import * as dashboardService from "./dashboard.service.js";
 
-exports.getSummary = async (req, res, next) => {
+export const getSummary = async (req, res, next) => {
   try {
     const period = req.query.period || "7d";
     const data = await dashboardService.getSummary(period);
@@ -10,7 +10,7 @@ exports.getSummary = async (req, res, next) => {
   }
 };
 
-exports.getRevenueTrend = async (req, res, next) => {
+export const getRevenueTrend = async (req, res, next) => {
   try {
     const period = req.query.period || "7d";
     const data = await dashboardService.getRevenueTrend(period);
@@ -20,7 +20,7 @@ exports.getRevenueTrend = async (req, res, next) => {
   }
 };
 
-exports.getTopMovies = async (req, res, next) => {
+export const getTopMovies = async (req, res, next) => {
   try {
     const period = req.query.period || "7d";
     const limit = req.query.limit || 5;
@@ -31,7 +31,7 @@ exports.getTopMovies = async (req, res, next) => {
   }
 };
 
-exports.getRevenueDistribution = async (req, res, next) => {
+export const getRevenueDistribution = async (req, res, next) => {
   try {
     const period = req.query.period || "7d";
     const data = await dashboardService.getRevenueDistribution(period);
@@ -41,7 +41,7 @@ exports.getRevenueDistribution = async (req, res, next) => {
   }
 };
 
-exports.getRecentBookings = async (req, res, next) => {
+export const getRecentBookings = async (req, res, next) => {
   try {
     const limit = req.query.limit || 8;
     const period = req.query.period || "all";
@@ -52,7 +52,7 @@ exports.getRecentBookings = async (req, res, next) => {
   }
 };
 
-exports.getOverview = async (req, res, next) => {
+export const getOverview = async (req, res, next) => {
   try {
     const period = req.query.period || "7d";
     const data = await dashboardService.getOverview(period);
@@ -61,4 +61,3 @@ exports.getOverview = async (req, res, next) => {
     next(error);
   }
 };
-

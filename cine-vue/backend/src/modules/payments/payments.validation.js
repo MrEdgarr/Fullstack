@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const paymentSchema = Joi.object({
+export const paymentSchema = Joi.object({
   booking_id: Joi.number().integer().positive().required(),
   amount: Joi.number().min(0).required(),
   payment_method: Joi.string()
@@ -9,11 +9,6 @@ const paymentSchema = Joi.object({
   transaction_id: Joi.string().allow("", null).optional(),
 });
 
-const paymentStatusSchema = Joi.object({
+export const paymentStatusSchema = Joi.object({
   status: Joi.string().valid("pending", "success", "failed").required(),
 });
-
-module.exports = {
-  paymentSchema,
-  paymentStatusSchema,
-};

@@ -1,11 +1,18 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const customersRepository = require("../customers/customers.repository");
-const AppError = require("../../shared/utils/app-error");
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import * as customersRepository from "../customers/customers.repository.js";
+import AppError from "../../shared/utils/app-error.js";
 
 const SALT_ROUNDS = 10;
 
-exports.register = async ({ full_name, email, phone, password, avatar_url = null, date_of_birth = null }) => {
+export const register = async ({
+  full_name,
+  email,
+  phone,
+  password,
+  avatar_url = null,
+  date_of_birth = null,
+}) => {
   const [existingCustomers] = await customersRepository.getByEmail(email);
 
   if (existingCustomers.length > 0) {
@@ -23,7 +30,7 @@ exports.register = async ({ full_name, email, phone, password, avatar_url = null
   );
 };
 
-exports.login = async ({ email, password }) => {
+export const login = async ({ email, password }) => {
   const [rows] = await customersRepository.getByEmail(email);
   const customer = rows[0];
 

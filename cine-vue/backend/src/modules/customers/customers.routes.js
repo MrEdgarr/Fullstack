@@ -1,10 +1,10 @@
-const express = require("express");
-const customersController = require("./customers.controller");
-const authMiddleware = require("../../shared/middleware/auth");
-const requireRole = require("../../shared/middleware/role");
-const validate = require("../../shared/middleware/validate");
-const { upload } = require("../../shared/middleware/upload-cloudinary");
-const { customerUpdateSchema } = require("./customers.validation");
+import express from "express";
+import * as customersController from "./customers.controller.js";
+import authMiddleware from "../../shared/middleware/auth.js";
+import requireRole from "../../shared/middleware/role.js";
+import validate from "../../shared/middleware/validate.js";
+import { upload } from "../../shared/middleware/upload-cloudinary.js";
+import { customerUpdateSchema } from "./customers.validation.js";
 
 const router = express.Router();
 const adminOnly = requireRole(["admin"]);
@@ -20,4 +20,4 @@ router.put(
 router.get("/:id", adminOnly, customersController.getById);
 router.put("/:id", adminOnly, validate(customerUpdateSchema), customersController.update);
 
-module.exports = router;
+export default router;

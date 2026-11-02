@@ -1,14 +1,14 @@
-const cloudinary = require("../config/cloudinary");
-const multer = require("multer");
+import multer from "multer";
+import cloudinary from "../config/cloudinary.js";
 
 const storage = multer.memoryStorage();
 
-const upload = multer({
+export const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-const uploadToCloudinary = async (file, folder = "cinema") => {
+export const uploadToCloudinary = async (file, folder = "cinema") => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -25,5 +25,3 @@ const uploadToCloudinary = async (file, folder = "cinema") => {
     uploadStream.end(file.buffer);
   });
 };
-
-module.exports = { upload, uploadToCloudinary };

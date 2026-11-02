@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getAll = () =>
+export const getAll = () =>
   db.execute(`
   SELECT * FROM movies 
   ORDER BY 
@@ -13,23 +13,23 @@ exports.getAll = () =>
 `);
 
 // Tối ưu cho Frontend
-exports.getNowShowing = () =>
+export const getNowShowing = () =>
   db.execute(`
   SELECT * FROM movies 
   WHERE status = 'now_showing' 
   ORDER BY release_date DESC, title ASC
 `);
 
-exports.getUpcoming = () =>
+export const getUpcoming = () =>
   db.execute(`
   SELECT * FROM movies 
   WHERE status = 'upcoming' 
   ORDER BY release_date ASC, title ASC
 `);
 
-exports.getById = (id) => db.execute("SELECT * FROM movies WHERE movie_id = ?", [id]);
+export const getById = (id) => db.execute("SELECT * FROM movies WHERE movie_id = ?", [id]);
 
-exports.getByStatus = (status) =>
+export const getByStatus = (status) =>
   db.execute(
     `
   SELECT * FROM movies 
@@ -39,7 +39,7 @@ exports.getByStatus = (status) =>
     [status],
   );
 
-exports.create = (
+export const create = (
   title,
   title_en,
   duration_minutes,
@@ -70,7 +70,7 @@ exports.create = (
       status,
     ],
   );
-exports.update = (
+export const update = (
   id,
   title,
   title_en,
@@ -103,4 +103,5 @@ exports.update = (
       id,
     ],
   );
-exports.delete = (id) => db.execute("DELETE FROM movies WHERE movie_id = ?", [id]);
+export const remove = (id) => db.execute("DELETE FROM movies WHERE movie_id = ?", [id]);
+export { remove as delete };

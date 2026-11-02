@@ -1,5 +1,5 @@
-const showtimeSeatsRepository = require("./showtime-seats.repository");
+import * as showtimeSeatsRepository from "./showtime-seats.repository.js";
 
-exports.getByShowtime = (showtimeId) => {
+export const getByShowtime = (showtimeId) => {
   return showtimeSeatsRepository.getByShowtime(showtimeId);
 };

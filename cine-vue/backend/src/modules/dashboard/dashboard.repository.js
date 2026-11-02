@@ -1,9 +1,9 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
 /**
  * Tạo mệnh đề WHERE theo khoảng thời gian cho bảng bookings
  */
-function buildDateCondition(period, alias = "b") {
+export function buildDateCondition(period, alias = "b") {
   switch (period) {
     case "today":
       return `${alias}.created_at >= CURDATE()`;
@@ -27,7 +27,7 @@ function buildDateCondition(period, alias = "b") {
 /**
  * Tạo mệnh đề WHERE cho kỳ trước đó để so sánh tăng trưởng
  */
-function buildPreviousDateCondition(period, alias = "b") {
+export function buildPreviousDateCondition(period, alias = "b") {
   switch (period) {
     case "today":
       return `${alias}.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ${alias}.created_at < CURDATE()`;
@@ -51,7 +51,7 @@ function buildPreviousDateCondition(period, alias = "b") {
 /**
  * 1. Lấy chỉ số tổng quan đơn hàng & doanh thu
  */
-exports.getBookingMetrics = async (condition) => {
+export const getBookingMetrics = async (condition) => {
   const [rows] = await db.execute(`
     SELECT
       COUNT(b.booking_id) AS total_bookings,
@@ -69,7 +69,7 @@ exports.getBookingMetrics = async (condition) => {
 /**
  * 2. Lấy chỉ số vé bán ra
  */
-exports.getTicketMetrics = async (condition) => {
+export const getTicketMetrics = async (condition) => {
   const [rows] = await db.execute(`
     SELECT
       COUNT(t.ticket_id) AS total_tickets,
@@ -85,7 +85,7 @@ exports.getTicketMetrics = async (condition) => {
 /**
  * 3. Lấy chỉ số Bắp nước (F&B)
  */
-exports.getFnbMetrics = async (condition) => {
+export const getFnbMetrics = async (condition) => {
   const [rows] = await db.execute(`
     SELECT
       COALESCE(SUM(bfc.line_total), 0) AS total_fnb,
@@ -101,7 +101,7 @@ exports.getFnbMetrics = async (condition) => {
 /**
  * 4. Lấy tỷ lệ lấp đầy ghế (Occupancy rate)
  */
-exports.getOccupancyRate = async (condition) => {
+export const getOccupancyRate = async (condition) => {
   const [rows] = await db.execute(`
     SELECT
       COUNT(t.ticket_id) AS tickets_sold,
@@ -118,7 +118,7 @@ exports.getOccupancyRate = async (condition) => {
 /**
  * 5. Lấy xu hướng doanh thu theo thời gian
  */
-exports.getRevenueTrend = async (period) => {
+export const getRevenueTrend = async (period) => {
   const condition = buildDateCondition(period, "b");
   const dateFormat = period === "year" ? "%Y-%m" : "%Y-%m-%d";
 
@@ -141,7 +141,7 @@ exports.getRevenueTrend = async (period) => {
 /**
  * 6. Lấy Top phim doanh thu cao nhất
  */
-exports.getTopMovies = async (period, limit = 5) => {
+export const getTopMovies = async (period, limit = 5) => {
   const condition = buildDateCondition(period, "b");
   const safeLimit = Math.max(1, Math.min(20, Number(limit) || 5));
 
@@ -172,7 +172,7 @@ exports.getTopMovies = async (period, limit = 5) => {
 /**
  * 7. Lấy cơ cấu phân bổ doanh thu (Loại ghế, Nguồn thu, Cụm rạp)
  */
-exports.getRevenueDistribution = async (period) => {
+export const getRevenueDistribution = async (period) => {
   const condition = buildDateCondition(period, "b");
 
   const [seatTypes] = await db.execute(`
@@ -210,7 +210,7 @@ exports.getRevenueDistribution = async (period) => {
 /**
  * 8. Lấy danh sách giao dịch đặt vé gần đây nhất
  */
-exports.getRecentBookings = async (limit = 8, period = "all") => {
+export const getRecentBookings = async (limit = 8, period = "all") => {
   const safeLimit = Math.max(1, Math.min(50, Number(limit) || 8));
   const condition = buildDateCondition(period, "b");
 
@@ -248,6 +248,3 @@ exports.getRecentBookings = async (limit = 8, period = "all") => {
   );
   return rows;
 };
-
-exports.buildDateCondition = buildDateCondition;
-exports.buildPreviousDateCondition = buildPreviousDateCondition;

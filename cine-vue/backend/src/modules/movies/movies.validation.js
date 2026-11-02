@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const movieSchema = Joi.object({
+export const movieSchema = Joi.object({
   title: Joi.string().trim().min(3).max(255).required(),
   title_en: Joi.string().trim().max(255).allow("", null).optional(),
   duration_minutes: Joi.number().integer().min(30).max(300).required(),
@@ -14,7 +14,3 @@ const movieSchema = Joi.object({
   release_date: Joi.date().allow("", null).optional(),
   status: Joi.string().valid("upcoming", "now_showing", "ended").default("upcoming"),
 });
-
-module.exports = {
-  movieSchema,
-};

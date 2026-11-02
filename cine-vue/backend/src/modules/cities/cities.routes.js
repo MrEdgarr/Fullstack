@@ -1,9 +1,9 @@
-const express = require("express");
-const citiesController = require("./cities.controller");
-const authMiddleware = require("../../shared/middleware/auth");
-const requireRole = require("../../shared/middleware/role");
-const validate = require("../../shared/middleware/validate");
-const { citySchema } = require("./cities.validation");
+import express from "express";
+import * as citiesController from "./cities.controller.js";
+import authMiddleware from "../../shared/middleware/auth.js";
+import requireRole from "../../shared/middleware/role.js";
+import validate from "../../shared/middleware/validate.js";
+import { citySchema } from "./cities.validation.js";
 
 const router = express.Router();
 const adminOnly = requireRole(["admin"]);
@@ -13,6 +13,6 @@ router.get("/:id", citiesController.getById);
 router.use(authMiddleware);
 router.post("/", adminOnly, validate(citySchema), citiesController.create);
 router.put("/:id", adminOnly, validate(citySchema), citiesController.update);
-router.delete("/:id", adminOnly, citiesController.delete);
+router.delete("/:id", adminOnly, citiesController.remove);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
 const PUBLIC_CUSTOMER_SELECT = `
   SELECT
@@ -15,12 +15,12 @@ const PUBLIC_CUSTOMER_SELECT = `
   FROM customers
 `;
 
-exports.getByEmail = (email) => db.execute("SELECT * FROM customers WHERE email = ?", [email]);
-exports.getById = (id) => db.execute("SELECT * FROM customers WHERE customer_id = ?", [id]);
-exports.getPublicById = (id) =>
+export const getByEmail = (email) => db.execute("SELECT * FROM customers WHERE email = ?", [email]);
+export const getById = (id) => db.execute("SELECT * FROM customers WHERE customer_id = ?", [id]);
+export const getPublicById = (id) =>
   db.execute(`${PUBLIC_CUSTOMER_SELECT} WHERE customer_id = ?`, [id]);
 
-exports.create = (full_name, email, phone, password_hash, avatar_url, date_of_birth) => {
+export const create = (full_name, email, phone, password_hash, avatar_url, date_of_birth) => {
   const safeDob = date_of_birth === undefined ? null : date_of_birth;
   const safeAvatar = avatar_url === undefined ? null : avatar_url;
 
@@ -36,13 +36,13 @@ exports.create = (full_name, email, phone, password_hash, avatar_url, date_of_bi
     [full_name, email, phone, password_hash, safeDob],
   );
 };
-exports.update = (id, full_name, email, phone, avatar_url, date_of_birth) =>
+export const update = (id, full_name, email, phone, avatar_url, date_of_birth) =>
   db.execute(
     "UPDATE customers SET full_name = ?, email = ?, phone = ?, avatar_url = COALESCE(?, avatar_url), date_of_birth = ? WHERE customer_id = ?",
     [full_name, email, phone, avatar_url, date_of_birth, id],
   );
 
-exports.updateProfile = (id, profile) =>
+export const updateProfile = (id, profile) =>
   db.execute(
     `UPDATE customers
      SET full_name = ?,
