@@ -1,7 +1,7 @@
-const showtimesRepository = require("./showtimes.repository");
-const showtimesMapper = require("./showtimes.mapper");
+import * as showtimesRepository from "./showtimes.repository.js";
+import * as showtimesMapper from "./showtimes.mapper.js";
 
-exports.getMovieScheduleTree = async (movieId, query = {}) => {
+export const getMovieScheduleTree = async (movieId, query = {}) => {
   const filters = normalizeMovieScheduleFilters(query);
   const [optionRows] = await showtimesRepository.getMovieScheduleOptionRows(movieId);
   const [scheduleRows] = await showtimesRepository.getMovieScheduleRows(movieId, filters);
@@ -9,7 +9,7 @@ exports.getMovieScheduleTree = async (movieId, query = {}) => {
   return showtimesMapper.mapMovieScheduleResponse(scheduleRows, optionRows, filters);
 };
 
-exports.getScheduleTree = async (query = {}) => {
+export const getScheduleTree = async (query = {}) => {
   const filters = normalizeScheduleFilters(query);
   const [optionRows] = await showtimesRepository.getScheduleOptionRows();
   const [scheduleRows] = await showtimesRepository.getScheduleRows(filters);

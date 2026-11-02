@@ -1,6 +1,6 @@
-const bookingsService = require("./bookings.service");
+import * as bookingsService from "./bookings.service.js";
 
-exports.getByCustomer = async (req, res, next) => {
+export const getByCustomer = async (req, res, next) => {
   try {
     const [rows] = await bookingsService.getByCustomer(req.user, req.params.customerId);
     res.json({ success: true, data: rows });
@@ -9,7 +9,7 @@ exports.getByCustomer = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const data = await bookingsService.create(req.user.customer_id, req.body);
     res.status(201).json({
@@ -22,7 +22,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.updateStatus = async (req, res, next) => {
+export const updateStatus = async (req, res, next) => {
   try {
     const result = await bookingsService.updateStatus(req.user, req.params.id, req.body.status);
 
@@ -36,7 +36,7 @@ exports.updateStatus = async (req, res, next) => {
   }
 };
 
-exports.updateDetails = async (req, res, next) => {
+export const updateDetails = async (req, res, next) => {
   try {
     const data = await bookingsService.updateDetails(req.user, req.params.id, req.body);
     res.json({
@@ -49,11 +49,13 @@ exports.updateDetails = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await bookingsService.delete(req.user, req.params.id);
+    await bookingsService.remove(req.user, req.params.id);
     res.json({ success: true, message: "Booking deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

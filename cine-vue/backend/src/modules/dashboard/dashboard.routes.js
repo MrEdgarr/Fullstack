@@ -1,7 +1,7 @@
-const express = require("express");
-const dashboardController = require("./dashboard.controller");
-const authMiddleware = require("../../shared/middleware/auth");
-const requireRole = require("../../shared/middleware/role");
+import express from "express";
+import * as dashboardController from "./dashboard.controller.js";
+import authMiddleware from "../../shared/middleware/auth.js";
+import requireRole from "../../shared/middleware/role.js";
 
 const router = express.Router();
 const adminOnly = requireRole(["admin"]);
@@ -26,4 +26,4 @@ router.get("/top-movies", dashboardController.getTopMovies);
 router.get("/revenue-distribution", dashboardController.getRevenueDistribution);
 router.get("/recent-bookings", dashboardController.getRecentBookings);
 
-module.exports = router;
+export default router;

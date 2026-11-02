@@ -1,5 +1,5 @@
-const mysql = require("mysql2");
-const { getDatabaseConfig } = require("./database-env");
+import mysql from "mysql2";
+import { getDatabaseConfig } from "./database-env.js";
 
 const databaseConfig = getDatabaseConfig();
 
@@ -30,4 +30,4 @@ pool.getConnection((err, conn) => {
   conn.release();
 });
 
-module.exports = pool.promise();
+export default pool.promise();

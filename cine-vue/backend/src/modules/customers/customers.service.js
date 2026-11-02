@@ -1,6 +1,6 @@
-const customersRepository = require("./customers.repository");
-const { uploadToCloudinary } = require("../../shared/middleware/upload-cloudinary");
-const AppError = require("../../shared/utils/app-error");
+import * as customersRepository from "./customers.repository.js";
+import { uploadToCloudinary } from "../../shared/middleware/upload-cloudinary.js";
+import AppError from "../../shared/utils/app-error.js";
 
 const pickPublicCustomer = (customer) => ({
   customer_id: customer.customer_id,
@@ -13,7 +13,7 @@ const pickPublicCustomer = (customer) => ({
   status: customer.status,
 });
 
-exports.getCurrentProfile = async (customerId) => {
+export const getCurrentProfile = async (customerId) => {
   const [rows] = await customersRepository.getPublicById(customerId);
   const customer = rows[0];
 
@@ -24,7 +24,7 @@ exports.getCurrentProfile = async (customerId) => {
   return pickPublicCustomer(customer);
 };
 
-exports.updateCurrentProfile = async (customerId, payload, file = null) => {
+export const updateCurrentProfile = async (customerId, payload, file = null) => {
   const [rows] = await customersRepository.getPublicById(customerId);
   const currentCustomer = rows[0];
 
@@ -51,7 +51,7 @@ exports.updateCurrentProfile = async (customerId, payload, file = null) => {
 
   await customersRepository.updateProfile(customerId, nextProfile);
 
-  return exports.getCurrentProfile(customerId);
+  return getCurrentProfile(customerId);
 };
 
 async function uploadAvatar(file) {

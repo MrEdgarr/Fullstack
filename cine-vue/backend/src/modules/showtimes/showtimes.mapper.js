@@ -1,12 +1,12 @@
 const DEFAULT_BRAND_LOGO = "https://placehold.co/80x80?text=Cinema";
 
-exports.mapMovieScheduleResponse = (scheduleRows, optionRows, filters = {}) => ({
+export const mapMovieScheduleResponse = (scheduleRows, optionRows, filters = {}) => ({
   cityOptions: createCityOptions(optionRows),
   cinemaOptions: createCinemaOptions(optionRows, filters.cityId),
   cinemaBrands: mapRowsToCinemaBrandTree(scheduleRows),
 });
 
-exports.mapScheduleResponse = (scheduleRows, optionRows, filters = {}) => ({
+export const mapScheduleResponse = (scheduleRows, optionRows, filters = {}) => ({
   movieOptions: createMovieOptions(optionRows),
   cityOptions: createCityOptions(optionRows),
   cinemaOptions: createAvailableCinemaOptions(optionRows, filters),

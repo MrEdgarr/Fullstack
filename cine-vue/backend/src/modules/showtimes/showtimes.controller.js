@@ -1,9 +1,9 @@
-const showtimesRepository = require("./showtimes.repository");
-const showtimesService = require("./showtimes.service");
-const showtimeSeatsService = require("./showtime-seats.service");
-const showtimeSeatsRepository = require("./showtime-seats.repository");
+import * as showtimesRepository from "./showtimes.repository.js";
+import * as showtimesService from "./showtimes.service.js";
+import * as showtimeSeatsService from "./showtime-seats.service.js";
+import * as showtimeSeatsRepository from "./showtime-seats.repository.js";
 
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const [rows] = await showtimesRepository.getAll();
     res.json({ success: true, data: rows });
@@ -12,7 +12,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getByMovie = async (req, res, next) => {
+export const getByMovie = async (req, res, next) => {
   try {
     const [rows] = await showtimesRepository.getByMovie(req.params.movieId);
     res.json({ success: true, data: rows });
@@ -21,7 +21,7 @@ exports.getByMovie = async (req, res, next) => {
   }
 };
 
-exports.getMovieScheduleTree = async (req, res, next) => {
+export const getMovieScheduleTree = async (req, res, next) => {
   try {
     const data = await showtimesService.getMovieScheduleTree(req.params.movieId, req.query);
     res.json({ success: true, data });
@@ -30,7 +30,7 @@ exports.getMovieScheduleTree = async (req, res, next) => {
   }
 };
 
-exports.getScheduleTree = async (req, res, next) => {
+export const getScheduleTree = async (req, res, next) => {
   try {
     const data = await showtimesService.getScheduleTree(req.query);
     res.json({ success: true, data });
@@ -39,7 +39,7 @@ exports.getScheduleTree = async (req, res, next) => {
   }
 };
 
-exports.getSeats = async (req, res, next) => {
+export const getSeats = async (req, res, next) => {
   try {
     const [rows] = await showtimeSeatsService.getByShowtime(req.params.id);
     res.json({ success: true, data: rows });
@@ -48,7 +48,7 @@ exports.getSeats = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const {
       movie_id,
@@ -75,7 +75,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     const { start_time, end_time, price_standard, price_vip, price_couple } = req.body;
     await showtimesRepository.update(
@@ -92,11 +92,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await showtimesRepository.delete(req.params.id);
+    await showtimesRepository.remove(req.params.id);
     res.json({ success: true, message: "Showtime deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

@@ -1,12 +1,12 @@
-const express = require("express");
-const showtimesController = require("./showtimes.controller");
-const authMiddleware = require("../../shared/middleware/auth");
-const requireRole = require("../../shared/middleware/role");
-const validate = require("../../shared/middleware/validate");
-const {
+import express from "express";
+import * as showtimesController from "./showtimes.controller.js";
+import authMiddleware from "../../shared/middleware/auth.js";
+import requireRole from "../../shared/middleware/role.js";
+import validate from "../../shared/middleware/validate.js";
+import {
   showtimeCreateSchema,
   showtimeUpdateSchema,
-} = require("./showtimes.validation");
+} from "./showtimes.validation.js";
 
 const router = express.Router();
 const adminOnly = requireRole(["admin"]);
@@ -19,6 +19,6 @@ router.get("/:id/seats", showtimesController.getSeats);
 router.use(authMiddleware);
 router.post("/", adminOnly, validate(showtimeCreateSchema), showtimesController.create);
 router.put("/:id", adminOnly, validate(showtimeUpdateSchema), showtimesController.update);
-router.delete("/:id", adminOnly, showtimesController.delete);
+router.delete("/:id", adminOnly, showtimesController.remove);
 
-module.exports = router;
+export default router;

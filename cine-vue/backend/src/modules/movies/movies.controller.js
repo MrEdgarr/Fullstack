@@ -1,7 +1,7 @@
-const moviesRepository = require("./movies.repository");
-const moviesService = require("./movies.service");
+import * as moviesRepository from "./movies.repository.js";
+import * as moviesService from "./movies.service.js";
 
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const [rows] = await moviesRepository.getAll();
     res.json({ success: true, data: rows });
@@ -10,7 +10,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+export const getById = async (req, res, next) => {
   try {
     const [rows] = await moviesRepository.getById(req.params.id);
 
@@ -24,7 +24,7 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-exports.getNowShowing = async (req, res, next) => {
+export const getNowShowing = async (req, res, next) => {
   try {
     const [rows] = await moviesRepository.getNowShowing();
     res.json({ success: true, data: rows });
@@ -33,7 +33,7 @@ exports.getNowShowing = async (req, res, next) => {
   }
 };
 
-exports.getUpcoming = async (req, res, next) => {
+export const getUpcoming = async (req, res, next) => {
   try {
     const [rows] = await moviesRepository.getUpcoming();
     res.json({ success: true, data: rows });
@@ -42,7 +42,7 @@ exports.getUpcoming = async (req, res, next) => {
   }
 };
 
-exports.getByStatus = async (req, res, next) => {
+export const getByStatus = async (req, res, next) => {
   try {
     const [rows] = await moviesRepository.getByStatus(req.params.status);
     res.json({ success: true, data: rows });
@@ -51,7 +51,7 @@ exports.getByStatus = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     await moviesService.create(req.body, req.files);
     res.status(201).json({ success: true, message: "Movie created successfully" });
@@ -60,7 +60,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     await moviesService.update(req.params.id, req.body, req.files);
     res.json({ success: true, message: "Movie updated successfully" });
@@ -69,11 +69,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await moviesService.delete(req.params.id);
+    await moviesService.remove(req.params.id);
     res.json({ success: true, message: "Movie deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

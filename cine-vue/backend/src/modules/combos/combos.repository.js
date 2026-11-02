@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getActive = () =>
+export const getActive = () =>
   db.execute(
     `
     SELECT food_combo_id, cinema_id, combo_name, description, image_url, price

@@ -1,6 +1,6 @@
-const paymentsService = require("./payments.service");
+import * as paymentsService from "./payments.service.js";
 
-exports.getMethods = async (req, res, next) => {
+export const getMethods = async (req, res, next) => {
   try {
     const [rows] = await paymentsService.getMethods();
     res.json({ success: true, data: rows });
@@ -9,7 +9,7 @@ exports.getMethods = async (req, res, next) => {
   }
 };
 
-exports.getByBooking = async (req, res, next) => {
+export const getByBooking = async (req, res, next) => {
   try {
     const [rows] = await paymentsService.getByBooking(req.user, req.params.bookingId);
     res.json({ success: true, data: rows });
@@ -18,7 +18,7 @@ exports.getByBooking = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const data = await paymentsService.create(req.user, req.body);
     res.status(201).json({
@@ -31,7 +31,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.updateStatus = async (req, res, next) => {
+export const updateStatus = async (req, res, next) => {
   try {
     await paymentsService.updateStatus(req.user, req.params.id, req.body.status);
     res.json({ success: true, message: "Payment status updated successfully" });

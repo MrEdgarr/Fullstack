@@ -1,6 +1,6 @@
-const citiesRepository = require("./cities.repository");
+import * as citiesRepository from "./cities.repository.js";
 
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const [rows] = await citiesRepository.getAll();
     res.json({ success: true, data: rows });
@@ -9,7 +9,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+export const getById = async (req, res, next) => {
   try {
     const [rows] = await citiesRepository.getById(req.params.id);
 
@@ -23,7 +23,7 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const { city_name, country, province_code } = req.body;
     await citiesRepository.create(city_name, country, province_code);
@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     const { city_name, country, province_code } = req.body;
     await citiesRepository.update(req.params.id, city_name, country, province_code);
@@ -43,11 +43,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await citiesRepository.delete(req.params.id);
+    await citiesRepository.remove(req.params.id);
     res.json({ success: true, message: "City deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

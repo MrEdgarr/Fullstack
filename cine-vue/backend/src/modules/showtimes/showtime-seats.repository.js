@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getByShowtime = (showtimeId) =>
+export const getByShowtime = (showtimeId) =>
   db.execute(
     `
     SELECT
@@ -20,7 +20,7 @@ exports.getByShowtime = (showtimeId) =>
     [showtimeId],
   );
 
-exports.seedForShowtime = (showtimeId) =>
+export const seedForShowtime = (showtimeId) =>
   db.execute(
     `
     INSERT INTO showtime_seats (showtime_id, seat_id, price)

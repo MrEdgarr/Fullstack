@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getByBooking = (booking_id) =>
+export const getByBooking = (booking_id) =>
   db.execute(
     `
     SELECT
@@ -16,7 +16,7 @@ exports.getByBooking = (booking_id) =>
     `,
     [booking_id],
   );
-exports.create = (booking_id, showtime_seat_id, actual_price) =>
+export const create = (booking_id, showtime_seat_id, actual_price) =>
   db.execute(
     `
     INSERT INTO tickets (booking_id, showtime_seat_id, seat_id, actual_price)
@@ -26,4 +26,6 @@ exports.create = (booking_id, showtime_seat_id, actual_price) =>
     `,
     [booking_id, actual_price, showtime_seat_id],
   );
-exports.delete = (ticket_id) => db.execute("DELETE FROM tickets WHERE ticket_id = ?", [ticket_id]);
+export const remove = (ticket_id) =>
+  db.execute("DELETE FROM tickets WHERE ticket_id = ?", [ticket_id]);
+export { remove as delete };

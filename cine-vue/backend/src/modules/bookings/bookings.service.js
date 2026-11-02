@@ -1,8 +1,8 @@
-const db = require("../../shared/config/database");
-const bookingsRepository = require("./bookings.repository");
-const AppError = require("../../shared/utils/app-error");
+import db from "../../shared/config/database.js";
+import * as bookingsRepository from "./bookings.repository.js";
+import AppError from "../../shared/utils/app-error.js";
 
-exports.getByCustomer = async (currentUser, requestedCustomerId) => {
+export const getByCustomer = async (currentUser, requestedCustomerId) => {
   const isOwner = currentUser.customer_id === Number(requestedCustomerId);
   const isAdmin = currentUser.role === "admin";
 
@@ -13,9 +13,7 @@ exports.getByCustomer = async (currentUser, requestedCustomerId) => {
   return bookingsRepository.getByCustomer(requestedCustomerId);
 };
 
-exports.assertCanAccessBooking = assertCanAccessBooking;
-
-exports.create = async (customerId, payload) => {
+export const create = async (customerId, payload) => {
   const connection = await db.getConnection();
 
   try {
@@ -112,7 +110,7 @@ exports.create = async (customerId, payload) => {
   }
 };
 
-exports.updateStatus = async (currentUser, bookingId, status) => {
+export const updateStatus = async (currentUser, bookingId, status) => {
   const connection = await db.getConnection();
 
   try {
@@ -151,7 +149,7 @@ exports.updateStatus = async (currentUser, bookingId, status) => {
   }
 };
 
-exports.delete = async (currentUser, bookingId) => {
+export const remove = async (currentUser, bookingId) => {
   const connection = await db.getConnection();
 
   try {
@@ -165,7 +163,7 @@ exports.delete = async (currentUser, bookingId) => {
 
     assertCanAccessBooking(currentUser, booking);
     await bookingsRepository.releaseSeatsByBooking(connection, bookingId);
-    await bookingsRepository.delete(connection, bookingId);
+    await bookingsRepository.remove(connection, bookingId);
     await connection.commit();
   } catch (error) {
     await connection.rollback();
@@ -175,7 +173,9 @@ exports.delete = async (currentUser, bookingId) => {
   }
 };
 
-exports.updateDetails = async (currentUser, bookingId, payload) => {
+export { remove as delete };
+
+export const updateDetails = async (currentUser, bookingId, payload) => {
   const connection = await db.getConnection();
 
   try {
@@ -202,7 +202,10 @@ exports.updateDetails = async (currentUser, bookingId, payload) => {
 
     const ticketSubtotal = tickets.reduce((sum, seat) => sum + Number(seat.price), 0);
 
-    const [showtimeRows] = await bookingsRepository.getShowtimeCinema(connection, booking.showtime_id);
+    const [showtimeRows] = await bookingsRepository.getShowtimeCinema(
+      connection,
+      booking.showtime_id,
+    );
     const showtime = showtimeRows[0];
     if (!showtime) {
       throw new AppError("Showtime not found", 404);
@@ -255,8 +258,6 @@ exports.updateDetails = async (currentUser, bookingId, payload) => {
     connection.release();
   }
 };
-
-exports.confirmBooking = confirmBooking;
 
 async function getComboSummary(connection, foodCombos, showtime) {
   if (foodCombos.length === 0) {
@@ -318,7 +319,7 @@ async function getPromotionSummary(connection, promotionCode, subtotalAmount) {
   return { promotion, discountAmount };
 }
 
-async function confirmBooking(connection, bookingId) {
+export async function confirmBooking(connection, bookingId) {
   const [tickets] = await bookingsRepository.getSeatsForBooking(connection, bookingId);
 
   if (tickets.length === 0) {
@@ -328,7 +329,7 @@ async function confirmBooking(connection, bookingId) {
   await bookingsRepository.updateStatus(connection, bookingId, "confirmed");
 }
 
-function assertCanAccessBooking(currentUser, booking) {
+export function assertCanAccessBooking(currentUser, booking) {
   const isOwner = currentUser.customer_id === Number(booking.customer_id);
   const isAdmin = currentUser.role === "admin";
 

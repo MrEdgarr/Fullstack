@@ -1,6 +1,6 @@
-const roomsRepository = require("./rooms.repository");
+import * as roomsRepository from "./rooms.repository.js";
 
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   try {
     const [rows] = await roomsRepository.getAll();
     res.json({ success: true, data: rows });
@@ -9,7 +9,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
+export const getById = async (req, res, next) => {
   try {
     const [rows] = await roomsRepository.getById(req.params.id);
 
@@ -23,7 +23,7 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const { cinema_id, room_name, room_type } = req.body;
     await roomsRepository.create(cinema_id, room_name, room_type);
@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   try {
     const { room_name, room_type } = req.body;
     await roomsRepository.update(req.params.id, room_name, room_type);
@@ -43,11 +43,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await roomsRepository.delete(req.params.id);
+    await roomsRepository.remove(req.params.id);
     res.json({ success: true, message: "Room deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

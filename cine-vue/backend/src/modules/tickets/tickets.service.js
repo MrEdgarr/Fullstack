@@ -1,9 +1,9 @@
-const ticketsRepository = require("./tickets.repository");
-const bookingsRepository = require("../bookings/bookings.repository");
-const bookingsService = require("../bookings/bookings.service");
-const AppError = require("../../shared/utils/app-error");
+import * as ticketsRepository from "./tickets.repository.js";
+import * as bookingsRepository from "../bookings/bookings.repository.js";
+import * as bookingsService from "../bookings/bookings.service.js";
+import AppError from "../../shared/utils/app-error.js";
 
-exports.getByBooking = async (currentUser, bookingId) => {
+export const getByBooking = async (currentUser, bookingId) => {
   const [bookingRows] = await bookingsRepository.getById(bookingId);
   const booking = bookingRows[0];
 

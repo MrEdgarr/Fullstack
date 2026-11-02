@@ -1,7 +1,7 @@
-const ticketsRepository = require("./tickets.repository");
-const ticketsService = require("./tickets.service");
+import * as ticketsRepository from "./tickets.repository.js";
+import * as ticketsService from "./tickets.service.js";
 
-exports.getByBooking = async (req, res, next) => {
+export const getByBooking = async (req, res, next) => {
   try {
     const [rows] = await ticketsService.getByBooking(req.user, req.params.bookingId);
     res.json({ success: true, data: rows });
@@ -10,7 +10,7 @@ exports.getByBooking = async (req, res, next) => {
   }
 };
 
-exports.create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     const { booking_id, showtime_seat_id, actual_price } = req.body;
     await ticketsRepository.create(booking_id, showtime_seat_id, actual_price);
@@ -20,11 +20,13 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   try {
-    await ticketsRepository.delete(req.params.id);
+    await ticketsRepository.remove(req.params.id);
     res.json({ success: true, message: "Ticket deleted successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export { remove as delete };

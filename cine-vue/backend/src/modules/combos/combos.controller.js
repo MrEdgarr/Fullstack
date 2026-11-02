@@ -1,6 +1,6 @@
-const combosRepository = require("./combos.repository");
+import * as combosRepository from "./combos.repository.js";
 
-exports.getActive = async (req, res, next) => {
+export const getActive = async (req, res, next) => {
   try {
     const [rows] = await combosRepository.getActive();
     res.json({ success: true, data: rows });

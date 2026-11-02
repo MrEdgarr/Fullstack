@@ -1,10 +1,10 @@
-const express = require("express");
-const moviesController = require("./movies.controller");
-const { upload } = require("../../shared/middleware/upload-cloudinary");
-const authMiddleware = require("../../shared/middleware/auth");
-const requireRole = require("../../shared/middleware/role");
-const validate = require("../../shared/middleware/validate");
-const { movieSchema } = require("./movies.validation");
+import express from "express";
+import * as moviesController from "./movies.controller.js";
+import { upload } from "../../shared/middleware/upload-cloudinary.js";
+import authMiddleware from "../../shared/middleware/auth.js";
+import requireRole from "../../shared/middleware/role.js";
+import validate from "../../shared/middleware/validate.js";
+import { movieSchema } from "./movies.validation.js";
 
 const router = express.Router();
 const adminOnly = requireRole(["admin"]);
@@ -36,6 +36,6 @@ router.put(
   validate(movieSchema),
   moviesController.update,
 );
-router.delete("/:id", adminOnly, moviesController.delete);
+router.delete("/:id", adminOnly, moviesController.remove);
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getByCustomer = (customerId) =>
+export const getByCustomer = (customerId) =>
   db.execute(
     `
     SELECT 
@@ -33,10 +33,10 @@ exports.getByCustomer = (customerId) =>
     [customerId],
   );
 
-exports.getById = (bookingId) =>
+export const getById = (bookingId) =>
   db.execute("SELECT * FROM bookings WHERE booking_id = ?", [bookingId]);
 
-exports.getSelectedSeatsForUpdate = (connection, showtimeId, seatIds) =>
+export const getSelectedSeatsForUpdate = (connection, showtimeId, seatIds) =>
   connection.query(
     `
     SELECT showtime_seat_id, seat_id, price, status
@@ -49,7 +49,7 @@ exports.getSelectedSeatsForUpdate = (connection, showtimeId, seatIds) =>
     [showtimeId, seatIds],
   );
 
-exports.getShowtimeCinema = (connection, showtimeId) =>
+export const getShowtimeCinema = (connection, showtimeId) =>
   connection.query(
     `
     SELECT st.showtime_id, r.cinema_id
@@ -60,7 +60,7 @@ exports.getShowtimeCinema = (connection, showtimeId) =>
     [showtimeId],
   );
 
-exports.getActiveCombosForUpdate = (connection, comboIds) =>
+export const getActiveCombosForUpdate = (connection, comboIds) =>
   connection.query(
     `
     SELECT food_combo_id, cinema_id, price
@@ -72,7 +72,7 @@ exports.getActiveCombosForUpdate = (connection, comboIds) =>
     [comboIds],
   );
 
-exports.getPromotionForUpdate = (connection, promotionCode) =>
+export const getPromotionForUpdate = (connection, promotionCode) =>
   connection.query(
     `
     SELECT *
@@ -86,7 +86,7 @@ exports.getPromotionForUpdate = (connection, promotionCode) =>
     [promotionCode],
   );
 
-exports.create = (
+export const create = (
   connection,
   customerId,
   showtimeId,
@@ -117,7 +117,7 @@ exports.create = (
     ],
   );
 
-exports.createTicketsForSeats = (connection, bookingId, seatIds) =>
+export const createTicketsForSeats = (connection, bookingId, seatIds) =>
   connection.query(
     `
     INSERT INTO tickets (booking_id, showtime_seat_id, seat_id, actual_price)
@@ -129,7 +129,7 @@ exports.createTicketsForSeats = (connection, bookingId, seatIds) =>
     [bookingId, seatIds],
   );
 
-exports.markSeatsBooked = (connection, seatIds) =>
+export const markSeatsBooked = (connection, seatIds) =>
   connection.query(
     `
     UPDATE showtime_seats
@@ -139,7 +139,7 @@ exports.markSeatsBooked = (connection, seatIds) =>
     [seatIds],
   );
 
-exports.releaseSeatsByBooking = (connection, bookingId) =>
+export const releaseSeatsByBooking = (connection, bookingId) =>
   connection.query(
     `
     UPDATE showtime_seats ss
@@ -150,7 +150,7 @@ exports.releaseSeatsByBooking = (connection, bookingId) =>
     [bookingId],
   );
 
-exports.createFoodComboLines = (connection, comboValues) =>
+export const createFoodComboLines = (connection, comboValues) =>
   connection.query(
     `
     INSERT INTO booking_food_combos (
@@ -165,19 +165,21 @@ exports.createFoodComboLines = (connection, comboValues) =>
     [comboValues],
   );
 
-exports.getByIdForUpdate = (connection, bookingId) =>
+export const getByIdForUpdate = (connection, bookingId) =>
   connection.query("SELECT * FROM bookings WHERE booking_id = ? FOR UPDATE", [bookingId]);
 
-exports.updateStatus = (connection, bookingId, status) =>
+export const updateStatus = (connection, bookingId, status) =>
   connection.query("UPDATE bookings SET status = ? WHERE booking_id = ?", [status, bookingId]);
 
-exports.delete = (connection, bookingId) =>
+export const remove = (connection, bookingId) =>
   connection.query("DELETE FROM bookings WHERE booking_id = ?", [bookingId]);
 
-exports.deleteFoodCombos = (connection, bookingId) =>
+export { remove as delete };
+
+export const deleteFoodCombos = (connection, bookingId) =>
   connection.query("DELETE FROM booking_food_combos WHERE booking_id = ?", [bookingId]);
 
-exports.updateBookingDetails = (
+export const updateBookingDetails = (
   connection,
   bookingId,
   promotionId,
@@ -197,7 +199,7 @@ exports.updateBookingDetails = (
     [promotionId, subtotalAmount, discountAmount, finalAmount, bookingId],
   );
 
-exports.getSeatsForBooking = (connection, bookingId) =>
+export const getSeatsForBooking = (connection, bookingId) =>
   connection.query(
     `
     SELECT showtime_seat_id, actual_price AS price

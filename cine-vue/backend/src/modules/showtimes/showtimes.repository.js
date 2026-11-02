@@ -1,4 +1,4 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
 const SHOWTIME_SELECT = `
   SELECT
@@ -36,14 +36,14 @@ const SHOWTIME_SELECT = `
   JOIN cities city ON c.city_id = city.city_id
 `;
 
-exports.getAll = () =>
+export const getAll = () =>
   db.execute(`
   ${SHOWTIME_SELECT}
   WHERE s.status = 'scheduled'
   ORDER BY s.start_time
 `);
 
-exports.getByMovie = (movie_id) =>
+export const getByMovie = (movie_id) =>
   db.execute(
     `
     ${SHOWTIME_SELECT}
@@ -54,7 +54,7 @@ exports.getByMovie = (movie_id) =>
     [movie_id],
   );
 
-exports.getMovieScheduleRows = (movieId, { date, cityId, cinemaId } = {}) => {
+export const getMovieScheduleRows = (movieId, { date, cityId, cinemaId } = {}) => {
   const conditions = ["s.status = 'scheduled'", "s.movie_id = ?"];
   const params = [movieId];
 
@@ -83,7 +83,7 @@ exports.getMovieScheduleRows = (movieId, { date, cityId, cinemaId } = {}) => {
   );
 };
 
-exports.getMovieScheduleOptionRows = (movieId) =>
+export const getMovieScheduleOptionRows = (movieId) =>
   db.execute(
     `
     ${SHOWTIME_SELECT}
@@ -94,7 +94,7 @@ exports.getMovieScheduleOptionRows = (movieId) =>
     [movieId],
   );
 
-exports.getScheduleRows = ({ date, cityId, cinemaId, movieId } = {}) => {
+export const getScheduleRows = ({ date, cityId, cinemaId, movieId } = {}) => {
   const conditions = ["s.status = 'scheduled'"];
   const params = [];
 
@@ -128,14 +128,14 @@ exports.getScheduleRows = ({ date, cityId, cinemaId, movieId } = {}) => {
   );
 };
 
-exports.getScheduleOptionRows = () =>
+export const getScheduleOptionRows = () =>
   db.execute(`
     ${SHOWTIME_SELECT}
     WHERE s.status = 'scheduled'
     ORDER BY s.start_time, m.title, c.cinema_name
   `);
 
-exports.create = (
+export const create = (
   movie_id,
   room_id,
   start_time,
@@ -159,9 +159,10 @@ exports.create = (
     `,
     [movie_id, room_id, start_time, end_time, price_standard, price_vip, price_couple],
   );
-exports.update = (id, start_time, end_time, price_standard, price_vip, price_couple) =>
+export const update = (id, start_time, end_time, price_standard, price_vip, price_couple) =>
   db.execute(
     "UPDATE showtimes SET start_time = ?, end_time = ?, price_standard = ?, price_vip = ?, price_couple = ? WHERE showtime_id = ?",
     [start_time, end_time, price_standard, price_vip, price_couple, id],
   );
-exports.delete = (id) => db.execute("DELETE FROM showtimes WHERE showtime_id = ?", [id]);
+export const remove = (id) => db.execute("DELETE FROM showtimes WHERE showtime_id = ?", [id]);
+export { remove as delete };

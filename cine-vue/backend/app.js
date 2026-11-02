@@ -1,17 +1,17 @@
-const express = require("express");
-const logger = require("morgan");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const cors = require("cors");
+import "dotenv/config";
+import express from "express";
+import logger from "morgan";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import cors from "cors";
 
-require("dotenv").config({ quiet: true });
-
-const indexRouter = require("./src/routes");
-const errorHandler = require("./src/shared/middleware/error-handler");
+import indexRouter from "./src/routes/index.js";
+import errorHandler from "./src/shared/middleware/error-handler.js";
 
 const app = express();
-const allowedOrigins = (process.env.FRONTEND_URLS ||
-  "http://localhost:5173,http://127.0.0.1:5173")
+const allowedOrigins = (
+  process.env.FRONTEND_URLS || "http://localhost:5173,http://127.0.0.1:5173"
+)
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -67,4 +67,4 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

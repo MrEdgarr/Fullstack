@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getActiveByCode = (code) =>
+export const getActiveByCode = (code) =>
   db.execute(
     `
     SELECT *

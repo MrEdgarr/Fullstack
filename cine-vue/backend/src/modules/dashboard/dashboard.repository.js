@@ -1,9 +1,9 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
 /**
  * Tạo mệnh đề WHERE theo khoảng thời gian cho bảng bookings
  */
-function buildDateCondition(period, alias = "b") {
+export function buildDateCondition(period, alias = "b") {
   switch (period) {
     case "today":
       return `${alias}.created_at >= CURDATE()`;
@@ -27,7 +27,7 @@ function buildDateCondition(period, alias = "b") {
 /**
  * Tạo mệnh đề WHERE cho kỳ trước đó để so sánh tăng trưởng
  */
-function buildPreviousDateCondition(period, alias = "b") {
+export function buildPreviousDateCondition(period, alias = "b") {
   switch (period) {
     case "today":
       return `${alias}.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ${alias}.created_at < CURDATE()`;
@@ -49,19 +49,37 @@ function buildPreviousDateCondition(period, alias = "b") {
 }
 
 /**
- * 1. Lấy chỉ số tổng quan đơn hàng & doanh thu
+ * Tạo điều kiện lọc theo thương hiệu rạp hợp tác (brand_id)
  */
-exports.getBookingMetrics = async (condition) => {
+export function buildBrandCondition(brandId, cinemaAlias = "c") {
+  const parsed = Number(brandId);
+  if (!parsed || Number.isNaN(parsed) || parsed <= 0) {
+    return "1=1";
+  }
+  return `${cinemaAlias}.brand_id = ${parsed}`;
+}
+
+/**
+ * 1. Lấy chỉ số tổng quan đơn hàng & doanh thu (hỗ trợ lọc theo đối tác rạp)
+ */
+export const getBookingMetrics = async (condition, brandId = null) => {
+  const brandCondition = buildBrandCondition(brandId, "c");
   const [rows] = await db.execute(`
     SELECT
       COUNT(b.booking_id) AS total_bookings,
       COUNT(CASE WHEN b.status IN ('confirmed', 'completed') THEN 1 END) AS successful_bookings,
+      COUNT(CASE WHEN b.status = 'confirmed' THEN 1 END) AS confirmed_bookings,
+      COUNT(CASE WHEN b.status = 'completed' THEN 1 END) AS completed_bookings,
       COUNT(CASE WHEN b.status = 'cancelled' THEN 1 END) AS cancelled_bookings,
       COUNT(CASE WHEN b.status = 'pending' THEN 1 END) AS pending_bookings,
       COALESCE(SUM(CASE WHEN b.status IN ('confirmed', 'completed') THEN b.final_amount ELSE 0 END), 0) AS total_revenue,
       COALESCE(SUM(CASE WHEN b.status IN ('confirmed', 'completed') THEN b.discount_amount ELSE 0 END), 0) AS total_discount
     FROM bookings b
+    JOIN showtimes s ON s.showtime_id = b.showtime_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     WHERE ${condition}
+      AND ${brandCondition}
   `);
   return rows[0];
 };
@@ -69,15 +87,20 @@ exports.getBookingMetrics = async (condition) => {
 /**
  * 2. Lấy chỉ số vé bán ra
  */
-exports.getTicketMetrics = async (condition) => {
+export const getTicketMetrics = async (condition, brandId = null) => {
+  const brandCondition = buildBrandCondition(brandId, "c");
   const [rows] = await db.execute(`
     SELECT
       COUNT(t.ticket_id) AS total_tickets,
       COALESCE(SUM(t.actual_price), 0) AS ticket_revenue
     FROM tickets t
     JOIN bookings b ON b.booking_id = t.booking_id
+    JOIN showtimes s ON s.showtime_id = b.showtime_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     WHERE b.status IN ('confirmed', 'completed')
       AND ${condition}
+      AND ${brandCondition}
   `);
   return rows[0];
 };
@@ -85,15 +108,20 @@ exports.getTicketMetrics = async (condition) => {
 /**
  * 3. Lấy chỉ số Bắp nước (F&B)
  */
-exports.getFnbMetrics = async (condition) => {
+export const getFnbMetrics = async (condition, brandId = null) => {
+  const brandCondition = buildBrandCondition(brandId, "c");
   const [rows] = await db.execute(`
     SELECT
       COALESCE(SUM(bfc.line_total), 0) AS total_fnb,
       COALESCE(SUM(bfc.quantity), 0) AS total_items
     FROM booking_food_combos bfc
     JOIN bookings b ON b.booking_id = bfc.booking_id
+    JOIN showtimes s ON s.showtime_id = b.showtime_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     WHERE b.status IN ('confirmed', 'completed')
       AND ${condition}
+      AND ${brandCondition}
   `);
   return rows[0];
 };
@@ -101,16 +129,20 @@ exports.getFnbMetrics = async (condition) => {
 /**
  * 4. Lấy tỷ lệ lấp đầy ghế (Occupancy rate)
  */
-exports.getOccupancyRate = async (condition) => {
+export const getOccupancyRate = async (condition, brandId = null) => {
+  const brandCondition = buildBrandCondition(brandId, "c");
   const [rows] = await db.execute(`
     SELECT
       COUNT(t.ticket_id) AS tickets_sold,
       (COUNT(DISTINCT s.showtime_id) * 60) AS total_capacity,
       ROUND(COUNT(t.ticket_id) * 100.0 / NULLIF(COUNT(DISTINCT s.showtime_id) * 60, 0), 2) AS occupancy_rate
     FROM showtimes s
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     LEFT JOIN bookings b ON b.showtime_id = s.showtime_id AND b.status IN ('confirmed', 'completed') AND ${condition}
     LEFT JOIN tickets t ON t.booking_id = b.booking_id
     WHERE s.start_time <= NOW()
+      AND ${brandCondition}
   `);
   return rows[0];
 };
@@ -118,8 +150,9 @@ exports.getOccupancyRate = async (condition) => {
 /**
  * 5. Lấy xu hướng doanh thu theo thời gian
  */
-exports.getRevenueTrend = async (period) => {
+export const getRevenueTrend = async (period, brandId = null) => {
   const condition = buildDateCondition(period, "b");
+  const brandCondition = buildBrandCondition(brandId, "c");
   const dateFormat = period === "year" ? "%Y-%m" : "%Y-%m-%d";
 
   const [rows] = await db.execute(`
@@ -130,8 +163,12 @@ exports.getRevenueTrend = async (period) => {
       COALESCE(SUM(b.discount_amount), 0) AS discount_amount,
       COALESCE(SUM(b.final_amount), 0) AS total_revenue
     FROM bookings b
+    JOIN showtimes s ON s.showtime_id = b.showtime_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     WHERE b.status IN ('confirmed', 'completed')
       AND ${condition}
+      AND ${brandCondition}
     GROUP BY date_label
     ORDER BY date_label ASC
   `);
@@ -141,8 +178,9 @@ exports.getRevenueTrend = async (period) => {
 /**
  * 6. Lấy Top phim doanh thu cao nhất
  */
-exports.getTopMovies = async (period, limit = 5) => {
+export const getTopMovies = async (period, limit = 5, brandId = null) => {
   const condition = buildDateCondition(period, "b");
+  const brandCondition = buildBrandCondition(brandId, "c");
   const safeLimit = Math.max(1, Math.min(20, Number(limit) || 5));
 
   const [rows] = await db.query(
@@ -157,9 +195,12 @@ exports.getTopMovies = async (period, limit = 5) => {
       COALESCE(SUM(t.actual_price), 0) AS ticket_revenue
     FROM movies m
     JOIN showtimes s ON s.movie_id = m.movie_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     JOIN bookings b ON b.showtime_id = s.showtime_id AND b.status IN ('confirmed', 'completed')
     JOIN tickets t ON t.booking_id = b.booking_id
     WHERE ${condition}
+      AND ${brandCondition}
     GROUP BY m.movie_id, m.title, m.poster_url, m.duration_minutes
     ORDER BY ticket_revenue DESC
     LIMIT ?
@@ -172,8 +213,9 @@ exports.getTopMovies = async (period, limit = 5) => {
 /**
  * 7. Lấy cơ cấu phân bổ doanh thu (Loại ghế, Nguồn thu, Cụm rạp)
  */
-exports.getRevenueDistribution = async (period) => {
+export const getRevenueDistribution = async (period, brandId = null) => {
   const condition = buildDateCondition(period, "b");
+  const brandCondition = buildBrandCondition(brandId, "c");
 
   const [seatTypes] = await db.execute(`
     SELECT
@@ -183,8 +225,12 @@ exports.getRevenueDistribution = async (period) => {
     FROM tickets t
     JOIN seats se ON se.seat_id = t.seat_id
     JOIN bookings b ON b.booking_id = t.booking_id
+    JOIN showtimes s ON s.showtime_id = b.showtime_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
     WHERE b.status IN ('confirmed', 'completed')
       AND ${condition}
+      AND ${brandCondition}
     GROUP BY se.seat_type
   `);
 
@@ -192,14 +238,18 @@ exports.getRevenueDistribution = async (period) => {
     SELECT
       c.cinema_id,
       c.cinema_name,
-      COUNT(b.booking_id) AS total_orders,
+      cb.brand_id,
+      cb.brand_name,
+      COUNT(DISTINCT b.booking_id) AS total_orders,
       COALESCE(SUM(b.final_amount), 0) AS total_revenue
     FROM cinemas c
+    JOIN cinema_brands cb ON cb.brand_id = c.brand_id
     JOIN screening_rooms r ON r.cinema_id = c.cinema_id
     JOIN showtimes s ON s.room_id = r.room_id
     JOIN bookings b ON b.showtime_id = s.showtime_id AND b.status IN ('confirmed', 'completed')
     WHERE ${condition}
-    GROUP BY c.cinema_id, c.cinema_name
+      AND ${brandCondition}
+    GROUP BY c.cinema_id, c.cinema_name, cb.brand_id, cb.brand_name
     ORDER BY total_revenue DESC
     LIMIT 6
   `);
@@ -210,9 +260,10 @@ exports.getRevenueDistribution = async (period) => {
 /**
  * 8. Lấy danh sách giao dịch đặt vé gần đây nhất
  */
-exports.getRecentBookings = async (limit = 8, period = "all") => {
+export const getRecentBookings = async (limit = 8, period = "all", brandId = null) => {
   const safeLimit = Math.max(1, Math.min(50, Number(limit) || 8));
   const condition = buildDateCondition(period, "b");
+  const brandCondition = buildBrandCondition(brandId, "ci");
 
   const [rows] = await db.query(
     `
@@ -226,6 +277,7 @@ exports.getRecentBookings = async (limit = 8, period = "all") => {
       c.email AS customer_email,
       m.title AS movie_title,
       ci.cinema_name,
+      cb.brand_name,
       r.room_name,
       s.start_time,
       (
@@ -240,7 +292,9 @@ exports.getRecentBookings = async (limit = 8, period = "all") => {
     JOIN movies m ON m.movie_id = s.movie_id
     JOIN screening_rooms r ON r.room_id = s.room_id
     JOIN cinemas ci ON ci.cinema_id = r.cinema_id
+    JOIN cinema_brands cb ON cb.brand_id = ci.brand_id
     WHERE ${condition}
+      AND ${brandCondition}
     ORDER BY b.created_at DESC
     LIMIT ?
     `,
@@ -249,5 +303,60 @@ exports.getRecentBookings = async (limit = 8, period = "all") => {
   return rows;
 };
 
-exports.buildDateCondition = buildDateCondition;
-exports.buildPreviousDateCondition = buildPreviousDateCondition;
+/**
+ * 9. Thống kê Đối soát & Hiệu suất của tất cả Thương hiệu Rạp Hợp tác (Partner Brands)
+ */
+export const getPartnerBrandsMetrics = async (period = "all") => {
+  const condition = buildDateCondition(period, "b");
+
+  const [rows] = await db.execute(`
+    SELECT
+      cb.brand_id,
+      cb.brand_name,
+      cb.logo_url,
+      cb.status,
+      COUNT(DISTINCT c.cinema_id) AS cinemas_count,
+      COUNT(DISTINCT r.room_id) AS rooms_count,
+      COUNT(DISTINCT CASE WHEN b.status IN ('confirmed', 'completed') AND (${condition}) THEN b.booking_id END) AS successful_orders,
+      COUNT(DISTINCT CASE WHEN (${condition}) THEN b.booking_id END) AS total_orders,
+      COUNT(CASE WHEN b.status IN ('confirmed', 'completed') AND (${condition}) THEN t.ticket_id END) AS tickets_sold,
+      COALESCE(
+        SUM(
+          CASE
+            WHEN b.status IN ('confirmed', 'completed') AND (${condition}) THEN t.actual_price
+            ELSE 0
+          END
+        ),
+        0
+      ) AS ticket_revenue
+    FROM cinema_brands cb
+    LEFT JOIN cinemas c ON c.brand_id = cb.brand_id AND c.status = 'active'
+    LEFT JOIN screening_rooms r ON r.cinema_id = c.cinema_id AND r.status = 'active'
+    LEFT JOIN showtimes s ON s.room_id = r.room_id
+    LEFT JOIN bookings b ON b.showtime_id = s.showtime_id
+    LEFT JOIN tickets t ON t.booking_id = b.booking_id
+    GROUP BY cb.brand_id, cb.brand_name, cb.logo_url, cb.status
+    ORDER BY ticket_revenue DESC, cinemas_count DESC, cb.brand_id ASC
+  `);
+
+  // Tính tổng GMV (bao gồm cả combo bắp nước và trừ khuyến mãi) theo từng brand
+  const [gmvRows] = await db.execute(`
+    SELECT
+      c.brand_id,
+      COALESCE(SUM(b.final_amount), 0) AS gross_revenue
+    FROM bookings b
+    JOIN showtimes s ON s.showtime_id = b.showtime_id
+    JOIN screening_rooms r ON r.room_id = s.room_id
+    JOIN cinemas c ON c.cinema_id = r.cinema_id
+    WHERE b.status IN ('confirmed', 'completed')
+      AND ${condition}
+    GROUP BY c.brand_id
+  `);
+
+  const gmvMap = new Map(gmvRows.map((item) => [Number(item.brand_id), Number(item.gross_revenue)]));
+
+  return rows.map((row) => ({
+    ...row,
+    gross_revenue: gmvMap.get(Number(row.brand_id)) || 0,
+  }));
+};

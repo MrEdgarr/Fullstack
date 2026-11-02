@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "node:fs";
 
 function hasEnv(name) {
   return Object.prototype.hasOwnProperty.call(process.env, name);
@@ -33,13 +33,13 @@ function getSslConfig() {
   return undefined;
 }
 
-function getDatabaseConfig() {
+export function getDatabaseConfig() {
   const config = {
     host: pickEnv(["DB_HOST", "MYSQL_ADDON_HOST"]),
     port: Number(pickEnv(["DB_PORT", "MYSQL_ADDON_PORT"]) || 3306),
-    user: pickEnv(["DB_USERNAME", "MYSQL_ADDON_USER"]),
+    user: pickEnv(["DB_USERNAME", "DB_USER", "MYSQL_ADDON_USER"]),
     password: pickEnv(["DB_PASSWORD", "MYSQL_ADDON_PASSWORD"], { allowEmpty: true }),
-    database: pickEnv(["DB_DBNAME", "MYSQL_ADDON_DB"]),
+    database: pickEnv(["DB_DBNAME", "DB_NAME", "MYSQL_ADDON_DB"]),
     timezone: process.env.DB_TIMEZONE || "Z",
   };
 
@@ -48,7 +48,3 @@ function getDatabaseConfig() {
 
   return config;
 }
-
-module.exports = {
-  getDatabaseConfig,
-};

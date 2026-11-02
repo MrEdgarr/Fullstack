@@ -1,8 +1,8 @@
-const express = require("express");
-const combosController = require("./combos.controller");
+import express from "express";
+import * as combosController from "./combos.controller.js";
 
 const router = express.Router();
 
 router.get("/", combosController.getActive);
 
-module.exports = router;
+export default router;

@@ -1,8 +1,12 @@
-const express = require("express");
-const bookingsController = require("./bookings.controller");
-const authMiddleware = require("../../shared/middleware/auth");
-const validate = require("../../shared/middleware/validate");
-const { bookingSchema, bookingStatusSchema, bookingDetailsSchema } = require("./bookings.validation");
+import express from "express";
+import * as bookingsController from "./bookings.controller.js";
+import authMiddleware from "../../shared/middleware/auth.js";
+import validate from "../../shared/middleware/validate.js";
+import {
+  bookingSchema,
+  bookingStatusSchema,
+  bookingDetailsSchema,
+} from "./bookings.validation.js";
 
 const router = express.Router();
 
@@ -11,6 +15,6 @@ router.post("/", validate(bookingSchema), bookingsController.create);
 router.get("/customer/:customerId", bookingsController.getByCustomer);
 router.put("/:id/details", validate(bookingDetailsSchema), bookingsController.updateDetails);
 router.put("/:id/status", validate(bookingStatusSchema), bookingsController.updateStatus);
-router.delete("/:id", bookingsController.delete);
+router.delete("/:id", bookingsController.remove);
 
-module.exports = router;
+export default router;

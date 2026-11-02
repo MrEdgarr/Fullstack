@@ -1,6 +1,6 @@
-const db = require("../../shared/config/database");
+import db from "../../shared/config/database.js";
 
-exports.getMethods = () =>
+export const getMethods = () =>
   db.execute(`
     SELECT
       payment_method_id,
@@ -15,7 +15,7 @@ exports.getMethods = () =>
     ORDER BY sort_order ASC, payment_method_id ASC
   `);
 
-exports.getActiveMethodByPaymentMethod = (paymentMethod) =>
+export const getActiveMethodByPaymentMethod = (paymentMethod) =>
   db.execute(
     `
     SELECT payment_method_id
@@ -27,10 +27,10 @@ exports.getActiveMethodByPaymentMethod = (paymentMethod) =>
     [paymentMethod],
   );
 
-exports.getByBooking = (bookingId) =>
+export const getByBooking = (bookingId) =>
   db.execute("SELECT * FROM payments WHERE booking_id = ?", [bookingId]);
 
-exports.create = (connection, bookingId, amount, paymentMethod, transactionId) =>
+export const create = (connection, bookingId, amount, paymentMethod, transactionId) =>
   connection.query(
     `
     INSERT INTO payments (
@@ -44,10 +44,10 @@ exports.create = (connection, bookingId, amount, paymentMethod, transactionId) =
     [bookingId, amount, paymentMethod, transactionId || null],
   );
 
-exports.getByIdForUpdate = (connection, paymentId) =>
+export const getByIdForUpdate = (connection, paymentId) =>
   connection.query("SELECT * FROM payments WHERE payment_id = ? FOR UPDATE", [paymentId]);
 
-exports.updateStatus = (connection, paymentId, status) =>
+export const updateStatus = (connection, paymentId, status) =>
   connection.query("UPDATE payments SET status = ?, payment_time = NOW() WHERE payment_id = ?", [
     status,
     paymentId,
