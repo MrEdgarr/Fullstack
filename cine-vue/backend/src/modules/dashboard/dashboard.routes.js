@@ -6,8 +6,6 @@ import requireRole from "../../shared/middleware/role.js";
 const router = express.Router();
 const adminOnly = requireRole(["admin"]);
 
-// Tất cả API dashboard đều yêu cầu xác thực tài khoản và quyền Admin
-// Trong môi trường development, hỗ trợ preview dữ liệu dashboard khi chưa đăng nhập
 router.use((req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

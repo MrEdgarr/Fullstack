@@ -4,8 +4,8 @@ import api from "@/_services/api";
 export function useDashboard() {
   const isLoading = ref(false);
   const error = ref(null);
-  const selectedPeriod = ref("all"); // 'today' | '7d' | '30d' | '6m' | '1y' | 'all'
-  const selectedBrandId = ref(""); // '' (Tất cả đối tác) hoặc brand_id
+  const selectedPeriod = ref("all");
+  const selectedBrandId = ref("");
 
   const overview = ref({
     summary: {
@@ -74,7 +74,6 @@ export function useDashboard() {
         overview.value = res.data.data;
       }
     } catch (err) {
-      console.warn("[useDashboard] Backend overview fallback/warning:", err.message);
       error.value =
         err.response?.data?.message || err.message || "Không thể tải dữ liệu từ máy chủ";
     } finally {

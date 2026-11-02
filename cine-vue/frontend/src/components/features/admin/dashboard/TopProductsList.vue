@@ -2,7 +2,6 @@
     <div
         class="bg-base-100 rounded-2xl p-5 sm:p-6 border border-base-300 shadow-xs h-full flex flex-col justify-between"
     >
-        <!-- Header -->
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                 Phim bán chạy nhất
@@ -16,13 +15,9 @@
             </button>
         </div>
 
-        <!-- Product Items List -->
-        <!-- Loading Skeleton List -->
         <div v-if="isLoading" class="flex flex-col gap-4 grow justify-center animate-pulse">
             <div v-for="i in 5" :key="i" class="flex items-center gap-3.5">
-                <!-- Thumbnail skeleton -->
                 <div class="skeleton w-11 h-11 rounded-xl shrink-0"></div>
-                <!-- Title & Progress skeleton -->
                 <div class="grow min-w-0 space-y-2">
                     <div class="flex items-center justify-between">
                         <div class="skeleton h-3.5 w-32 rounded-md"></div>
@@ -33,14 +28,12 @@
             </div>
         </div>
 
-        <!-- Loaded List -->
         <div v-else-if="displayedProducts.length > 0" class="flex flex-col gap-4 grow justify-center">
             <div
                 v-for="product in displayedProducts"
                 :key="product.id"
                 class="flex items-center gap-3.5 group"
             >
-                <!-- Product / Movie Poster Thumbnail -->
                 <div
                     class="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200/60 shadow-2xs"
                 >
@@ -52,12 +45,10 @@
                         loading="lazy"
                     />
                     <div v-else class="text-slate-400">
-                        <!-- Default icon -->
                         <BaseIcon name="movie" size="20" />
                     </div>
                 </div>
 
-                <!-- Title & Progress Bar -->
                 <div class="grow min-w-0">
                     <div class="flex items-center justify-between mb-1.5">
                         <h4
@@ -71,7 +62,6 @@
                         </span>
                     </div>
 
-                    <!-- Progress Bar -->
                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                         <div
                             class="h-full rounded-full transition-all duration-500"
@@ -85,7 +75,6 @@
             </div>
         </div>
 
-        <!-- Empty State -->
         <div v-else class="flex flex-col items-center justify-center py-10 text-slate-400 grow">
             <BaseIcon name="movie" size="32" class="opacity-30 mb-2" />
             <p class="text-xs text-base-content/50">Không có dữ liệu phim trong khoảng thời gian này</p>
@@ -112,7 +101,6 @@ const props = defineProps({
     },
 });
 
-// Color palettes matching reference bars (Blue, Green, Cyan, Amber/Coral, Purple)
 const barColors = ["#0284C7", "#10B981", "#0284C7", "#E11D48", "#8B5CF6"];
 
 const fallbackProducts = [
@@ -168,7 +156,6 @@ const displayedProducts = computed(() => {
             };
         });
     }
-    // Chỉ fallback khi chưa từng truyền prop topMovies (chưa gọi API)
     if (props.topMovies === null || props.topMovies === undefined) {
         return fallbackProducts;
     }

@@ -1,6 +1,5 @@
 <template>
     <div class="space-y-6">
-        <!-- Dashboard Page Header: Title & Global Filters (Partner Brand + Period) -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-5">
             <div>
                 <div class="flex items-center gap-2.5 flex-wrap">
@@ -27,9 +26,7 @@
                 </p>
             </div>
 
-            <!-- Global Filters: Partner Brand & Time Period -->
             <div class="flex flex-wrap items-center gap-3">
-                <!-- Partner Brand Filter -->
                 <select
                     :value="selectedBrandId"
                     @change="handleBrandChange($event.target.value)"
@@ -45,7 +42,6 @@
                     </option>
                 </select>
 
-                <!-- Global Period Filter -->
                 <select
                     :value="selectedPeriod"
                     @change="handlePeriodChange($event.target.value)"
@@ -60,7 +56,6 @@
             </div>
         </div>
 
-        <!-- Top Summary Cards (4 Cards: GMV, Platform Commission, Orders, Tickets) -->
         <DashboardKpiCards
             :is-loading="isLoading"
             :summary="summary"
@@ -68,7 +63,6 @@
             :format-number="formatNumber"
         />
 
-        <!-- Partner Brands Reconciliation & Performance Table -->
         <PartnerBrandsTable
             :is-loading="isLoading"
             :partner-brands="partnerBrands"
@@ -78,9 +72,7 @@
             @select-brand="handleBrandChange"
         />
 
-        <!-- Middle Row: Sales Overview & Order Status -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <!-- Sales Overview Area Chart (approx 7 cols or 7/12) -->
             <div class="lg:col-span-7 flex flex-col">
                 <SalesOverviewChart
                     :is-loading="isLoading"
@@ -89,7 +81,6 @@
                 />
             </div>
 
-            <!-- Order Status Donut Chart (approx 5 cols or 5/12) -->
             <div class="lg:col-span-5 flex flex-col">
                 <OrderStatusDonutChart
                     :is-loading="isLoading"
@@ -99,9 +90,7 @@
             </div>
         </div>
 
-        <!-- Bottom Row: Recent Orders & Top Products -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <!-- Recent Orders Table (approx 7 cols or 7/12) -->
             <div class="lg:col-span-7 flex flex-col">
                 <RecentOrdersTable
                     :is-loading="isLoading"
@@ -110,7 +99,6 @@
                 />
             </div>
 
-            <!-- Top Products List (approx 5 cols or 5/12) -->
             <div class="lg:col-span-5 flex flex-col">
                 <TopProductsList
                     :is-loading="isLoading"

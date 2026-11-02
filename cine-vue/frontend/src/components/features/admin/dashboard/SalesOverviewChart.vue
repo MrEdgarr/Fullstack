@@ -2,7 +2,6 @@
     <div
         class="bg-base-100 rounded-2xl p-5 sm:p-6 border border-base-300 shadow-xs h-full flex flex-col justify-between"
     >
-        <!-- Header -->
         <div class="flex items-center justify-between mb-4">
             <div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
@@ -20,9 +19,7 @@
             </div>
         </div>
 
-        <!-- Chart Body -->
         <div class="w-full min-h-[280px] grow flex items-center justify-center">
-            <!-- Loading Skeleton Chart -->
             <div
                 v-if="isLoading"
                 class="w-full h-[280px] flex flex-col justify-end gap-3 px-2 sm:px-4 py-4 animate-pulse"
@@ -40,7 +37,6 @@
                 </div>
             </div>
 
-            <!-- Area Chart -->
             <apexchart
                 v-else-if="chartSeries[0]?.data?.length"
                 type="area"
@@ -75,7 +71,6 @@ const props = defineProps({
     },
 });
 
-// Fallback demo data if backend has no records yet for this period
 const defaultMonths = ["Thg 5", "Thg 6", "Thg 7", "Thg 8", "Thg 9", "Thg 10"];
 const defaultValues = [1200000, 2400000, 3100000, 4800000, 6200000, 8380000];
 
@@ -83,7 +78,6 @@ const categories = computed(() => {
     if (props.trendData && props.trendData.length > 0) {
         return props.trendData.map((item) => {
             const raw = item.date || item.date_label || "";
-            // If date is YYYY-MM-DD or YYYY-MM, format cleanly
             if (raw.includes("-")) {
                 const parts = raw.split("-");
                 if (parts.length === 3) return `${parts[2]}/${parts[1]}`;

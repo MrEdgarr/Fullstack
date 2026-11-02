@@ -2,7 +2,6 @@
     <div
         class="bg-base-100 rounded-2xl p-5 sm:p-6 border border-base-300 shadow-xs flex flex-col justify-between"
     >
-        <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
             <div>
                 <div class="flex items-center gap-2">
@@ -30,7 +29,6 @@
             </button>
         </div>
 
-        <!-- Table Container -->
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
                 <thead>
@@ -46,7 +44,6 @@
                     </tr>
                 </thead>
 
-                <!-- Loading Skeleton Rows -->
                 <tbody v-if="isLoading" class="divide-y divide-slate-50">
                     <tr v-for="i in 5" :key="i">
                         <td class="py-3.5">
@@ -79,7 +76,6 @@
                     </tr>
                 </tbody>
 
-                <!-- Loaded Partner Brands -->
                 <tbody v-else-if="partnerBrands.length > 0" class="divide-y divide-slate-100/80">
                     <tr
                         v-for="brand in partnerBrands"
@@ -92,7 +88,6 @@
                                 : 'hover:bg-slate-50/80'
                         "
                     >
-                        <!-- Brand Info -->
                         <td class="py-3.5 pr-3">
                             <div class="flex items-center gap-3">
                                 <div
@@ -123,7 +118,6 @@
                             </div>
                         </td>
 
-                        <!-- Cinemas & Rooms Count -->
                         <td class="py-3.5 text-center whitespace-nowrap">
                             <span class="font-semibold text-slate-800">
                                 {{ brand.cinemas_count }} cụm rạp
@@ -133,7 +127,6 @@
                             </span>
                         </td>
 
-                        <!-- Status -->
                         <td class="py-3.5 text-center whitespace-nowrap">
                             <span
                                 class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold"
@@ -147,7 +140,6 @@
                             </span>
                         </td>
 
-                        <!-- Orders / Tickets -->
                         <td class="py-3.5 text-right whitespace-nowrap">
                             <span class="font-semibold text-slate-800">
                                 {{ formatNumber(brand.successful_orders) }} đơn
@@ -157,12 +149,10 @@
                             </span>
                         </td>
 
-                        <!-- Gross Revenue (GMV) -->
                         <td class="py-3.5 text-right font-bold text-slate-900 whitespace-nowrap">
                             {{ formatCurrency(brand.gross_revenue) }}
                         </td>
 
-                        <!-- Platform Commission -->
                         <td class="py-3.5 text-right whitespace-nowrap">
                             <span class="font-bold text-emerald-600">
                                 +{{ formatCurrency(brand.platform_commission) }}
@@ -172,12 +162,10 @@
                             </span>
                         </td>
 
-                        <!-- Partner Payout -->
                         <td class="py-3.5 text-right font-semibold text-blue-600 whitespace-nowrap">
                             {{ formatCurrency(brand.partner_payout) }}
                         </td>
 
-                        <!-- Revenue Share Progress -->
                         <td class="py-3.5 pl-4 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-2">
                                 <div class="w-20 bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -232,4 +220,3 @@ const toggleBrandFilter = (brandId) => {
     }
 };
 </script>
-

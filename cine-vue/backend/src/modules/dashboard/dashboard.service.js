@@ -1,25 +1,18 @@
 import * as dashboardRepository from "./dashboard.repository.js";
-<<<<<<< HEAD
 
-// Tỷ lệ chiết khấu hoa hồng trung gian theo từng đối tác (mặc định 8%)
 const PARTNER_COMMISSION_RATES = {
-  1: 8.0, // CGV Cinemas
-  2: 8.5, // Lotte Cinema
-  3: 9.0, // Galaxy Cinema
-  4: 8.0, // BHD Star Cineplex
-  5: 10.0, // CineStar
+  1: 8.0,
+  2: 8.5,
+  3: 9.0,
+  4: 8.0,
+  5: 10.0,
 };
 const DEFAULT_COMMISSION_RATE = 8.0;
 
 export function getBrandCommissionRate(brandId) {
   return PARTNER_COMMISSION_RATES[Number(brandId)] ?? DEFAULT_COMMISSION_RATE;
 }
-=======
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
 
-/**
- * Tính phần trăm tăng/giảm so với kỳ trước
- */
 function calculateGrowth(current, previous) {
   const curr = Number(current || 0);
   const prev = Number(previous || 0);
@@ -30,18 +23,10 @@ function calculateGrowth(current, previous) {
   return Number((((curr - prev) / prev) * 100).toFixed(1));
 }
 
-/**
- * 1. Tổng hợp chỉ số KPI cards
- */
-<<<<<<< HEAD
 export const getSummary = async (period = "7d", brandId = null) => {
-=======
-export const getSummary = async (period = "7d") => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const currentCondition = dashboardRepository.buildDateCondition(period, "b");
   const previousCondition = dashboardRepository.buildPreviousDateCondition(period, "b");
 
-  // Fetch song song các metrics cho kỳ hiện tại
   const [currentBookings, currentTickets, currentFnb, occupancy] = await Promise.all([
     dashboardRepository.getBookingMetrics(currentCondition, brandId),
     dashboardRepository.getTicketMetrics(currentCondition, brandId),
@@ -49,7 +34,6 @@ export const getSummary = async (period = "7d") => {
     dashboardRepository.getOccupancyRate(currentCondition, brandId),
   ]);
 
-  // Nếu có kỳ so sánh trước đó, fetch để tính % tăng trưởng
   let previousBookings = null;
   let previousTickets = null;
 
@@ -125,16 +109,8 @@ export const getSummary = async (period = "7d") => {
   };
 };
 
-/**
- * 2. Xu hướng doanh thu theo thời gian
- */
-<<<<<<< HEAD
 export const getRevenueTrend = async (period = "7d", brandId = null) => {
   const rows = await dashboardRepository.getRevenueTrend(period, brandId);
-=======
-export const getRevenueTrend = async (period = "7d") => {
-  const rows = await dashboardRepository.getRevenueTrend(period);
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   return rows.map((row) => ({
     date: row.date_label,
     total_orders: Number(row.total_orders || 0),
@@ -144,16 +120,8 @@ export const getRevenueTrend = async (period = "7d") => {
   }));
 };
 
-/**
- * 3. Top phim có doanh thu cao nhất
- */
-<<<<<<< HEAD
 export const getTopMovies = async (period = "7d", limit = 5, brandId = null) => {
   const rows = await dashboardRepository.getTopMovies(period, limit, brandId);
-=======
-export const getTopMovies = async (period = "7d", limit = 5) => {
-  const rows = await dashboardRepository.getTopMovies(period, limit);
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   return rows.map((movie) => ({
     movie_id: movie.movie_id,
     title: movie.title,
@@ -165,16 +133,8 @@ export const getTopMovies = async (period = "7d", limit = 5) => {
   }));
 };
 
-/**
- * 4. Cơ cấu phân bổ nguồn thu
- */
-<<<<<<< HEAD
 export const getRevenueDistribution = async (period = "7d", brandId = null) => {
   const { seatTypes, cinemas } = await dashboardRepository.getRevenueDistribution(period, brandId);
-=======
-export const getRevenueDistribution = async (period = "7d") => {
-  const { seatTypes, cinemas } = await dashboardRepository.getRevenueDistribution(period);
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
 
   return {
     seat_types: seatTypes.map((st) => ({
@@ -193,26 +153,14 @@ export const getRevenueDistribution = async (period = "7d") => {
   };
 };
 
-/**
- * 5. Danh sách giao dịch mới nhất
- */
-<<<<<<< HEAD
 export const getRecentBookings = async (limit = 8, period = "all", brandId = null) => {
   const rows = await dashboardRepository.getRecentBookings(limit, period, brandId);
-=======
-export const getRecentBookings = async (limit = 8, period = "all") => {
-  const rows = await dashboardRepository.getRecentBookings(limit, period);
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   return rows.map((booking) => ({
     ...booking,
     final_amount: Number(booking.final_amount || 0),
   }));
 };
 
-/**
- * 6. Danh sách đối soát & hiệu suất các thương hiệu rạp hợp tác
- */
-<<<<<<< HEAD
 export const getPartnerBrands = async (period = "all") => {
   const rows = await dashboardRepository.getPartnerBrandsMetrics(period);
   const totalSystemGmv = rows.reduce((sum, r) => sum + Number(r.gross_revenue || 0), 0);
@@ -244,9 +192,6 @@ export const getPartnerBrands = async (period = "all") => {
   });
 };
 
-/**
- * 7. Tổng hợp toàn bộ dữ liệu dashboard trong 1 lần gọi (tiết kiệm kết nối và network roundtrips)
- */
 export const getOverview = async (period = "7d", brandId = null) => {
   const [summary, revenueTrend, topMovies, distribution, recentBookings, partnerBrands] =
     await Promise.all([
@@ -258,7 +203,6 @@ export const getOverview = async (period = "7d", brandId = null) => {
       getPartnerBrands(period),
     ]);
 
-  // Nếu đang xem toàn hệ thống (không lọc theo 1 brand cụ thể), tổng hoa hồng chính xác bằng tổng hoa hồng các rạp
   if (!brandId && partnerBrands.length > 0) {
     const totalCommission = partnerBrands.reduce((sum, b) => sum + b.platform_commission, 0);
     const totalPayout = partnerBrands.reduce((sum, b) => sum + b.partner_payout, 0);
@@ -271,16 +215,6 @@ export const getOverview = async (period = "7d", brandId = null) => {
     active_brands: partnerBrands.filter((b) => b.status === "active").length,
     total_cinemas: partnerBrands.reduce((sum, b) => sum + b.cinemas_count, 0),
   };
-=======
-export const getOverview = async (period = "7d") => {
-  const [summary, revenueTrend, topMovies, distribution, recentBookings] = await Promise.all([
-    getSummary(period),
-    getRevenueTrend(period),
-    getTopMovies(period, 5),
-    getRevenueDistribution(period),
-    getRecentBookings(8, period),
-  ]);
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
 
   return {
     summary,

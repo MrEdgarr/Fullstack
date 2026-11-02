@@ -1,10 +1,8 @@
 <template>
     <header class="sticky top-0 z-30 w-full bg-base-100 border-b border-base-300 shadow-xs">
         <div class="px-4 sm:px-6 py-3.5 flex items-center justify-between">
-            <!-- Left: Hamburger button & Search input -->
             <div class="flex items-center flex-1">
-                <!-- Hamburger toggle -->
-                <div class="">
+                <div>
                     <button
                         @click="$emit('toggle-sidebar')"
                         type="button"
@@ -15,7 +13,6 @@
                     </button>
                 </div>
 
-                <!-- Search Bar -->
                 <div class="relative w-48 sm:w-72 md:w-96">
                     <div
                         class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/25"
@@ -30,25 +27,20 @@
                 </div>
             </div>
 
-            <!-- Right: Notifications & User Menu -->
             <div class="flex items-center">
-                <!-- Notification Bell -->
                 <button class="relative btn btn-ghost btn-sm" aria-label="Thông báo">
                     <BaseIcon name="bell" size="24" />
-                    <!-- Red Badge Dot -->
                     <span
                         class="absolute top-1 right-3 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white"
                     ></span>
                 </button>
 
-                <!-- User Profile Dropdown -->
                 <div class="dropdown dropdown-end">
                     <div
                         tabindex="0"
                         role="button"
                         class="flex items-center gap-2.5 p-1 sm:px-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer select-none"
                     >
-                        <!-- Avatar -->
                         <div
                             class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0 ring-1 ring-slate-300"
                         >
@@ -67,19 +59,16 @@
                         </div>
 
                         <div class="hidden md:block">
-                            <!-- User Name -->
                             <span
                                 class="hidden sm:inline-block text-xs sm:text-sm font-semibold text-slate-800"
                             >
                                 {{ userName }}
                             </span>
 
-                            <!-- Chevron Down Icon -->
                             <BaseIcon name="chevron-down" />
                         </div>
                     </div>
 
-                    <!-- Menu Items -->
                     <ul
                         tabindex="0"
                         class="dropdown-content menu z-50 p-2 shadow-lg bg-base-100 rounded-xl w-52 border border-base-200 text-xs sm:text-sm font-medium mt-2"

@@ -1,8 +1,5 @@
 import db from "../../shared/config/database.js";
 
-/**
- * Tạo mệnh đề WHERE theo khoảng thời gian cho bảng bookings
- */
 export function buildDateCondition(period, alias = "b") {
   switch (period) {
     case "today":
@@ -24,9 +21,6 @@ export function buildDateCondition(period, alias = "b") {
   }
 }
 
-/**
- * Tạo mệnh đề WHERE cho kỳ trước đó để so sánh tăng trưởng
- */
 export function buildPreviousDateCondition(period, alias = "b") {
   switch (period) {
     case "today":
@@ -48,10 +42,6 @@ export function buildPreviousDateCondition(period, alias = "b") {
   }
 }
 
-/**
- * Tạo điều kiện lọc theo thương hiệu rạp hợp tác (brand_id)
- */
-<<<<<<< HEAD
 export function buildBrandCondition(brandId, cinemaAlias = "c") {
   const parsed = Number(brandId);
   if (!parsed || Number.isNaN(parsed) || parsed <= 0) {
@@ -60,14 +50,8 @@ export function buildBrandCondition(brandId, cinemaAlias = "c") {
   return `${cinemaAlias}.brand_id = ${parsed}`;
 }
 
-/**
- * 1. Lấy chỉ số tổng quan đơn hàng & doanh thu (hỗ trợ lọc theo đối tác rạp)
- */
 export const getBookingMetrics = async (condition, brandId = null) => {
   const brandCondition = buildBrandCondition(brandId, "c");
-=======
-export const getBookingMetrics = async (condition) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const [rows] = await db.execute(`
     SELECT
       COUNT(b.booking_id) AS total_bookings,
@@ -88,15 +72,8 @@ export const getBookingMetrics = async (condition) => {
   return rows[0];
 };
 
-/**
- * 2. Lấy chỉ số vé bán ra
- */
-<<<<<<< HEAD
 export const getTicketMetrics = async (condition, brandId = null) => {
   const brandCondition = buildBrandCondition(brandId, "c");
-=======
-export const getTicketMetrics = async (condition) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const [rows] = await db.execute(`
     SELECT
       COUNT(t.ticket_id) AS total_tickets,
@@ -113,15 +90,8 @@ export const getTicketMetrics = async (condition) => {
   return rows[0];
 };
 
-/**
- * 3. Lấy chỉ số Bắp nước (F&B)
- */
-<<<<<<< HEAD
 export const getFnbMetrics = async (condition, brandId = null) => {
   const brandCondition = buildBrandCondition(brandId, "c");
-=======
-export const getFnbMetrics = async (condition) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const [rows] = await db.execute(`
     SELECT
       COALESCE(SUM(bfc.line_total), 0) AS total_fnb,
@@ -138,15 +108,8 @@ export const getFnbMetrics = async (condition) => {
   return rows[0];
 };
 
-/**
- * 4. Lấy tỷ lệ lấp đầy ghế (Occupancy rate)
- */
-<<<<<<< HEAD
 export const getOccupancyRate = async (condition, brandId = null) => {
   const brandCondition = buildBrandCondition(brandId, "c");
-=======
-export const getOccupancyRate = async (condition) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const [rows] = await db.execute(`
     SELECT
       COUNT(t.ticket_id) AS tickets_sold,
@@ -163,14 +126,7 @@ export const getOccupancyRate = async (condition) => {
   return rows[0];
 };
 
-/**
- * 5. Lấy xu hướng doanh thu theo thời gian
- */
-<<<<<<< HEAD
 export const getRevenueTrend = async (period, brandId = null) => {
-=======
-export const getRevenueTrend = async (period) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const condition = buildDateCondition(period, "b");
   const brandCondition = buildBrandCondition(brandId, "c");
   const dateFormat = period === "year" ? "%Y-%m" : "%Y-%m-%d";
@@ -195,14 +151,7 @@ export const getRevenueTrend = async (period) => {
   return rows;
 };
 
-/**
- * 6. Lấy Top phim doanh thu cao nhất
- */
-<<<<<<< HEAD
 export const getTopMovies = async (period, limit = 5, brandId = null) => {
-=======
-export const getTopMovies = async (period, limit = 5) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const condition = buildDateCondition(period, "b");
   const brandCondition = buildBrandCondition(brandId, "c");
   const safeLimit = Math.max(1, Math.min(20, Number(limit) || 5));
@@ -234,14 +183,7 @@ export const getTopMovies = async (period, limit = 5) => {
   return rows;
 };
 
-/**
- * 7. Lấy cơ cấu phân bổ doanh thu (Loại ghế, Nguồn thu, Cụm rạp)
- */
-<<<<<<< HEAD
 export const getRevenueDistribution = async (period, brandId = null) => {
-=======
-export const getRevenueDistribution = async (period) => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const condition = buildDateCondition(period, "b");
   const brandCondition = buildBrandCondition(brandId, "c");
 
@@ -285,14 +227,7 @@ export const getRevenueDistribution = async (period) => {
   return { seatTypes, cinemas };
 };
 
-/**
- * 8. Lấy danh sách giao dịch đặt vé gần đây nhất
- */
-<<<<<<< HEAD
 export const getRecentBookings = async (limit = 8, period = "all", brandId = null) => {
-=======
-export const getRecentBookings = async (limit = 8, period = "all") => {
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const safeLimit = Math.max(1, Math.min(50, Number(limit) || 8));
   const condition = buildDateCondition(period, "b");
   const brandCondition = buildBrandCondition(brandId, "ci");
@@ -334,11 +269,7 @@ export const getRecentBookings = async (limit = 8, period = "all") => {
   );
   return rows;
 };
-<<<<<<< HEAD
 
-/**
- * 9. Thống kê Đối soát & Hiệu suất của tất cả Thương hiệu Rạp Hợp tác (Partner Brands)
- */
 export const getPartnerBrandsMetrics = async (period = "all") => {
   const condition = buildDateCondition(period, "b");
 
@@ -372,7 +303,6 @@ export const getPartnerBrandsMetrics = async (period = "all") => {
     ORDER BY ticket_revenue DESC, cinemas_count DESC, cb.brand_id ASC
   `);
 
-  // Tính tổng GMV (bao gồm cả combo bắp nước và trừ khuyến mãi) theo từng brand
   const [gmvRows] = await db.execute(`
     SELECT
       c.brand_id,
@@ -393,5 +323,3 @@ export const getPartnerBrandsMetrics = async (period = "all") => {
     gross_revenue: gmvMap.get(Number(row.brand_id)) || 0,
   }));
 };
-=======
->>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6

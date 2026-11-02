@@ -2,16 +2,13 @@
     <div
         class="bg-base-100 rounded-2xl p-5 sm:p-6 border border-base-300 shadow-xs h-full flex flex-col justify-between"
     >
-        <!-- Header -->
         <div class="flex items-center justify-between mb-2">
             <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                 Trạng thái đơn hàng
             </h3>
         </div>
 
-        <!-- Chart & Legend Container -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 grow py-2">
-            <!-- Donut Chart with Center Number -->
             <div class="relative flex items-center justify-center shrink-0 w-full sm:w-auto">
                 <div
                     v-if="isLoading"
@@ -28,7 +25,6 @@
                     :series="chartSeries"
                 />
 
-                <!-- Center Text Overlay -->
                 <div
                     class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
                 >
@@ -48,7 +44,6 @@
                 </div>
             </div>
 
-            <!-- Right Side Legend List -->
             <div class="w-full sm:w-auto flex flex-col gap-3 sm:pr-2">
                 <div
                     v-for="item in statusItems"
@@ -107,14 +102,10 @@ const toPercentage = (count, total) => {
     return Number(((count / total) * 100).toFixed(1));
 };
 
-// 4 trạng thái thực tế từ cột `status` của bảng `bookings` trong CSDL:
-// ENUM('pending', 'confirmed', 'cancelled', 'completed')
 const statusItems = computed(() => {
     const ord = props.ordersSummary || {};
     const total = Number(ord.total || 0);
 
-    // Nếu backend có trả tách riêng confirmed / completed thì ưu tiên,
-    // ngược lại fallback từ successful
     const confirmedCount =
         ord.confirmed !== undefined
             ? Number(ord.confirmed || 0)
@@ -157,7 +148,6 @@ const statusItems = computed(() => {
 
 const hasData = computed(() => totalOrders.value > 0);
 
-// Khi tổng đơn = 0, truyền [1] với màu xám nhạt để vòng Donut không bị biến mất
 const chartSeries = computed(() =>
     hasData.value ? statusItems.value.map((i) => i.count) : [1],
 );

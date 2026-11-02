@@ -2,7 +2,6 @@
     <div
         class="bg-base-100 rounded-2xl p-5 sm:p-6 border border-base-300 shadow-xs h-full flex flex-col justify-between"
     >
-        <!-- Header -->
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                 Giao dịch gần đây
@@ -16,7 +15,6 @@
             </button>
         </div>
 
-        <!-- Table Container (Horizontal Scroll for Responsive) -->
         <div class="overflow-x-auto grow">
             <table class="w-full text-left text-xs sm:text-sm">
                 <thead>
@@ -28,7 +26,6 @@
                         <th class="py-2.5 font-medium text-right">Tổng tiền</th>
                     </tr>
                 </thead>
-                <!-- Loading Skeleton Rows -->
                 <tbody v-if="isLoading" class="divide-y divide-base-200 animate-pulse">
                     <tr v-for="i in 5" :key="i">
                         <td class="py-3.5"><div class="skeleton h-4 w-16 rounded-md"></div></td>
@@ -45,19 +42,16 @@
                         :key="order.id"
                         class="hover:bg-slate-50/70 transition-colors"
                     >
-                        <!-- Order ID -->
                         <td
                             class="py-3 font-semibold text-blue-600 hover:text-blue-700 cursor-pointer"
                         >
                             {{ order.displayId }}
                         </td>
 
-                        <!-- Customer Name -->
                         <td class="py-3 font-medium text-slate-800 whitespace-nowrap">
                             {{ order.customerName }}
                         </td>
 
-                        <!-- Product / Movie & Partner Cinema -->
                         <td
                             class="py-3 text-slate-600 max-w-[150px] sm:max-w-[210px]"
                             :title="order.productName"
@@ -73,7 +67,6 @@
                             </p>
                         </td>
 
-                        <!-- Status Badge -->
                         <td class="py-3 text-center">
                             <span
                                 class="inline-block px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-semibold tracking-wide"
@@ -83,14 +76,12 @@
                             </span>
                         </td>
 
-                        <!-- Amount -->
                         <td class="py-3 text-right font-semibold text-slate-900 whitespace-nowrap">
                             {{ order.formattedAmount }}
                         </td>
                     </tr>
                 </tbody>
 
-                <!-- Empty State -->
                 <tbody v-else class="divide-y divide-base-200">
                     <tr>
                         <td colspan="5" class="py-10 text-center text-xs text-base-content/50">
@@ -121,7 +112,6 @@ const props = defineProps({
     },
 });
 
-// Fallback demo data if no records
 const fallbackOrders = [
     {
         id: 1,
@@ -182,7 +172,6 @@ const displayedOrders = computed(() => {
             };
         });
     }
-    // Chỉ fallback khi chưa từng truyền prop bookings (chưa gọi API)
     if (props.bookings === null || props.bookings === undefined) {
         return fallbackOrders;
     }

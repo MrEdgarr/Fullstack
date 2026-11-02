@@ -1,6 +1,5 @@
 <template>
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-        <!-- Card 1: Tổng giao dịch qua sàn (GMV) -->
         <div
             class="bg-base-100 rounded-2xl p-5 border border-base-300 shadow-xs hover:shadow-md transition-all duration-200 group"
         >
@@ -43,7 +42,6 @@
             </div>
         </div>
 
-        <!-- Card 2: Doanh thu Hoa hồng Sàn (Platform Commission) -->
         <div
             class="bg-base-100 rounded-2xl p-5 border border-base-300 shadow-xs hover:shadow-md transition-all duration-200 group"
         >
@@ -84,7 +82,6 @@
             </div>
         </div>
 
-        <!-- Card 3: Tổng đơn đặt vé -->
         <div
             class="bg-base-100 rounded-2xl p-5 border border-base-300 shadow-xs hover:shadow-md transition-all duration-200 group"
         >
@@ -125,7 +122,6 @@
             </div>
         </div>
 
-        <!-- Card 4: Tổng vé đã phát hành -->
         <div
             class="bg-base-100 rounded-2xl p-5 border border-base-300 shadow-xs hover:shadow-md transition-all duration-200 group"
         >
