@@ -13,10 +13,12 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
+    "apexcharts": "^8.4.1",
     "axios": "^1.15.2",
     "pinia": "^3.0.4",
     "vue": "^3.5.31",
-    "vue-router": "^5.0.4"
+    "vue-router": "^5.0.4",
+    "vue3-apexcharts": "^1.11.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

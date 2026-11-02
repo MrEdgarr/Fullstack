@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "@/router/routes";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useToastStore } from "@/stores/app/useToastStore";
 
 const DEFAULT_TITLE = "Cinemax";
 
@@ -24,6 +25,7 @@ const router = createRouter({
 });
 
 const routeRequiresAuth = (route) => route.matched.some((record) => record.meta.requiresAuth);
+const routeRequiresAdmin = (route) => route.matched.some((record) => record.meta.requiresAdmin);
 
 router.beforeEach((to, from) => {
     const authStore = useAuthStore();
@@ -34,21 +36,32 @@ router.beforeEach((to, from) => {
         return true;
     }
 
-    if (authStore.isLoggedIn) {
-        return true;
+    if (!authStore.isLoggedIn) {
+        authStore.setLoginRedirect(to.fullPath);
+        authStore.openModal("login");
+
+        // Nếu tải trang trực tiếp (gõ URL) hoặc đang cố vào trang Admin, đẩy về trang chủ
+        if (!from.name || to.path.startsWith("/admin")) {
+            return {
+                name: "home",
+                replace: true,
+            };
+        }
+        // Nếu click link từ trong app tới trang client khác cần login, chặn chuyển trang
+        return false;
     }
 
-    authStore.setLoginRedirect(to.fullPath);
-    authStore.openModal("login");
-    // Nếu tải trang trực tiếp (gõ URL), đẩy về trang chủ để không bị trắng trang
-    if (!from.name) {
+    // Kiểm tra quyền Admin đối với các trang quản trị
+    if (routeRequiresAdmin(to) && !authStore.isAdmin) {
+        const toastStore = useToastStore();
+        toastStore.warning("Bạn không có quyền truy cập khu vực quản trị.");
         return {
             name: "home",
             replace: true,
         };
     }
-    // Nếu click link từ trong app, chặn chuyển trang (giữ nguyên luồng/URL hiện tại)
-    return false;
+
+    return true;
 });
 
 router.afterEach((to) => {

@@ -11,6 +11,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AdminFooter: typeof import('./components/layout/admin/AdminFooter.vue')['default']
+    AdminHeader: typeof import('./components/layout/admin/AdminHeader.vue')['default']
+    AdminSidebar: typeof import('./components/layout/admin/AdminSidebar.vue')['default']
     BaseIcon: typeof import('./components/common/BaseIcon.vue')['default']
     BaseMovieSwiper: typeof import('./components/common/swiper/BaseMovieSwiper.vue')['default']
     BasePagination: typeof import('./components/common/BasePagination.vue')['default']
@@ -25,6 +28,7 @@ declare module 'vue' {
     BookingTicket: typeof import('./components/features/client/booking/BookingTicket.vue')['default']
     ClientFooter: typeof import('./components/layout/client/ClientFooter.vue')['default']
     ClientNavbar: typeof import('./components/layout/client/ClientNavbar.vue')['default']
+    DashboardKpiCards: typeof import('./components/features/admin/dashboard/DashboardKpiCards.vue')['default']
     GlobalDialog: typeof import('./components/layout/modal/GlobalDialog.vue')['default']
     GlobalToast: typeof import('./components/layout/toast/GlobalToast.vue')['default']
     HomeBanner: typeof import('./components/features/client/home/HomeBanner.vue')['default']
@@ -35,12 +39,17 @@ declare module 'vue' {
     LoginModal: typeof import('./components/layout/modal/LoginModal.vue')['default']
     MovieDetail: typeof import('./components/features/client/movie/MovieDetail.vue')['default']
     MovieTicket: typeof import('./components/features/client/movie/MovieTicket.vue')['default']
+    OrderStatusDonutChart: typeof import('./components/features/admin/dashboard/OrderStatusDonutChart.vue')['default']
+    PartnerBrandsTable: typeof import('./components/features/admin/dashboard/PartnerBrandsTable.vue')['default']
     ProfileHistoryTab: typeof import('./components/features/client/profile/ProfileHistoryTab.vue')['default']
     ProfileInfoTab: typeof import('./components/features/client/profile/ProfileInfoTab.vue')['default']
     ProfileSidebar: typeof import('./components/features/client/profile/ProfileSidebar.vue')['default']
+    RecentOrdersTable: typeof import('./components/features/admin/dashboard/RecentOrdersTable.vue')['default']
     RegisterModal: typeof import('./components/layout/modal/RegisterModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SalesOverviewChart: typeof import('./components/features/admin/dashboard/SalesOverviewChart.vue')['default']
     SearchModal: typeof import('./components/layout/modal/SearchModal.vue')['default']
+    TopProductsList: typeof import('./components/features/admin/dashboard/TopProductsList.vue')['default']
   }
 }

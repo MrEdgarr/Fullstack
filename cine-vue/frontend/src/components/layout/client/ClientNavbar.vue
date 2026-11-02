@@ -17,6 +17,7 @@
                         <div
                             class="text-base-content text-sm transition-colors"
                             v-for="value in MAIN_NAVIGATION"
+                            :key="value.path"
                         >
                             <RouterLink :to="value.path" tabindex="-1">
                                 {{ value.name }}
@@ -49,8 +50,17 @@
                                 <span>Dang ky</span>
                             </button>
                         </div>
-                        <div v-else ref="profileDropdownRef" class="dropdown dropdown-bottom dropdown-end">
-                            <div role="button" tabindex="0" ref="profileDropdownButtonRef" class="btn btn-circle btn-sm">
+                        <div
+                            v-else
+                            ref="profileDropdownRef"
+                            class="dropdown dropdown-bottom dropdown-end"
+                        >
+                            <div
+                                role="button"
+                                tabindex="0"
+                                ref="profileDropdownButtonRef"
+                                class="btn btn-circle btn-sm"
+                            >
                                 <img :src="authStore.user.avatar_url" class="rounded-full" />
                             </div>
                             <ul
@@ -91,16 +101,16 @@
                                 <li v-if="!authStore.user">
                                     <button
                                         class="btn btn-outline btn-sm hover:btn-primary mb-5"
-                                        @click="authStore.openModal('login'); closeMobileDropdown()"
+                                        @click="
+                                            authStore.openModal('login');
+                                            closeMobileDropdown();
+                                        "
                                     >
                                         Đăng nhập
                                     </button>
                                 </li>
                                 <li v-for="value in MAIN_NAVIGATION" :key="value.name">
-                                    <RouterLink
-                                        :to="value.path"
-                                        @click="closeMobileDropdown"
-                                    >
+                                    <RouterLink :to="value.path" @click="closeMobileDropdown">
                                         {{ value.name }}
                                     </RouterLink>
                                 </li>
@@ -148,10 +158,13 @@ const closeProfileDropdown = () => {
     });
 };
 
-watch(() => route.fullPath, () => {
-    closeMobileDropdown();
-    closeProfileDropdown();
-});
+watch(
+    () => route.fullPath,
+    () => {
+        closeMobileDropdown();
+        closeProfileDropdown();
+    },
+);
 
 const MAIN_NAVIGATION = ref([
     {

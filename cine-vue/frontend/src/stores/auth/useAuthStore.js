@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import api from "@/_services/api";
 import { AUTH_UNAUTHORIZED_EVENT } from "@/utils/constants/auth";
 import { useToastStore } from "@/stores/app/useToastStore";
+import router from "@/router";
 
 const getSavedToken = () => localStorage.getItem("token");
 const getSavedUser = () => localStorage.getItem("user");
@@ -52,6 +53,45 @@ export const useAuthStore = defineStore("auth", () => {
     const isLoggedIn = computed(() => !!token.value);
     const isAdmin = computed(() => user.value?.role === "admin");
 
+    const clearAuth = () => {
+        clearAutoLogoutTimer();
+        token.value = null;
+        user.value = null;
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+    };
+
+    /**
+     * Xử lý đăng xuất tập trung khi phiên làm việc hết hạn (JWT expired hoặc 401 Unauthorized)
+     */
+    const handleSessionExpired = (message = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.") => {
+        const wasLoggedIn = !!token.value;
+        clearAuth();
+
+        if (wasLoggedIn) {
+            try {
+                const toastStore = useToastStore();
+                toastStore.warning(message);
+            } catch (err) {
+                console.warn("[Auth] Session expired:", err);
+            }
+        }
+
+        // Kiểm tra xem trang hiện tại có thuộc admin hoặc route yêu cầu đăng nhập hay không
+        const currentRoute = router.currentRoute.value;
+        const currentPath = currentRoute?.path || (typeof window !== "undefined" ? window.location.pathname : "");
+        const isProtectedRoute =
+            currentPath.startsWith("/admin") ||
+            currentRoute?.matched?.some((record) => record.meta?.requiresAuth || record.meta?.requiresAdmin);
+
+        if (isProtectedRoute) {
+            setLoginRedirect(currentPath);
+            router.replace({ name: "home" }).then(() => {
+                openModal("login");
+            });
+        }
+    };
+
     const scheduleAutoLogout = (jwtToken) => {
         clearAutoLogoutTimer();
         const payload = parseJwtPayload(jwtToken);
@@ -59,18 +99,12 @@ export const useAuthStore = defineStore("auth", () => {
 
         const remainingTimeMs = payload.exp * 1000 - Date.now();
         if (remainingTimeMs <= 0) {
-            clearAuth();
+            handleSessionExpired();
             return;
         }
 
         autoLogoutTimer = setTimeout(() => {
-            clearAuth();
-            try {
-                const toastStore = useToastStore();
-                toastStore.warning("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-            } catch (err) {
-                console.warn("[Auth] Session expired");
-            }
+            handleSessionExpired();
         }, remainingTimeMs);
     };
 
@@ -102,14 +136,6 @@ export const useAuthStore = defineStore("auth", () => {
     const setUser = (userData) => {
         user.value = userData;
         localStorage.setItem("user", JSON.stringify(userData));
-    };
-
-    const clearAuth = () => {
-        clearAutoLogoutTimer();
-        token.value = null;
-        user.value = null;
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
     };
 
     const login = async (credentials) => {
@@ -180,6 +206,11 @@ export const useAuthStore = defineStore("auth", () => {
 
     const logout = () => {
         clearAuth();
+        const currentRoute = router.currentRoute.value;
+        const currentPath = currentRoute?.path || (typeof window !== "undefined" ? window.location.pathname : "");
+        if (currentPath.startsWith("/admin") || currentRoute?.matched?.some((record) => record.meta?.requiresAuth)) {
+            router.replace({ name: "home" });
+        }
     };
 
     const checkAuth = () => {
@@ -187,7 +218,11 @@ export const useAuthStore = defineStore("auth", () => {
         const savedUser = getSavedUser();
 
         if (!savedToken || isTokenExpired(savedToken)) {
-            clearAuth();
+            if (savedToken) {
+                handleSessionExpired();
+            } else {
+                clearAuth();
+            }
             return false;
         }
 
@@ -209,13 +244,14 @@ export const useAuthStore = defineStore("auth", () => {
     };
 
     if (typeof window !== "undefined" && !isUnauthorizedListenerRegistered) {
-        window.addEventListener(AUTH_UNAUTHORIZED_EVENT, clearAuth);
+        window.addEventListener(AUTH_UNAUTHORIZED_EVENT, () => {
+            handleSessionExpired();
+        });
         isUnauthorizedListenerRegistered = true;
     }
 
-    onMounted(() => {
-        checkAuth();
-    });
+    // Khởi tạo và kiểm tra auth ngay khi store được khởi tạo
+    checkAuth();
 
     return {
         token,
@@ -237,5 +273,6 @@ export const useAuthStore = defineStore("auth", () => {
         logout,
         clearAuth,
         checkAuth,
+        handleSessionExpired,
     };
 });

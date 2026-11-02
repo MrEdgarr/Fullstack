@@ -1,4 +1,5 @@
 import * as dashboardRepository from "./dashboard.repository.js";
+<<<<<<< HEAD
 
 // Tỷ lệ chiết khấu hoa hồng trung gian theo từng đối tác (mặc định 8%)
 const PARTNER_COMMISSION_RATES = {
@@ -13,6 +14,8 @@ const DEFAULT_COMMISSION_RATE = 8.0;
 export function getBrandCommissionRate(brandId) {
   return PARTNER_COMMISSION_RATES[Number(brandId)] ?? DEFAULT_COMMISSION_RATE;
 }
+=======
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
 
 /**
  * Tính phần trăm tăng/giảm so với kỳ trước
@@ -30,7 +33,11 @@ function calculateGrowth(current, previous) {
 /**
  * 1. Tổng hợp chỉ số KPI cards
  */
+<<<<<<< HEAD
 export const getSummary = async (period = "7d", brandId = null) => {
+=======
+export const getSummary = async (period = "7d") => {
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   const currentCondition = dashboardRepository.buildDateCondition(period, "b");
   const previousCondition = dashboardRepository.buildPreviousDateCondition(period, "b");
 
@@ -121,8 +128,13 @@ export const getSummary = async (period = "7d", brandId = null) => {
 /**
  * 2. Xu hướng doanh thu theo thời gian
  */
+<<<<<<< HEAD
 export const getRevenueTrend = async (period = "7d", brandId = null) => {
   const rows = await dashboardRepository.getRevenueTrend(period, brandId);
+=======
+export const getRevenueTrend = async (period = "7d") => {
+  const rows = await dashboardRepository.getRevenueTrend(period);
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   return rows.map((row) => ({
     date: row.date_label,
     total_orders: Number(row.total_orders || 0),
@@ -135,8 +147,13 @@ export const getRevenueTrend = async (period = "7d", brandId = null) => {
 /**
  * 3. Top phim có doanh thu cao nhất
  */
+<<<<<<< HEAD
 export const getTopMovies = async (period = "7d", limit = 5, brandId = null) => {
   const rows = await dashboardRepository.getTopMovies(period, limit, brandId);
+=======
+export const getTopMovies = async (period = "7d", limit = 5) => {
+  const rows = await dashboardRepository.getTopMovies(period, limit);
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   return rows.map((movie) => ({
     movie_id: movie.movie_id,
     title: movie.title,
@@ -151,8 +168,13 @@ export const getTopMovies = async (period = "7d", limit = 5, brandId = null) => 
 /**
  * 4. Cơ cấu phân bổ nguồn thu
  */
+<<<<<<< HEAD
 export const getRevenueDistribution = async (period = "7d", brandId = null) => {
   const { seatTypes, cinemas } = await dashboardRepository.getRevenueDistribution(period, brandId);
+=======
+export const getRevenueDistribution = async (period = "7d") => {
+  const { seatTypes, cinemas } = await dashboardRepository.getRevenueDistribution(period);
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
 
   return {
     seat_types: seatTypes.map((st) => ({
@@ -174,8 +196,13 @@ export const getRevenueDistribution = async (period = "7d", brandId = null) => {
 /**
  * 5. Danh sách giao dịch mới nhất
  */
+<<<<<<< HEAD
 export const getRecentBookings = async (limit = 8, period = "all", brandId = null) => {
   const rows = await dashboardRepository.getRecentBookings(limit, period, brandId);
+=======
+export const getRecentBookings = async (limit = 8, period = "all") => {
+  const rows = await dashboardRepository.getRecentBookings(limit, period);
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
   return rows.map((booking) => ({
     ...booking,
     final_amount: Number(booking.final_amount || 0),
@@ -185,6 +212,7 @@ export const getRecentBookings = async (limit = 8, period = "all", brandId = nul
 /**
  * 6. Danh sách đối soát & hiệu suất các thương hiệu rạp hợp tác
  */
+<<<<<<< HEAD
 export const getPartnerBrands = async (period = "all") => {
   const rows = await dashboardRepository.getPartnerBrandsMetrics(period);
   const totalSystemGmv = rows.reduce((sum, r) => sum + Number(r.gross_revenue || 0), 0);
@@ -243,6 +271,16 @@ export const getOverview = async (period = "7d", brandId = null) => {
     active_brands: partnerBrands.filter((b) => b.status === "active").length,
     total_cinemas: partnerBrands.reduce((sum, b) => sum + b.cinemas_count, 0),
   };
+=======
+export const getOverview = async (period = "7d") => {
+  const [summary, revenueTrend, topMovies, distribution, recentBookings] = await Promise.all([
+    getSummary(period),
+    getRevenueTrend(period),
+    getTopMovies(period, 5),
+    getRevenueDistribution(period),
+    getRecentBookings(8, period),
+  ]);
+>>>>>>> 9fa5dc189606516909e3fe16a42e46e5b150b4b6
 
   return {
     summary,

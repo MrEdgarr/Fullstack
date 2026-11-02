@@ -125,4 +125,29 @@ export const routes = [
             },
         ],
     },
+    {
+        path: "/admin",
+        component: () => import("@/layouts/AdminLayout.vue"),
+        meta: {
+            title: "Admin - CineVue",
+            requiresAuth: true,
+            requiresAdmin: true,
+        },
+        children: [
+            {
+                path: "",
+                redirect: "/admin/dashboard",
+            },
+            {
+                path: "dashboard",
+                name: "admin-dashboard",
+                component: () => import("@/views/admin/DashboardView.vue"),
+                meta: {
+                    title: "Dashboard - CineVue Admin",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+        ],
+    },
 ];

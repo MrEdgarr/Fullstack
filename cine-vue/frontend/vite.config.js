@@ -76,7 +76,7 @@ export default defineConfig(({ mode }) => ({
         port: 5173,
         proxy: {
             "/api/v1": {
-                target: "https://cine-vue-backend.onrender.com/api/v1", // Port của backend Express
+                target: "http://localhost:3000",
                 changeOrigin: true,
                 secure: false,
             },
