@@ -24,4 +24,34 @@ router.get("/top-movies", dashboardController.getTopMovies);
 router.get("/revenue-distribution", dashboardController.getRevenueDistribution);
 router.get("/recent-bookings", dashboardController.getRecentBookings);
 
+router.get("/admin-state", dashboardController.getAdminState);
+
+router.post("/chains/sync", dashboardController.syncAllChains);
+router.post("/chains/:chainId/ping", dashboardController.pingChain);
+router.patch("/chains/:chainId/commission", dashboardController.updateChainCommission);
+
+router.patch("/multiplexes/:multiplexId/toggle-status", dashboardController.toggleMultiplexStatus);
+
+router.get("/showtimes/:showtimeId/seats", dashboardController.getShowtimeSeatMap);
+router.patch(
+  "/showtimes/:showtimeId/seats/:seatCode/toggle-block",
+  dashboardController.toggleShowtimeSeatBlock,
+);
+router.patch(
+  "/showtimes/:showtimeId/seats/:seatCode/release",
+  dashboardController.releaseHeldSeat,
+);
+
+router.post("/movies", dashboardController.createMovie);
+router.put("/movies/:movieId", dashboardController.updateMovie);
+router.patch("/movies/:movieId/status", dashboardController.updateMovieStatus);
+router.delete("/movies/:movieId", dashboardController.deleteMovie);
+
+router.post("/orders/:orderId/resync", dashboardController.resyncOrder);
+router.post("/orders/:orderId/refund", dashboardController.refundOrder);
+
+router.post("/promotions", dashboardController.createPromotion);
+
+router.patch("/settlements/:settlementId/approve", dashboardController.approveSettlement);
+
 export default router;

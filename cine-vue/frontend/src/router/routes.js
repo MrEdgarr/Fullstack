@@ -12,7 +12,6 @@ export const routes = [
                     requiresAuth: false,
                     breadcrumb: "Trang chủ",
                 },
-                // Alias routes
                 alias: ["/home", "/trang-chu"],
             },
             {
@@ -30,7 +29,6 @@ export const routes = [
                                     ? "Phim sắp chiếu"
                                     : "Phim đang chiếu",
                         },
-                        // Alias routes
                         alias: ["dang-chieu"],
                     },
                     {
@@ -64,7 +62,6 @@ export const routes = [
                     requiresAuth: false,
                     breadcrumb: "Lịch Chiếu",
                 },
-                // Alias routes
                 alias: ["/lich-chieu"],
             },
             {
@@ -76,7 +73,6 @@ export const routes = [
                     requiresAuth: false,
                     breadcrumb: "Blog",
                 },
-                // Alias routes
                 alias: ["/tin-tuc"],
             },
             {
@@ -98,7 +94,6 @@ export const routes = [
                     requiresAuth: false,
                     breadcrumb: "Về Chúng Tôi",
                 },
-                // Alias routes
                 alias: ["/ve-chung-toi"],
             },
             {
@@ -129,7 +124,7 @@ export const routes = [
         path: "/admin",
         component: () => import("@/layouts/AdminLayout.vue"),
         meta: {
-            title: "Admin - CineVue",
+            title: "CineHub Admin",
             requiresAuth: true,
             requiresAdmin: true,
         },
@@ -140,10 +135,92 @@ export const routes = [
             },
             {
                 path: "dashboard",
+                alias: ["overview"],
                 name: "admin-dashboard",
                 component: () => import("@/views/admin/DashboardView.vue"),
                 meta: {
-                    title: "Dashboard - CineVue Admin",
+                    title: "Tổng quan Hệ thống - CineHub Admin",
+                    headerTitle: "Tổng quan Hệ thống Phân phối",
+                    subtitle:
+                        "Theo dõi GMV toàn mạng lưới, doanh thu hoa hồng và chỉ số đồng bộ vé thời gian thực",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+            {
+                path: "cinemas",
+                name: "admin-cinemas",
+                component: () => import("@/views/admin/CinemasView.vue"),
+                meta: {
+                    title: "Mạng lưới Chuỗi & Cụm Rạp - CineHub Admin",
+                    headerTitle: "Mạng lưới Chuỗi & Cụm Rạp",
+                    subtitle:
+                        "Quản lý 7 chuỗi rạp đối tác, 195+ cụm rạp, tỷ lệ hoa hồng và kết nối API",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+            {
+                path: "showtimes",
+                name: "admin-showtimes",
+                component: () => import("@/views/admin/ShowtimesView.vue"),
+                meta: {
+                    title: "Điều phối Suất Chiếu & Ghế - CineHub Admin",
+                    headerTitle: "Điều phối Suất Chiếu & Ghế",
+                    subtitle:
+                        "Giám sát ma trận suất chiếu đa rạp, tra cứu sơ đồ phòng và tỷ lệ lấp đầy trực tiếp",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+            {
+                path: "tickets",
+                name: "admin-tickets",
+                component: () => import("@/views/admin/TicketsView.vue"),
+                meta: {
+                    title: "Quản lý Giao dịch & Vé Điện tử - CineHub Admin",
+                    headerTitle: "Quản lý Giao dịch & Vé Điện tử",
+                    subtitle:
+                        "Tra cứu booking code, xuất vé điện tử chuẩn rạp, xử lý lỗi sync và hoàn tiền",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+            {
+                path: "movies",
+                name: "admin-movies",
+                component: () => import("@/views/admin/MoviesView.vue"),
+                meta: {
+                    title: "Danh mục Phim & Thị phần Rạp - CineHub Admin",
+                    headerTitle: "Danh mục Phim & Thị phần Rạp",
+                    subtitle:
+                        "Phân tích tỷ trọng doanh số giữa CGV, Lotte, BHD, Galaxy theo từng đầu phim",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+            {
+                path: "promotions",
+                name: "admin-promotions",
+                component: () => import("@/views/admin/PromotionsView.vue"),
+                meta: {
+                    title: "Chiến dịch Khuyến mãi Đa rạp - CineHub Admin",
+                    headerTitle: "Chiến dịch Khuyến mãi Đa rạp",
+                    subtitle:
+                        "Cấu hình voucher flash sale, chương trình đồng giá và tỷ lệ chia sẻ tài trợ",
+                    requiresAuth: true,
+                    requiresAdmin: true,
+                },
+            },
+            {
+                path: "settlement",
+                name: "admin-settlement",
+                component: () => import("@/views/admin/SettlementView.vue"),
+                meta: {
+                    title: "Đối soát & Quyết toán Doanh thu - CineHub Admin",
+                    headerTitle: "Đối soát & Quyết toán Doanh thu",
+                    subtitle:
+                        "Báo cáo chu kỳ doanh thu, hoa hồng giữ lại và giải quyết chênh lệch phòng vé",
                     requiresAuth: true,
                     requiresAdmin: true,
                 },
